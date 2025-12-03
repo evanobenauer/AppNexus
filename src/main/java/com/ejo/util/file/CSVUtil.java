@@ -1,0 +1,96 @@
+package com.ejo.util.file;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+public class CSVUtil {
+
+    /**
+     * Combines all CSV files in a directory into one CSV file of a chosen directory. All combined files are deleted after the combination.
+     *
+     * @param combineDirectory
+     * @param outputDirectory
+     * @param outputFileName
+     * @return
+     */
+    public static boolean combineCSVFiles(String combineDirectory, String outputDirectory, String outputFileName) {
+        try {
+            FileUtil.createFolderPath(outputDirectory);
+            List<String> files = getCSVFilesInDirectory(combineDirectory);
+            FileWriter writer = new FileWriter(outputDirectory + (outputDirectory.equals("") ? "" : "/") + outputFileName.replace(".csv","") + ".csv");
+
+            for (String file : files) {
+                FileReader fileReader = new FileReader(combineDirectory + "/" + file);
+                BufferedReader reader = new BufferedReader(fileReader);
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    writer.append(line);
+                    writer.append("\n");
+                }
+                reader.close();
+                fileReader.close();
+                FileUtil.deleteFile(combineDirectory, file);
+            }
+            writer.flush();
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            System.out.println("Could not combine CSV Files");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    /**
+     * This method inputs a CSV file and deletes all duplicate rows, leaving only 1 copy of each row
+     *
+     * @param directory
+     * @param name
+     * @return
+     */
+    public static boolean clearDuplicateCSVRows(String directory, String name) {
+        HashSet<String> uniqueValues = new HashSet<>();
+        try {
+            FileReader reader = new FileReader(directory + (directory.equals("") ? "" : "/") + name.replace(".csv","") + ".csv");
+            BufferedReader br = new BufferedReader(reader);
+            String line;
+            FileWriter writer = new FileWriter(directory + (directory.equals("") ? "" : "/") + name.replace(".csv","") + "_temp" + ".csv");
+            while ((line = br.readLine()) != null) {
+                if (uniqueValues.add(line)) {
+                    writer.append(line);
+                    writer.append("\n");
+                }
+            }
+            writer.flush();
+            writer.close();
+            reader.close();
+            FileUtil.deleteFile(directory, name.replace(".csv","") + ".csv");
+            FileUtil.renameFile(directory, name.replace(".csv","") + "_temp" + ".csv", name.replace(".csv","") + ".csv");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * This method returns a list of all CSV files in a specified directory
+     *
+     * @param directory
+     * @return
+     */
+    public static List<String> getCSVFilesInDirectory(String directory) {
+        File folder = new File(directory);
+        List<String> files = new ArrayList<>();
+        for (File file : folder.listFiles()) {
+            if (file.isFile() && file.getName().endsWith(".csv")) {
+                files.add(file.getName());
+            }
+        }
+        return files;
+    }
+
+}
