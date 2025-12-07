@@ -44,16 +44,26 @@ public class FileUtil {
         return file.getPath().replace("\\", "/");
     }
 
+
+    /**
+     * TODO: Add javadoc comment
+     * @param folderPathName
+     * @return
+     */
+    public static String getFilePath(String folderPathName, String fileName) {
+        return folderPathName + (folderPathName.isEmpty() ? "" : "/") + fileName;
+    }
+
     /**
      * Creates a blank file of any name. Items can be written to this file when created
      *
      * @param name
      * @param path
      */
-    public static boolean createFile(String path, String name) {
+    public static boolean generateFile(String path, String name) {
         createFolderPath(path);
         try {
-            File file = new File(path, name);
+            File file = path.isEmpty() ? new File(name) : new File(path, name);
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
             out.write("");
             out.close();

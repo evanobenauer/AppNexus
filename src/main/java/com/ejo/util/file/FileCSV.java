@@ -9,20 +9,25 @@ public abstract class FileCSV<R> {
 
     public FileCSV(String folderPath, String fileName) {
         this.folderPath = folderPath;
-        this.fileName = fileName.replace(".csv", "") + ".csv";
+        this.fileName = CSVUtil.getWithFileExtension(fileName);
     }
 
     public FileCSV(String fileName) {
-        this.folderPath = "";
-        this.fileName = fileName;
+        this("",fileName);
     }
 
-    //public abstract boolean save(O list);
+    public void generateFile() {
+        FileUtil.generateFile(folderPath,fileName);
+    }
+
+    //TODO: Figure out how to create an abstract save method
+    //public abstract boolean save(R list);
 
     public abstract R load();
 
     public void unLoad() {
         data = null;
+        System.gc(); //Calls the garbage collector to force immediate delete of the data
     }
 
     public R getLoadedData() {

@@ -7,6 +7,8 @@ public class Event {
 
     private final ArrayList<EventAction> eventActions = new ArrayList<>();
 
+    //What are the points of the queues? So we can remove/subscribe an action to the action list from an
+    // active action to prevent a concurrent modification exception
     private final ArrayList<EventAction> additionQueue = new ArrayList<>();
     private final ArrayList<EventAction> removalQueue = new ArrayList<>();
 
@@ -16,10 +18,7 @@ public class Event {
         this.args = args;
 
         try {
-            removalQueue.forEach((action) -> getActions().remove(action));
-            removalQueue.clear();
-            additionQueue.forEach((action) -> getActions().add(action));
-            additionQueue.clear();
+            updateSubscribeQueue();
         } catch (ConcurrentModificationException e) {
             System.out.println("Error Queueing Event Action Subscription Change");
         }
@@ -27,6 +26,13 @@ public class Event {
         ArrayList<EventAction> actionsCopy = (ArrayList<EventAction>) getActions().clone();
         for (EventAction event : actionsCopy) event.run();
 
+    }
+
+    private void updateSubscribeQueue() {
+        removalQueue.forEach((action) -> getActions().remove(action));
+        removalQueue.clear();
+        additionQueue.forEach((action) -> getActions().add(action));
+        additionQueue.clear();
     }
 
     public boolean subscribeAction(EventAction action) {

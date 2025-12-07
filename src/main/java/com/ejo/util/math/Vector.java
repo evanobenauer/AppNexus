@@ -59,9 +59,9 @@ public class Vector {
      * 3D
      */
     public Vector(double rho, Angle theta, Angle phi) {
-        this.x = rho * Math.cos(theta.getRadians() * Math.sin(phi.getRadians()));
-        this.y = rho * Math.sin(theta.getRadians() * Math.sin(phi.getRadians()));
-        this.z = rho * Math.cos(phi.getRadians());
+        this.x = rho * theta.getCos() * phi.getSin();
+        this.y = rho * theta.getSin() * phi.getSin();
+        this.z = rho * phi.getCos();
     }
 
 
@@ -157,17 +157,28 @@ public class Vector {
         return z;
     }
 
+    public int getXi() {
+        return (int) x;
+    }
+
+    public int getYi() {
+        return (int) y;
+    }
+
+    public int getZi() {
+        return (int) z;
+    }
+
     public double getRadius() {
         return Math.sqrt(getX() * getX() + getY() * getY());
     }
 
     /**
-     * Theta returns an angle that ranges from +180 degrees to -180 degrees
-     *
+     * Theta returns an angle that is simplified to be between 0 and 2PI
      * @return
      */
     public Angle getTheta() {
-        return new Angle(Math.atan2(getY(), getX()));
+        return new Angle(Math.atan2(getY(), getX())).simplify();
     }
 
     /**
@@ -235,6 +246,10 @@ public class Vector {
         return this;
     }
 
+    public Vector normalize() {
+        return multiply(1/getMagnitude());
+    }
+
     @Override
     public Vector clone() {
         return new Vector(x,y,z);
@@ -254,7 +269,7 @@ public class Vector {
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector newVec)) return false;
         try {
-            return getX() == newVec.getX() && getY() == newVec.getY() && getZ() == newVec.getZ();
+            return x == newVec.getX() && y == newVec.getY() && z == newVec.getZ();
         } catch (Exception e) {
             return false;
         }

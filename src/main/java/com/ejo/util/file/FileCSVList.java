@@ -17,7 +17,7 @@ public class FileCSVList extends FileCSV<ArrayList<String[]>> {
     public <T> boolean save(ArrayList<T[]> list) {
     //public boolean save(ArrayList<Object[]> list) {
         FileUtil.createFolderPath(folderPath); //Creates the folder path if it does not exist
-        String outputFile = folderPath + (folderPath.isEmpty() ? "" : "/") + fileName;
+        String outputFile = FileUtil.getFilePath(folderPath,fileName);
         try {
             FileWriter writer = new FileWriter(outputFile);
             ArrayList<String[]> tempList = new ArrayList<>();
@@ -39,7 +39,7 @@ public class FileCSVList extends FileCSV<ArrayList<String[]>> {
 
     @Override
     public ArrayList<String[]> load() {
-        File file = new File(folderPath + (folderPath.isEmpty() ? "" : "/") + fileName);
+        File file = new File(FileUtil.getFilePath(folderPath,fileName));
         ArrayList<String[]> rawDataList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

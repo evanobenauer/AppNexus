@@ -19,7 +19,7 @@ public class CSVUtil {
         try {
             FileUtil.createFolderPath(outputDirectory);
             List<String> files = getCSVFilesInDirectory(combineDirectory);
-            FileWriter writer = new FileWriter(outputDirectory + (outputDirectory.equals("") ? "" : "/") + outputFileName.replace(".csv","") + ".csv");
+            FileWriter writer = new FileWriter(FileUtil.getFilePath(outputDirectory,getWithFileExtension(outputFileName)));
 
             for (String file : files) {
                 FileReader fileReader = new FileReader(combineDirectory + "/" + file);
@@ -54,10 +54,10 @@ public class CSVUtil {
     public static boolean clearDuplicateCSVRows(String directory, String name) {
         HashSet<String> uniqueValues = new HashSet<>();
         try {
-            FileReader reader = new FileReader(directory + (directory.equals("") ? "" : "/") + name.replace(".csv","") + ".csv");
+            FileReader reader = new FileReader(FileUtil.getFilePath(directory,getWithFileExtension(name)));
             BufferedReader br = new BufferedReader(reader);
             String line;
-            FileWriter writer = new FileWriter(directory + (directory.equals("") ? "" : "/") + name.replace(".csv","") + "_temp" + ".csv");
+            FileWriter writer = new FileWriter(FileUtil.getFilePath(directory,getWithFileExtension(name + "_temp")));
             while ((line = br.readLine()) != null) {
                 if (uniqueValues.add(line)) {
                     writer.append(line);
@@ -67,8 +67,8 @@ public class CSVUtil {
             writer.flush();
             writer.close();
             reader.close();
-            FileUtil.deleteFile(directory, name.replace(".csv","") + ".csv");
-            FileUtil.renameFile(directory, name.replace(".csv","") + "_temp" + ".csv", name.replace(".csv","") + ".csv");
+            FileUtil.deleteFile(directory, getWithFileExtension(name));
+            FileUtil.renameFile(directory, getWithFileExtension(name + "_temp"), getWithFileExtension(name));
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,6 +91,10 @@ public class CSVUtil {
             }
         }
         return files;
+    }
+
+    public static String getWithFileExtension(String name) {
+        return name.replace(".csv", "") + ".csv";
     }
 
 }

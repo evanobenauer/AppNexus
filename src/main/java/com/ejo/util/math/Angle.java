@@ -1,6 +1,7 @@
 package com.ejo.util.math;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.TAU;
 
 public class Angle {
 
@@ -10,7 +11,7 @@ public class Angle {
     protected double value;
 
     public Angle(double value, boolean isDegrees) {
-        if (isDegrees) this.value = value * PI / 180;
+        if (isDegrees) this.value = value * TAU / 360;
         else this.value = value;
     }
 
@@ -42,8 +43,8 @@ public class Angle {
      */
     public Angle getSimplified() {
         double rad = value;
-        while (rad > Math.PI * 2) rad -= Math.PI * 2;
-        while (rad < 0) rad += Math.PI * 2;
+        while (rad > TAU) rad -= TAU;
+        while (rad < 0) rad += TAU;
         return new Angle(rad);
     }
 
@@ -72,7 +73,7 @@ public class Angle {
     }
 
     public double getDegrees() {
-        return getRadians() * 180 / PI;
+        return getRadians() * 360 / TAU;
     }
 
     // ------------------------------ MODIFIABLE METHODS BELOW ------------------------------
@@ -92,12 +93,8 @@ public class Angle {
      * @return
      */
     public Angle simplify() {
-        while (this.value > Math.PI * 2) {
-            this.value -= Math.PI * 2;
-        }
-        while (this.value < 0) {
-            this.value += Math.PI * 2;
-        }
+        while (this.value > TAU) this.value -= TAU;
+        while (this.value < 0) this.value += TAU;
         return this;
     }
 

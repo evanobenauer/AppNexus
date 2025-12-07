@@ -9,10 +9,6 @@ public class TimeUtil {
         return new DateTime(localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
     }
 
-    public static DateTime getCurrentDateTimeAdjusted(int secondAdjust) {
-        return getCurrentDateTime().getAdded(secondAdjust);
-    }
-
     public static double getDateTimePercent(DateTime start, DateTime current, DateTime end) {
         return (double) getSecondDifference(current, start) / (getSecondDifference(end,start));
     }

@@ -20,7 +20,7 @@ public class Setting<T> extends Container<T> {
         this.defaultVal = defaultVal;
 
         this.settingManager = settingManager;
-        this.settingManager.getSettingList().put(key, this);
+        this.settingManager.getSettingList().put(key, this); //Automatically assign the setting to an active manager
     }
 
     public Setting(String key, T defaultVal) {

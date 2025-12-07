@@ -34,8 +34,7 @@ public class SettingManager {
 
     @SuppressWarnings(value = "all")
     public boolean loadAll() {
-        csvFile.load();
-        HashMap<String, String[]> loadedData = csvFile.getLoadedData();
+        HashMap<String, String[]> loadedData = csvFile.load();
 
         for (String key : loadedData.keySet()) {
             try {
@@ -45,20 +44,24 @@ public class SettingManager {
 
                 if (!setting.isLoadable()) continue;
 
-                if (savedValue.equals("null") || dataType.equals("nullType")) setting.set(null);
-                else if (dataType.equals("string")) setting.set(savedValue.toString());
-                else if (dataType.equals("char")) setting.set(savedValue.charAt(0));
-                else if (dataType.equals("byte")) setting.set(Byte.parseByte(savedValue));
-                else if (dataType.equals("short")) setting.set(Short.parseShort(savedValue));
-                else if (dataType.equals("integer")) setting.set(Integer.parseInt(savedValue));
-                else if (dataType.equals("long")) setting.set(Long.parseLong(savedValue));
-                else if (dataType.equals("float")) setting.set(Float.parseFloat(savedValue));
-                else if (dataType.equals("double")) setting.set(Double.parseDouble(savedValue));
-                else if (dataType.equals("boolean")) setting.set(Boolean.parseBoolean(savedValue));
+                if (savedValue.equals("null")) setting.set(null);
+                else switch (dataType) {
+                    case "nullType" -> setting.set(null);
+                    case "string" -> setting.set(savedValue.toString());
+                    case "char" -> setting.set(savedValue.charAt(0));
+                    case "byte" -> setting.set(Byte.parseByte(savedValue));
+                    case "short" -> setting.set(Short.parseShort(savedValue));
+                    case "integer" -> setting.set(Integer.parseInt(savedValue));
+                    case "long" -> setting.set(Long.parseLong(savedValue));
+                    case "float" -> setting.set(Float.parseFloat(savedValue));
+                    case "double" -> setting.set(Double.parseDouble(savedValue));
+                    case "boolean" -> setting.set(Boolean.parseBoolean(savedValue));
 
-                else if (dataType.equals("vector")) setting.set(Converter.getVectorFromString(savedValue));
-                else if (dataType.equals("color")) setting.set(Converter.getColorFromString(savedValue));
-                else if (dataType.equals("datetime")) setting.set(Converter.getDateTimeFromString(savedValue));
+                    case "vector" -> setting.set(Converter.getVectorFromString(savedValue));
+                    case "color" -> setting.set(Converter.getColorFromString(savedValue));
+                    case "datetime" -> setting.set(Converter.getDateTimeFromString(savedValue));
+                }
+
             } catch (Exception e) {
                 //The specific setting could not get it's data set. Proceed to the next setting
                 System.out.println("Could not load setting: " + key);

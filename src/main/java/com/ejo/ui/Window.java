@@ -1,9 +1,10 @@
 package com.ejo.ui;
 
 import com.ejo.ui.scene.Scene;
-import com.ejo.util.action.OnChange;
 import com.ejo.util.math.Vector;
-import com.ejo.util.time.StopWatch;
+import com.ejo.util.misc.ThreadUtil;
+import com.ejo.util.setting.Container;
+import com.ejo.util.time.TickRateLogger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -24,41 +25,37 @@ public class Window {
 
     private long windowId;
 
-    private String title;
-    private Vector pos;
-    private Vector size;
-
-    private int maxFPS;
-    private int maxTPS;
-
-    private int frames;
-    private int ticks;
-
-    private int fps;
-    private int tps;
-
-    private boolean vSync;
-
-    private int antiAliasingLevel;
-
-    private double uiScale;
-
-    private boolean economic;
-
-    private boolean debug;
-
-
-    private boolean open;
+    private Scene scene;
 
     private Vector mousePos;
 
 
-    private Scene scene;
+    private String title;
+    private Vector pos;
+    private Vector size;
+
+    private boolean open;
 
 
-    public Window(String title, Vector pos, Vector size, Scene startingScene) {
+    private int maxFPS;
+    private int maxTPS;
+
+    private boolean vSync;
+    private int antiAliasingLevel;
+    private double uiScale;
+
+
+    //TODO: Maybe bring back the maintenance thread in order to have the loggers work. Or find another workaround
+    private final TickRateLogger fpsLogger;
+    private final TickRateLogger tpsLogger;
+
+    private DebugMode debugMode;
+    private PerformanceMode performanceMode;
+
+
+    public Window(String title, Vector size, Scene startingScene) {
         this.title = title;
-        this.pos = pos;
+        this.pos = new Vector(100,100); //TODO: Make this position default to the center of the screen
         this.size = size;
 
         this.maxFPS = 60;
@@ -69,46 +66,91 @@ public class Window {
 
         this.uiScale = 1;
 
-        this.economic = false;
-        this.debug = false;
+        this.debugMode = DebugMode.OFF;
+        this.performanceMode = PerformanceMode.STANDARD;
+
+        this.fpsLogger = new TickRateLogger();
+        this.tpsLogger = new TickRateLogger();
 
         this.scene = startingScene;
+        this.open = false;
     }
+
+    // =================================================
+
+    // INITIALIZE FUNCTIONS
+
+    // =================================================
 
     public Window init() {
         final long NULL = 0L;
         if (!glfwInit()) throw new IllegalStateException("Failed to init GLFW");
-
-        setAntiAliasingLevel(antiAliasingLevel);
 
         //Creating the window
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         windowId = glfwCreateWindow((int) size.getX(), (int) size.getY(), title, NULL, NULL);
         if (windowId == NULL) throw new IllegalStateException("Window could not be created");
 
-        //Creating the monitor
-        glfwGetVideoMode(glfwGetPrimaryMonitor());
+        //Sets the Input Callbacks
+        initInputCallbacks();
 
         // Load the window icon
-        registerWindowIcon(getClass().getResource("/icon.png"));
+        initWindowIcon(getClass().getResource("/icon.png"));
+
+        //Creating the monitor
+        glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         //Show the window
         setPos(pos);
         glfwShowWindow(windowId);
+
+        //Set performance attributes
+        setAntiAliasingLevel(antiAliasingLevel);
+        setVSync(vSync);
 
         //Sets the window context to display graphics
         glfwMakeContextCurrent(windowId);
         GL.createCapabilities();
         GL11.glClearColor(0f, 0f, 0f, 0f);
 
-        setVSync(vSync);
-
-        setScene(scene);
-
+        //If all is successfully set, open the window.
         this.open = true;
 
         return this;
     }
+
+    private void initInputCallbacks() {
+        glfwSetKeyCallback(windowId, (window, key, scancode, action, mods) -> {
+            scene.onKeyPress(key, scancode, action, mods);
+            //TODO: Put Key.java interface in here
+        });
+        glfwSetMouseButtonCallback(windowId, (window, button, action, mods) -> {
+            scene.onMouseClick(button, action, mods, getMousePos());
+            //TODO: Put Mouse.java interface in here
+        });
+        glfwSetScrollCallback(windowId, (window, scrollX, scrollY) -> {
+            scene.onMouseScroll((int) scrollY, getMousePos());
+        });
+    }
+
+    private void initWindowIcon(URL imageURL) {
+        if (imageURL != null) {
+            int width = 512;
+            int height = 512;
+            GLFWImage glfwImage = GLFWImage.malloc();
+            GLFWImage.Buffer glfwImageBuffer = GLFWImage.malloc(1);
+            //glfwImage.set(width, height, TextureUtil.getImageBuffer(imageURL, width, height));
+            glfwImageBuffer.close();
+            glfwSetWindowIcon(windowId, glfwImageBuffer.put(0, glfwImage));
+        }
+    }
+
+    // =================================================
+
+    // STEP FORWARD FUNCTIONS
+
+    // =================================================
+
 
     private void draw() {
         GL.createCapabilities();
@@ -124,90 +166,95 @@ public class Window {
 
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        GLManager.scale(uiScale); //Shape Scale
-        GLManager.textureScale(uiScale); //Texture Scale
+        //Update Draw Scale before drawing elements
+        GLManager.scale(uiScale);
+        GLManager.textureScale(uiScale);
 
-        scene.draw(); //Draw the screen
+        //Draw all scene elements
+        scene.draw();
 
-        glfwSwapBuffers(windowId); //Finish Drawing here
-
-        if (economic) {
-            try {
-                GLFW.glfwWaitEvents();
-            } catch (NullPointerException e) {
-                GLFW.glfwPollEvents();
-            }
-        } else {
-            try {
-                GLFW.glfwPollEvents();
-            } catch (NullPointerException e) {
-                GLFW.glfwWaitEvents();
-            }
+        //Draw debug menu on top
+        switch (debugMode) {
+            case DEBUG_SIMPLE -> drawSimpleDebugMenu();
+            case DEBUG_ADVANCED -> drawAdvancedDebugMenu();
         }
+
+        //Finish Drawing here
+        glfwSwapBuffers(windowId);
+
+        //Update screen's elements based on performance mode
+        switch (performanceMode) {
+            case STANDARD -> GLFW.glfwPollEvents();
+            case ECONOMIC -> GLFW.glfwWaitEvents();
+        }
+    }
+
+    private void drawSimpleDebugMenu() {
+
+    }
+
+    private void drawAdvancedDebugMenu() {
+
     }
 
     private void tick() {
-        onKeyPress();
-        onMouseClick();
-        onMouseScroll();
+        updateMousePos();
         scene.tick();
     }
 
-    private void onKeyPress() {
-        GLFWKeyCallback callback = glfwSetKeyCallback(windowId, (window, key, scancode, action, mods) -> {
-            scene.onKeyPress(key, scancode, action, mods);
-        });
-        closeAutoClosable(callback);
-    }
+    // =================================================
 
-    private void onMouseClick() {
-        GLFWMouseButtonCallback callback = glfwSetMouseButtonCallback(windowId, (window, button, action, mods) -> {
-            scene.onMouseClick(button, action, mods, getScaledMousePos());
-        });
-        closeAutoClosable(callback);
-    }
+    // LOOP FUNCTIONS
 
-    private void onMouseScroll() {
-        GLFWScrollCallback callback = glfwSetScrollCallback(windowId, (window, scrollX, scrollY) -> {
-            scene.onMouseScroll((int)scrollY, getScaledMousePos());
-        });
-        closeAutoClosable(callback);
-    }
+    // =================================================
 
-    private void runRenderLoop() {
-        while (open) {
+    public void runMainRenderLoop() {
+        Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId);
-            long startTimeNS = System.nanoTime();
-            updateWindow();
+            updateWindowPosSize(); //I put update window in the draw loop instead of tick because it's the main thread
             draw();
-            frames++;
-            long endTimeNS = System.nanoTime();
-
-            long tickTimeNS = endTimeNS - startTimeNS;
-            long sleepTimeNS = (1000000000 / maxFPS - tickTimeNS);
-            if (!vSync) if (sleepTimeNS > 0) sleepThread(sleepTimeNS / 1000000);
+            fpsLogger.tick();
+        };
+        if (vSync) {
+            while (open) renderItems.run();
+        } else {
+            limitedRateLoop(renderItems,maxFPS);
         }
+        close();
     }
 
-    private void startTickLoopThread() {
+    //MUST be run first in order to start the loop. If Draw is run first, the window will not start
+    public void startThreadTickLoop() {
         Thread thread = new Thread(() -> {
-            while (open) {
-                long startTimeNS = System.nanoTime();
-                updateMousePos();
+            Runnable tickItems = () -> {
                 tick();
-                ticks++;
-                long endTimeNS = System.nanoTime();
-
-                long tickTimeNS = endTimeNS - startTimeNS;
-                long sleepTimeNS = 1000000000 / maxTPS - tickTimeNS;
-                if (sleepTimeNS > 0) sleepThread(sleepTimeNS / 1000000);
-            }
+                tpsLogger.tick();
+            };
+            limitedRateLoop(tickItems,maxTPS);
         });
         thread.setName("Tick Thread");
         thread.start();
     }
 
-    private void updateWindow() {
+    private void limitedRateLoop(Runnable runnable, int maxTickRate) {
+        //We could not rout open through the method -> it would pass by value and wouldn't update inside the loop
+        while (open) {
+            long startTimeNS = System.nanoTime();
+            runnable.run();
+            long endTimeNS = System.nanoTime();
+            long tickTimeNS = endTimeNS - startTimeNS;
+            long sleepTimeNS = (1000000000 / maxTickRate - tickTimeNS);
+            if (sleepTimeNS > 0) ThreadUtil.sleepThread(sleepTimeNS / 1000000);
+        }
+    }
+
+    // =================================================
+
+    // UPDATE WINDOW FUNCTIONS
+
+    // =================================================
+
+    private void updateWindowPosSize() {
         IntBuffer buffer = BufferUtils.createIntBuffer(1);
         glfwGetWindowPos(windowId, buffer, null);
         double x = buffer.get(0);
@@ -224,70 +271,26 @@ public class Window {
         if (size.getMagnitude() != 0) setSize(size);
     }
 
-    private Vector updateMousePos() {
+    private void updateMousePos() {
         DoubleBuffer buffer = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(windowId, buffer, null);
         double mouseX = buffer.get(0);
         glfwGetCursorPos(windowId, null, buffer);
         double mouseY = buffer.get(0);
-        return mousePos = new Vector(mouseX, mouseY);
+        this.mousePos = new Vector(mouseX, mouseY);
     }
 
-    private void registerWindowIcon(URL imageURL) {
-        if (imageURL != null) {
-            int width = 512;
-            int height = 512;
-            GLFWImage glfwImage = GLFWImage.malloc();
-            GLFWImage.Buffer glfwImageBuffer = GLFWImage.malloc(1);
-            //glfwImage.set(width, height, TextureUtil.getImageBuffer(imageURL, width, height));
-            glfwImageBuffer.close();
-            glfwSetWindowIcon(windowId, glfwImageBuffer.put(0, glfwImage));
-        }
-    }
-
-    private void sleepThread(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void closeAutoClosable(AutoCloseable closable) {
-        try {
-            closable.close();
-        } catch (Exception ignored) {
-        }
-    }
-
-
-
-
-    private void calculateFPSTPS(StopWatch stopWatch) {
-        stopWatch.start();
-        if (stopWatch.hasTimePassedS(1)) { //TPS-FPS Updater
-            fps = frames;
-            frames = 0;
-            tps = ticks;
-            ticks = 0;
-            stopWatch.restart();
-        }
-    }
-
-
-    public Window run() {
-        init();
-        startTickLoopThread();
-        runRenderLoop();
-        return this;
-    }
-
-    public Window close() {
+    //TODO: Test and properly implement this. Have when called force close the window. It currently doesn't
+    public void close() {
         GLFW.glfwDestroyWindow(windowId);
         GLFW.glfwTerminate();
-        return this;
     }
 
+    // =================================================
+
+    // SETTER FUNCTIONS
+
+    // =================================================
 
     public Window setScene(Scene scene) {
         this.scene = scene;
@@ -301,41 +304,14 @@ public class Window {
     }
 
     public Window setPos(Vector pos) {
-        glfwSetWindowPos(windowId, (int) pos.getX(), (int) pos.getY());
+        glfwSetWindowPos(windowId, pos.getXi(), pos.getYi());
         this.pos = pos;
         return this;
     }
 
     public Window setSize(Vector size) {
-        glfwSetWindowSize(windowId, (int) size.getX(), (int) size.getY());
+        glfwSetWindowSize(windowId, size.getXi(), size.getYi());
         this.size = size;
-        return this;
-    }
-
-    public Window setVSync(boolean vSync) {
-        glfwSwapInterval(vSync ? 1 : 0);
-        this.vSync = vSync;
-        return this;
-    }
-
-    public Window setAntiAliasingLevel(int level) {
-        if (antiAliasingLevel > 0) GLFW.glfwWindowHint(GLFW_SAMPLES, level);
-        this.antiAliasingLevel = level;
-        return this;
-    }
-
-    public Window setUIScale(double uiScale) {
-        this.uiScale = uiScale;
-        return this;
-    }
-
-    public Window setEconomic(boolean economic) {
-        this.economic = economic;
-        return this;
-    }
-
-    public Window setDebug(boolean debug) {
-        this.debug = debug;
         return this;
     }
 
@@ -349,6 +325,36 @@ public class Window {
         return this;
     }
 
+    public Window setUIScale(double uiScale) {
+        this.uiScale = uiScale;
+        return this;
+    }
+
+    public Window setVSync(boolean vSync) {
+        glfwSwapInterval(vSync ? GLFW_TRUE : GLFW_FALSE);
+        this.vSync = vSync;
+        return this;
+    }
+
+    public Window setAntiAliasingLevel(int level) {
+        if (antiAliasingLevel > 0) GLFW.glfwWindowHint(GLFW_SAMPLES, level);
+        this.antiAliasingLevel = level;
+        return this;
+    }
+
+    public void setDebugMode(DebugMode mode) {
+        this.debugMode = mode;
+    }
+
+    public void setPerformanceMode(PerformanceMode mode) {
+        this.performanceMode = mode;
+    }
+
+    // =================================================
+
+    // GETTER FUNCTIONS
+
+    // =================================================
 
     public long getWindowId() {
         return windowId;
@@ -367,31 +373,44 @@ public class Window {
     }
 
     public Vector getSize() {
-        return size;
-    }
-
-    public Vector getScaledSize() {
         return size.getMultiplied(1/uiScale);
     }
 
     public Vector getMousePos() {
-        return mousePos;
-    }
-
-    public Vector getScaledMousePos() {
         return mousePos.getMultiplied(1/uiScale);
     }
 
-    public boolean isDebug() {
-        return debug;
+    public float getTPS() {
+        return Math.round(tpsLogger.getTickRate());
     }
 
-    public int getTPS() {
-        return tps;
+    public float getFPS() {
+        return Math.round(fpsLogger.getTickRate());
     }
 
-    public int getFPS() {
-        return fps;
+    public DebugMode getDebugMode() {
+        return debugMode;
     }
 
+    public PerformanceMode getPerformanceMode() {
+        return performanceMode;
+    }
+
+    // =================================================
+
+    // MODE ENUMS
+
+    // =================================================
+
+    //These modes are split into enums in hopes of potentially adding multiple different future modes
+    public enum DebugMode {
+        OFF,
+        DEBUG_SIMPLE, //Make a mini debug mode
+        DEBUG_ADVANCED //Make a hardcore higher end debug mode
+    }
+
+    public enum PerformanceMode {
+        STANDARD,
+        ECONOMIC
+    }
 }

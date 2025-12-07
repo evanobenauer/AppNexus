@@ -19,7 +19,7 @@ public class FileCSVMap extends FileCSV<HashMap<String,String[]>> {
     public <K, V> boolean save(HashMap<K, V[]> hashMap) {
     //public boolean save(HashMap<Object, Object[]> hashMap) {
         FileUtil.createFolderPath(folderPath); //Creates the folder path if it does not exist
-        String outputFile = folderPath + (folderPath.isEmpty() ? "" : "/") + fileName.replace(".csv", "") + ".csv";
+        String outputFile = FileUtil.getFilePath(folderPath,fileName);
         try {
             FileWriter writer = new FileWriter(outputFile);
             HashMap<String, String[]> tempMap = new HashMap<>();
@@ -40,7 +40,7 @@ public class FileCSVMap extends FileCSV<HashMap<String,String[]>> {
 
     @Override
     public HashMap<String, String[]> load() {
-        File file = new File(folderPath + (folderPath.equals("") ? "" : "/") + fileName.replace(".csv", "") + ".csv");
+        File file = new File(FileUtil.getFilePath(folderPath,fileName));
         HashMap<String, String[]> rawDataHashMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

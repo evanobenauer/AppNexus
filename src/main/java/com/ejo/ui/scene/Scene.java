@@ -6,6 +6,11 @@ import java.util.ConcurrentModificationException;
 
 public abstract class Scene {
 
+    private String title;
+
+    public Scene(String title) {
+        this.title = title;
+    }
 
 
     public void draw() {

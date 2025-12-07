@@ -9,12 +9,10 @@ public class MathUtil {
         return Double.parseDouble(num);
     }
 
-    public static <T extends Number> double calculateAverage(ArrayList<T> values) {
+    public static <T extends Number> double calculateAverage(T... values) {
         double avg = 0;
-        for (T val : values) {
-            avg += val.doubleValue();
-        }
-        avg /= values.size();
+        for (T val : values) avg += val.doubleValue();
+        avg /= values.length;
         return avg;
     }
 
