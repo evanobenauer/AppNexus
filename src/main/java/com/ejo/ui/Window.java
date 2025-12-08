@@ -3,7 +3,6 @@ package com.ejo.ui;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
-import com.ejo.util.setting.Container;
 import com.ejo.util.time.TickRateLogger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
@@ -73,6 +72,7 @@ public class Window {
         this.tpsLogger = new TickRateLogger();
 
         this.scene = startingScene;
+        this.mousePos = Vector.NULL();
         this.open = false;
     }
 
@@ -85,6 +85,9 @@ public class Window {
     public Window init() {
         final long NULL = 0L;
         if (!glfwInit()) throw new IllegalStateException("Failed to init GLFW");
+
+        //Set AntiAliasing Level (Must be set before window creation)
+        GLFW.glfwWindowHint(GLFW_SAMPLES, antiAliasingLevel);
 
         //Creating the window
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -104,14 +107,16 @@ public class Window {
         setPos(pos);
         glfwShowWindow(windowId);
 
-        //Set performance attributes
-        setAntiAliasingLevel(antiAliasingLevel);
+        //Setup VSync
         setVSync(vSync);
 
         //Sets the window context to display graphics
         glfwMakeContextCurrent(windowId);
         GL.createCapabilities();
         GL11.glClearColor(0f, 0f, 0f, 0f);
+
+        //Initialize the window & attach it to the scene
+        this.scene.initWindow(this);
 
         //If all is successfully set, open the window.
         this.open = true;
@@ -143,6 +148,12 @@ public class Window {
             glfwImageBuffer.close();
             glfwSetWindowIcon(windowId, glfwImageBuffer.put(0, glfwImage));
         }
+    }
+
+    //Think about putting this in the constructor as it can only be set at the start
+    public Window initAntiAliasingLevel(int level) {
+        this.antiAliasingLevel = level;
+        return this;
     }
 
     // =================================================
@@ -189,6 +200,7 @@ public class Window {
         }
     }
 
+    //TODO: Implement this
     private void drawSimpleDebugMenu() {
 
     }
@@ -198,8 +210,10 @@ public class Window {
     }
 
     private void tick() {
+        updateWindowPosSize();
         updateMousePos();
         scene.tick();
+        scene.updateMouseHovered();
     }
 
     // =================================================
@@ -211,7 +225,7 @@ public class Window {
     public void runMainRenderLoop() {
         Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId);
-            updateWindowPosSize(); //I put update window in the draw loop instead of tick because it's the main thread
+            scene.runAnimation(); //TODO: Move this to a separate thread??
             draw();
             fpsLogger.tick();
         };
@@ -294,6 +308,7 @@ public class Window {
 
     public Window setScene(Scene scene) {
         this.scene = scene;
+        this.scene.initWindow(this);
         return this;
     }
 
@@ -333,12 +348,6 @@ public class Window {
     public Window setVSync(boolean vSync) {
         glfwSwapInterval(vSync ? GLFW_TRUE : GLFW_FALSE);
         this.vSync = vSync;
-        return this;
-    }
-
-    public Window setAntiAliasingLevel(int level) {
-        if (antiAliasingLevel > 0) GLFW.glfwWindowHint(GLFW_SAMPLES, level);
-        this.antiAliasingLevel = level;
         return this;
     }
 

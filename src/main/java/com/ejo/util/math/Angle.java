@@ -5,6 +5,12 @@ import static java.lang.Math.TAU;
 
 public class Angle {
 
+    private static final Angle NULL = new Angle(0);
+
+    public static Angle NULL() {
+        return NULL.clone();
+    }
+
     /**
      * Angle (in radians)
      */
@@ -99,7 +105,7 @@ public class Angle {
     }
 
     @Override
-    protected Object clone() {
+    protected Angle clone() {
         return new Angle(value);
     }
 

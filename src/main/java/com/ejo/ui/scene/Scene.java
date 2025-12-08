@@ -1,52 +1,113 @@
 package com.ejo.ui.scene;
 
+import com.ejo.ui.Window;
+import com.ejo.ui.element.Element;
+import com.ejo.ui.element.base.IAnimatable;
+import com.ejo.ui.element.base.IInteractable;
+import com.ejo.ui.element.HoveredMouseManager;
 import com.ejo.util.math.Vector;
 
-import java.util.ConcurrentModificationException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Scene {
 
-    private String title;
+    private final String title;
+
+    private Window window;
+
+    private final ArrayList<Element> elements;
+    private final ArrayList<IInteractable> interactables;
+    private final ArrayList<IAnimatable> animatables;
+
+    private final HoveredMouseManager hoveredMouseManager;
 
     public Scene(String title) {
         this.title = title;
+        this.elements = new ArrayList<>();
+        this.interactables = new ArrayList<>();
+        this.animatables = new ArrayList<>();
+
+        this.hoveredMouseManager = new HoveredMouseManager();
     }
 
+    // =================================================
+
+    // ACTION FUNCTIONS
+
+    // =================================================
 
     public void draw() {
-
+        for (Element element : elements) element.draw(getWindow().getMousePos());
     }
 
     public void tick() {
-
+        for (Element element : elements) element.tick(getWindow().getMousePos());
     }
 
-    /**
-     * This method is a user-input detection method. It will detect all key presses for added elements, returning the key, scancode, action, and modifiers for the key.
-     * To scan for more input that the elements provided, you must call the super of this method inside your override to continue to support the added elements.
-     * This method is called in the tick thread of the window.
-     * @param key
-     * @param scancode
-     * @param action
-     * @param mods
-     */
+    public void updateMouseHovered() {
+        for (Element element : elements) element.updateMouseHovered(getWindow().getMousePos());
+        hoveredMouseManager.cycleQueuedItems();
+    }
+
+    public void runAnimation() {
+        for (IAnimatable e : animatables) e.runAnimation();
+    }
+
     public void onKeyPress(int key, int scancode, int action, int mods) {
+        for (IInteractable e : interactables) e.onKeyPress(key,scancode,action,mods);
     }
 
-    /**
-     * This method is a user-input detection method. It will detect all mouse clicks for added elements, returning the button, action, modifiers, and mousePos for the click.
-     * To scan for more input that the elements provided, you must call the super of this method inside your override to continue to support the added elements.
-     * This method is called in the tick thread of the window.
-     * @param button
-     * @param action
-     * @param mods
-     * @param mousePos
-     */
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
-
+        for (IInteractable e : interactables) e.onMouseClick(button, action,mods,mousePos);
     }
 
     public void onMouseScroll(int scroll, Vector mousePos) {
+        for (IInteractable e : interactables) e.onMouseScroll(scroll,mousePos);
+    }
 
+    public void addElements(Element... elements) {
+        this.elements.addAll(Arrays.asList(elements));
+        for (Element element : elements) {
+            if (element instanceof IAnimatable e) animatables.add(e);
+            if (element instanceof IInteractable e) interactables.add(e);
+        }
+    }
+
+    public void removeElement(Element element) {
+        this.elements.remove(element);
+        this.animatables.remove(element);
+        this.interactables.remove(element);
+    }
+
+    // =================================================
+
+    // GETTERS/SETTERS
+
+    // =================================================
+
+    public void initWindow(Window window) {
+        this.window = window;
+    }
+
+
+    public Window getWindow() {
+        return window;
+    }
+
+    public ArrayList<Element> getElements() {
+        return elements;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Vector getMousePos() {
+        return this.window.getMousePos();
+    }
+
+    public HoveredMouseManager getHoveredMouseManager() {
+        return hoveredMouseManager;
     }
 }
