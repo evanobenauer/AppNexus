@@ -1,4 +1,4 @@
-package com.ejo.ui;
+package com.ejo.ui.element.builder;
 
 import com.ejo.util.math.Vector;
 import org.lwjgl.opengl.GL11;

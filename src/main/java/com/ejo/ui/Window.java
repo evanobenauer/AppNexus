@@ -3,6 +3,7 @@ package com.ejo.ui;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
+import com.ejo.ui.element.builder.GLManager;
 import com.ejo.util.time.TickRateLogger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
@@ -186,8 +187,8 @@ public class Window {
 
         //Draw debug menu on top
         switch (debugMode) {
-            case DEBUG_SIMPLE -> drawSimpleDebugMenu();
-            case DEBUG_ADVANCED -> drawAdvancedDebugMenu();
+            case DEBUG_SIMPLE -> scene.drawSimpleDebugMenu();
+            case DEBUG_ADVANCED -> scene.drawAdvancedDebugMenu();
         }
 
         //Finish Drawing here
@@ -198,15 +199,6 @@ public class Window {
             case STANDARD -> GLFW.glfwPollEvents();
             case ECONOMIC -> GLFW.glfwWaitEvents();
         }
-    }
-
-    //TODO: Implement this
-    private void drawSimpleDebugMenu() {
-
-    }
-
-    private void drawAdvancedDebugMenu() {
-
     }
 
     private void tick() {
@@ -395,6 +387,10 @@ public class Window {
 
     public float getFPS() {
         return Math.round(fpsLogger.getTickRate());
+    }
+
+    public double getUiScale() {
+        return uiScale;
     }
 
     public DebugMode getDebugMode() {

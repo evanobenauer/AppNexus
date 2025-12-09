@@ -38,7 +38,7 @@ public class Polygon extends Element {
         GL11.glBegin(outlined ? GL11.GL_LINE_LOOP : GL11.GL_POLYGON);
         for (Vector vert : vertices) GL11.glVertex2f((float) getPos().getX() + (float) vert.getX(), (float) getPos().getY() + (float) vert.getY());
         GL11.glEnd();
-        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glColor4f(1f, 1f, 1f, 1f);
     }
 
     @Override

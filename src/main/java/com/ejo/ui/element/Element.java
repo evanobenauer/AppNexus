@@ -52,8 +52,8 @@ public abstract class Element {
 
     protected void setHovered(boolean hovered) {
         if (hovered) {
-            getScene().getHoveredMouseManager().queueElement(this);
-            this.mouseHovered = getScene().getHoveredMouseManager().isFirst(this);
+            getScene().getMouseHoveredManager().queueElement(this);
+            this.mouseHovered = getScene().getMouseHoveredManager().isFirst(this);
         } else {
             this.mouseHovered = false;
         }

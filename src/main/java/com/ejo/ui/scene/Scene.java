@@ -4,7 +4,7 @@ import com.ejo.ui.Window;
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
-import com.ejo.ui.element.HoveredMouseManager;
+import com.ejo.ui.element.builder.MouseHoveredManager;
 import com.ejo.util.math.Vector;
 
 import java.util.ArrayList;
@@ -12,15 +12,15 @@ import java.util.Arrays;
 
 public abstract class Scene {
 
-    private final String title;
-
     private Window window;
+
+    private final String title;
 
     private final ArrayList<Element> elements;
     private final ArrayList<IInteractable> interactables;
     private final ArrayList<IAnimatable> animatables;
 
-    private final HoveredMouseManager hoveredMouseManager;
+    private final MouseHoveredManager mouseHoveredManager;
 
     public Scene(String title) {
         this.title = title;
@@ -28,7 +28,7 @@ public abstract class Scene {
         this.interactables = new ArrayList<>();
         this.animatables = new ArrayList<>();
 
-        this.hoveredMouseManager = new HoveredMouseManager();
+        this.mouseHoveredManager = new MouseHoveredManager();
     }
 
     // =================================================
@@ -47,7 +47,7 @@ public abstract class Scene {
 
     public void updateMouseHovered() {
         for (Element element : elements) element.updateMouseHovered(getWindow().getMousePos());
-        hoveredMouseManager.cycleQueuedItems();
+        mouseHoveredManager.cycleQueuedItems();
     }
 
     public void runAnimation() {
@@ -82,6 +82,20 @@ public abstract class Scene {
 
     // =================================================
 
+    // DEBUG MENUS
+
+    // =================================================
+    //TODO: Implement this
+    public void drawSimpleDebugMenu() {
+
+    }
+
+    public void drawAdvancedDebugMenu() {
+
+    }
+
+    // =================================================
+
     // GETTERS/SETTERS
 
     // =================================================
@@ -107,7 +121,7 @@ public abstract class Scene {
         return this.window.getMousePos();
     }
 
-    public HoveredMouseManager getHoveredMouseManager() {
-        return hoveredMouseManager;
+    public MouseHoveredManager getMouseHoveredManager() {
+        return mouseHoveredManager;
     }
 }
