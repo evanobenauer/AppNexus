@@ -4,9 +4,11 @@ import com.ejo.ui.Window;
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
+import com.ejo.ui.element.builder.FontManager;
 import com.ejo.ui.element.builder.MouseHoveredManager;
 import com.ejo.util.math.Vector;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -86,12 +88,21 @@ public abstract class Scene {
 
     // =================================================
     //TODO: Implement this
-    public void drawSimpleDebugMenu() {
 
+    private final FontManager debugFontManager = new FontManager("Arial", Font.PLAIN,10);
+    public void drawSimpleDebugMenu() {
+        //No Keybinds here. Show mouse position too
+        drawFPSTPS(true,false);
     }
 
     public void drawAdvancedDebugMenu() {
+        //Show keybinds & more
+        drawFPSTPS(true,true);
+    }
 
+    private void drawFPSTPS(boolean label, boolean showMax) {
+        debugFontManager.drawDynamicString(this,(label ? "FPS: " : "") + window.getFPS() + (showMax ? " (" + window.getMaxFPS() + (window.isVSync() ? "V" : "") + (window.getPerformanceMode().equals(Window.PerformanceMode.ECONOMIC) ? "E" : "") + ")" : ""),new Vector(2,2),Color.WHITE);
+        debugFontManager.drawDynamicString(this,(label ? "TPS: " : "") + window.getTPS() + (showMax ? " (" + window.getMaxTPS() + ")" : ""),new Vector(2,debugFontManager.getFont().getSize() + 2),Color.WHITE);
     }
 
     // =================================================

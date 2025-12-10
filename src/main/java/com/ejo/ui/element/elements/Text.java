@@ -55,7 +55,6 @@ public class Text extends Element {
             FontManager fontManager = new FontManager(font);
             FONT_MANAGER_CACHE.put(font,fontManager);
             this.fontManager = fontManager;
-            System.out.println("Nope");
         }
     }
 

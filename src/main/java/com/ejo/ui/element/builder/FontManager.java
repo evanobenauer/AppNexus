@@ -10,8 +10,8 @@ import java.util.HashMap;
 
 public class FontManager {
 
-    private final HashMap<String, ByteBuffer> cachedStaticStringList = new HashMap<>();
-    private final HashMap<Character, ByteBuffer> cachedDynamicCharList = new HashMap<>();
+    private final HashMap<String, ByteBuffer> staticStringCache = new HashMap<>();
+    private final HashMap<Character, ByteBuffer> dynamicCharCache = new HashMap<>();
 
     private final Font font;
     private final FontMetrics fontMetrics;
@@ -28,47 +28,36 @@ public class FontManager {
     //Use this if the string is not going to be changing its text value often.
     // This method will cache the full texture file and will save on memory and processing power
     public void drawStaticString(Scene scene, String text, Vector pos, Color color) {
-        ByteBuffer cachedImage;
-        if (cachedStaticStringList.containsKey(text)) {
-            cachedImage = cachedStaticStringList.get(text);
-        } else {
-            cachedImage = TextureUtil.getByteBuffer(getTextBufferedImage(text));
-            cachedStaticStringList.put(text, cachedImage);
-        }
-
-        int width = getFontMetrics().stringWidth(text);
-        int height = getFontMetrics().getHeight();
-        TextureUtil.applyTextureColorTint(color);
-        if (color.getAlpha() <= 0) return;
-        TextureUtil.drawTexture(cachedImage,pos,new Vector(width,height));
-        TextureUtil.resetTextureColorTint();
+        drawCachedText(scene,text,pos,color,staticStringCache);
     }
 
     //Use this if the string is going to be changing often. It caches all characters in their own texture file
     // It will draw each character individually, which takes more memory, but will not have to regenerate the image
     // every time it changes which can be super costly
     public void drawDynamicString(Scene scene, String text, Vector pos, Color color) {
-        pos = pos.clone();
+        pos = pos.clone(); //The position is cloned to avoid modifiying the original position vector
         for (char c : text.toCharArray()) {
-            ByteBuffer cachedImage;
-            if (cachedDynamicCharList.containsKey(c)) {
-                cachedImage = cachedDynamicCharList.get(c);
-            } else {
-                cachedImage = TextureUtil.getByteBuffer(getTextBufferedImage(String.valueOf(c)));
-                cachedDynamicCharList.put(c, cachedImage);
-            }
-
-            float width = (float) fontMetrics.stringWidth(String.valueOf(c));
-            float height = (float) fontMetrics.getHeight();
-            TextureUtil.applyTextureColorTint(color);
-            if (color.getAlpha() <= 0) return;
-            TextureUtil.drawTexture(cachedImage,pos,new Vector(width,height));
-            TextureUtil.resetTextureColorTint();
-            pos.add(new Vector(width, 0)); //Increment to the next position for the next character
+            drawCachedText(scene,c,pos,color,dynamicCharCache);
+            //Increment to the next position for the next character
+            pos.add(new Vector(fontMetrics.stringWidth(String.valueOf(c)), 0));
         }
     }
 
+    private <T> void drawCachedText(Scene scene, T text, Vector pos, Color color, HashMap<T, ByteBuffer> cache) {
+        ByteBuffer cachedImage;
+        if (cache.containsKey(text)) {
+            cachedImage = cache.get(text);
+        } else {
+            cachedImage = TextureUtil.getByteBuffer(getTextBufferedImage(String.valueOf(text)));
+            cache.put(text, cachedImage);
+        }
 
+        Vector size = new Vector(fontMetrics.stringWidth(String.valueOf(text)),fontMetrics.getHeight());
+        TextureUtil.applyTextureColorTint(color);
+        if (color.getAlpha() <= 0) return;
+        TextureUtil.drawTexture(cachedImage,pos,size);
+        TextureUtil.resetTextureColorTint();
+    }
 
     protected BufferedImage getTextBufferedImage(String text) {
         if (text.isEmpty()) return null;

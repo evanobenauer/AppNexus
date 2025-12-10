@@ -24,7 +24,6 @@ public class TickRateLogger {
         ticks++;
     }
 
-    //Needs to be placed in a maintenance loop in order to see the frequency for a window
     public void updateTickRate() {
         watch.start();
         if (watch.hasTimePassedS(frequencyS)) { //TPS-FPS Updater

@@ -1,5 +1,6 @@
 package com.ejo.ui;
 
+import com.ejo.ui.element.builder.TextureUtil;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
@@ -45,7 +46,6 @@ public class Window {
     private double uiScale;
 
 
-    //TODO: Maybe bring back the maintenance thread in order to have the loggers work. Or find another workaround
     private final TickRateLogger fpsLogger;
     private final TickRateLogger tpsLogger;
 
@@ -61,7 +61,7 @@ public class Window {
         this.maxFPS = 60;
         this.maxTPS = 60;
 
-        this.vSync = true;
+        this.vSync = false; //Once the window starts, VSync cannot be changed for some reason... TODO: Look into this
         this.antiAliasingLevel = 0;
 
         this.uiScale = 1;
@@ -69,8 +69,8 @@ public class Window {
         this.debugMode = DebugMode.OFF;
         this.performanceMode = PerformanceMode.STANDARD;
 
-        this.fpsLogger = new TickRateLogger();
-        this.tpsLogger = new TickRateLogger();
+        this.fpsLogger = new TickRateLogger(.25f);
+        this.tpsLogger = new TickRateLogger(.25f);
 
         this.scene = startingScene;
         this.mousePos = Vector.NULL();
@@ -108,13 +108,13 @@ public class Window {
         setPos(pos);
         glfwShowWindow(windowId);
 
-        //Setup VSync
-        setVSync(vSync);
-
         //Sets the window context to display graphics
         glfwMakeContextCurrent(windowId);
         GL.createCapabilities();
         GL11.glClearColor(0f, 0f, 0f, 0f);
+
+        //Setup VSync
+        setVSync(vSync);
 
         //Initialize the window & attach it to the scene
         this.scene.initWindow(this);
@@ -145,7 +145,7 @@ public class Window {
             int height = 512;
             GLFWImage glfwImage = GLFWImage.malloc();
             GLFWImage.Buffer glfwImageBuffer = GLFWImage.malloc(1);
-            //glfwImage.set(width, height, TextureUtil.getImageBuffer(imageURL, width, height));
+            glfwImage.set(width, height, TextureUtil.getByteBuffer(TextureUtil.getBufferedImage(width, height, imageURL)));
             glfwImageBuffer.close();
             glfwSetWindowIcon(windowId, glfwImageBuffer.put(0, glfwImage));
         }
@@ -165,7 +165,6 @@ public class Window {
 
 
     private void draw() {
-        GL.createCapabilities();
         GL11.glViewport(0, 0, (int) size.getX(), (int) size.getY());
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -216,9 +215,10 @@ public class Window {
 
     public void runMainRenderLoop() {
         Runnable renderItems = () -> {
-            this.open = !glfwWindowShouldClose(windowId);
+            this.open = !glfwWindowShouldClose(windowId); //Update if the window is open constantly in here
             scene.runAnimation(); //TODO: Move this to a separate thread??
             draw();
+            fpsLogger.updateTickRate();
             fpsLogger.tick();
         };
         if (vSync) {
@@ -234,6 +234,7 @@ public class Window {
         Thread thread = new Thread(() -> {
             Runnable tickItems = () -> {
                 tick();
+                tpsLogger.updateTickRate();
                 tpsLogger.tick();
             };
             limitedRateLoop(tickItems,maxTPS);
@@ -244,6 +245,7 @@ public class Window {
 
     private void limitedRateLoop(Runnable runnable, int maxTickRate) {
         //We could not rout open through the method -> it would pass by value and wouldn't update inside the loop
+        //TODO: Reformat this limited loop. At higher maxTickRates, the loop is too slow and fails
         while (open) {
             long startTimeNS = System.nanoTime();
             runnable.run();
@@ -266,15 +268,14 @@ public class Window {
         double x = buffer.get(0);
         glfwGetWindowPos(windowId, null, buffer);
         double y = buffer.get(0);
-        Vector pos = new Vector(x, y);
-        setPos(pos);
+        this.pos = new Vector(x, y);
 
         glfwGetWindowSize(windowId, buffer, null);
         double w = buffer.get(0);
         glfwGetWindowSize(windowId, null, buffer);
         double h = buffer.get(0);
         Vector size = new Vector(w, h);
-        if (size.getMagnitude() != 0) setSize(size);
+        if (size.getMagnitude() != 0) this.size = size;
     }
 
     private void updateMousePos() {
@@ -381,12 +382,24 @@ public class Window {
         return mousePos.getMultiplied(1/uiScale);
     }
 
-    public float getTPS() {
-        return Math.round(tpsLogger.getTickRate());
+    public int getTPS() {
+        return (int)tpsLogger.getTickRate();
     }
 
-    public float getFPS() {
-        return Math.round(fpsLogger.getTickRate());
+    public int getFPS() {
+        return (int)fpsLogger.getTickRate();
+    }
+
+    public int getMaxFPS() {
+        return maxFPS;
+    }
+
+    public int getMaxTPS() {
+        return maxTPS;
+    }
+
+    public boolean isVSync() {
+        return vSync;
     }
 
     public double getUiScale() {
