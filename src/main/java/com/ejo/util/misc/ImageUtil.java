@@ -1,47 +1,20 @@
-package com.ejo.ui.element.builder;
+package com.ejo.util.misc;
 
-import com.ejo.util.math.Vector;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
-public class TextureUtil {
+public class ImageUtil {
 
-    public static void drawTexture(ByteBuffer imageBuffer, Vector pos, Vector size) {
-        GL11.glRasterPos2f((float)pos.getX(), (float)pos.getY());
-        GL11.glDrawPixels(size.getXi(),size.getYi(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
-    }
-
-    public static void drawTexture(BufferedImage image, Vector pos) {
-        GL11.glRasterPos2f((float)pos.getX(), (float)pos.getY());
-        GL11.glDrawPixels(image.getWidth(),image.getHeight(),GL11.GL_RGBA,GL11.GL_UNSIGNED_BYTE,getByteBuffer(image));
-    }
-
-    public static void applyTextureColorTint(Color color) {
-        GL11.glPixelTransferf(GL11.GL_RED_SCALE, color.getRed() / 255f);
-        GL11.glPixelTransferf(GL11.GL_GREEN_SCALE, color.getGreen() / 255f);
-        GL11.glPixelTransferf(GL11.GL_BLUE_SCALE, color.getBlue() / 255f);
-        GL11.glPixelTransferf(GL11.GL_ALPHA_SCALE, color.getAlpha() / 255f);
-    }
-
-    public static void resetTextureColorTint() {
-        GL11.glPixelTransferf(GL11.GL_RED_SCALE, 1f);
-        GL11.glPixelTransferf(GL11.GL_GREEN_SCALE, 1f);
-        GL11.glPixelTransferf(GL11.GL_BLUE_SCALE, 1f);
-        GL11.glPixelTransferf(GL11.GL_ALPHA_SCALE, 1f);
-    }
-
-
-    //Note: Generating a buffered image like this is very intensive if done loop after loop.
+    //Note: Generating a buffered image like this is very resource heavy.
+    // If done in a loop, the consequences are an exploding computer
     // Caching the buffered image is much smarter for performance
     public static BufferedImage getBufferedImage(int width, int height, DrawGraphics drawCode) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

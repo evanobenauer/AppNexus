@@ -4,11 +4,11 @@ import com.ejo.ui.Window;
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
-import com.ejo.ui.element.builder.FontManager;
-import com.ejo.ui.element.builder.MouseHoveredManager;
+import com.ejo.ui.element.base.ITickable;
+import com.ejo.ui.scene.manager.DebugManager;
+import com.ejo.ui.scene.manager.MouseHoveredManager;
 import com.ejo.util.math.Vector;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,23 +19,27 @@ public abstract class Scene {
     private final String title;
 
     private final ArrayList<Element> elements;
+    private final ArrayList<ITickable> tickables;
     private final ArrayList<IInteractable> interactables;
     private final ArrayList<IAnimatable> animatables;
 
     private final MouseHoveredManager mouseHoveredManager;
+    private final DebugManager debugManager;
 
     public Scene(String title) {
         this.title = title;
         this.elements = new ArrayList<>();
+        this.tickables = new ArrayList<>();
         this.interactables = new ArrayList<>();
         this.animatables = new ArrayList<>();
 
         this.mouseHoveredManager = new MouseHoveredManager();
+        this.debugManager = new DebugManager(this);
     }
 
     // =================================================
 
-    // ACTION FUNCTIONS
+    // ACTION FUNCTIONS - SHOULD BE INCLUDED IN YOUR SCENE FILE
 
     // =================================================
 
@@ -44,12 +48,7 @@ public abstract class Scene {
     }
 
     public void tick() {
-        for (Element element : elements) element.tick(getWindow().getMousePos());
-    }
-
-    public void updateMouseHovered() {
-        for (Element element : elements) element.updateMouseHovered(getWindow().getMousePos());
-        mouseHoveredManager.cycleQueuedItems();
+        for (ITickable e : tickables) e.tick(getWindow().getMousePos());
     }
 
     public void runAnimation() {
@@ -68,41 +67,31 @@ public abstract class Scene {
         for (IInteractable e : interactables) e.onMouseScroll(scroll,mousePos);
     }
 
+    public void updateMouseHovered() {
+        for (Element element : elements) element.updateMouseHovered(getWindow().getMousePos());
+        mouseHoveredManager.cycleQueuedItems();
+    }
+
+    // =================================================
+
+    // ADD/REMOVE ELEMENT FUNCTIONS
+
+    // =================================================
+
     public void addElements(Element... elements) {
         this.elements.addAll(Arrays.asList(elements));
         for (Element element : elements) {
-            if (element instanceof IAnimatable e) animatables.add(e);
+            if (element instanceof ITickable e) tickables.add(e);
             if (element instanceof IInteractable e) interactables.add(e);
+            if (element instanceof IAnimatable e) animatables.add(e);
         }
     }
 
     public void removeElement(Element element) {
         this.elements.remove(element);
+        this.tickables.remove(element);
         this.animatables.remove(element);
         this.interactables.remove(element);
-    }
-
-    // =================================================
-
-    // DEBUG MENUS
-
-    // =================================================
-    //TODO: Implement this
-
-    private final FontManager debugFontManager = new FontManager("Arial", Font.PLAIN,10);
-    public void drawSimpleDebugMenu() {
-        //No Keybinds here. Show mouse position too
-        drawFPSTPS(true,false);
-    }
-
-    public void drawAdvancedDebugMenu() {
-        //Show keybinds & more
-        drawFPSTPS(true,true);
-    }
-
-    private void drawFPSTPS(boolean label, boolean showMax) {
-        debugFontManager.drawDynamicString(this,(label ? "FPS: " : "") + window.getFPS() + (showMax ? " (" + window.getMaxFPS() + (window.isVSync() ? "V" : "") + (window.getPerformanceMode().equals(Window.PerformanceMode.ECONOMIC) ? "E" : "") + ")" : ""),new Vector(2,2),Color.WHITE);
-        debugFontManager.drawDynamicString(this,(label ? "TPS: " : "") + window.getTPS() + (showMax ? " (" + window.getMaxTPS() + ")" : ""),new Vector(2,debugFontManager.getFont().getSize() + 2),Color.WHITE);
     }
 
     // =================================================
@@ -134,5 +123,9 @@ public abstract class Scene {
 
     public MouseHoveredManager getMouseHoveredManager() {
         return mouseHoveredManager;
+    }
+
+    public DebugManager getDebugManager() {
+        return debugManager;
     }
 }

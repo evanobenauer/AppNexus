@@ -1,7 +1,9 @@
-package com.ejo.ui.element.builder;
+package com.ejo.ui.scene.manager;
 
+import com.ejo.ui.GLUtil;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
+import com.ejo.util.misc.ImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -48,22 +50,22 @@ public class FontManager {
         if (cache.containsKey(text)) {
             cachedImage = cache.get(text);
         } else {
-            cachedImage = TextureUtil.getByteBuffer(getTextBufferedImage(String.valueOf(text)));
+            cachedImage = ImageUtil.getByteBuffer(getTextBufferedImage(String.valueOf(text)));
             cache.put(text, cachedImage);
         }
 
         Vector size = new Vector(fontMetrics.stringWidth(String.valueOf(text)),fontMetrics.getHeight());
-        TextureUtil.applyTextureColorTint(color);
+        GLUtil.applyTextureColorTint(color);
         if (color.getAlpha() <= 0) return;
-        TextureUtil.drawTexture(cachedImage,pos,size);
-        TextureUtil.resetTextureColorTint();
+        GLUtil.drawTexture(cachedImage,pos,size);
+        GLUtil.resetTextureColorTint();
     }
 
     protected BufferedImage getTextBufferedImage(String text) {
         if (text.isEmpty()) return null;
         int width = Math.max(1,fontMetrics.stringWidth(text));
         int height = Math.max(1,fontMetrics.getHeight());
-        return TextureUtil.getBufferedImage(width,height,(graphics) -> {
+        return ImageUtil.getBufferedImage(width,height,(graphics) -> {
             graphics.setFont(getFont());
             graphics.setColor(Color.WHITE);
 

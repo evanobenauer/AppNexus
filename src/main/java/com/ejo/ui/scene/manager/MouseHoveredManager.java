@@ -1,4 +1,4 @@
-package com.ejo.ui.element.builder;
+package com.ejo.ui.scene.manager;
 
 import com.ejo.ui.element.Element;
 
@@ -9,8 +9,8 @@ import java.util.LinkedList;
 // in a stack to prevent overlap
 public class MouseHoveredManager {
 
-    public LinkedList<Element> hoveredElements;
-    public LinkedList<Element> queuedHoveredElements;
+    private LinkedList<Element> hoveredElements;
+    private final LinkedList<Element> queuedHoveredElements;
 
     public MouseHoveredManager() {
         this.hoveredElements = new LinkedList<>();
@@ -27,13 +27,21 @@ public class MouseHoveredManager {
     }
 
     //Checks if the hovered element is in the list at all.
-    // This method can be used to overwrite the "isFirst"
-    public boolean isOver(Element element) {
+    // This method can be used to bypass the "isFirst"
+    public boolean isHovered(Element element) {
         return hoveredElements.contains(element);
     }
 
     //Checks if the hovered element is first in the list and should be interactable
-    public boolean isFirst(Element element) {
+    public boolean isTop(Element element) {
         return (!hoveredElements.isEmpty() && hoveredElements.getLast() == element);
+    }
+
+    public Element getTop() {
+        return hoveredElements.getLast();
+    }
+
+    public LinkedList<Element> getHoveredElements() {
+        return hoveredElements;
     }
 }

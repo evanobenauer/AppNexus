@@ -1,7 +1,5 @@
 package com.ejo.util.misc;
 
-import java.lang.reflect.Array;
-
 //TODO make this useful? maybe using arraylists?
 public class Grid<T> {
 

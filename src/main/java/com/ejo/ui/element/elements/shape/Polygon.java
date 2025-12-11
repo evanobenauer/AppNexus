@@ -42,7 +42,7 @@ public class Polygon extends Element {
     }
 
     @Override
-    //This algorithm (Separating Axis Thm)
+    //This algorithm (Separating Axis Thm). This only works if the polygon is convex
     // is kinda slow. So override it with polygon branches If possible. Use this only if unavailable
     public void updateMouseHovered(Vector mousePos) {
         if (mousePos.getSubtracted(getCenter()).getMagnitude() > getMaximumVectorDistance()) {
@@ -107,12 +107,6 @@ public class Polygon extends Element {
             if (dist > maxDistance) maxDistance = dist;
         }
         return maxDistance;
-    }
-
-
-    @Override
-    public void tick(Vector mousePos) {
-        //NA
     }
 
     public Vector getCenter() {

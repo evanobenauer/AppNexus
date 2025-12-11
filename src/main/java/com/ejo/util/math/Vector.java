@@ -157,6 +157,18 @@ public class Vector {
         return z;
     }
 
+    public float getXf() {
+        return (float) x;
+    }
+
+    public float getYf() {
+        return (float) y;
+    }
+
+    public float getZf() {
+        return (float) z;
+    }
+
     public int getXi() {
         return (int) x;
     }

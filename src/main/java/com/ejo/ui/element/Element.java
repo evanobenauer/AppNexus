@@ -4,10 +4,6 @@ import com.ejo.ui.scene.Scene;
 import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 
-//TODO: Your goal with the UI system is to take elements from the minecraft system and cleanly incorporate
-// This includes: Animations, tooltips, fades, and structure
-// Don't forget to drag over the rounded rectangle and widget code from minecraft instead of taking it from GlowUI
-
 public abstract class Element {
 
     private final Scene scene;
@@ -30,19 +26,11 @@ public abstract class Element {
 
     public abstract void draw(Vector mousePos);
 
-    public abstract void tick(Vector mousePos);
-
-    public abstract void updateMouseHovered(Vector mousePos);
-
-
-    public void draw() {
+    public final void draw() {
         draw(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
     }
 
-    public void tick() {
-        tick(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
-    }
-
+    public abstract void updateMouseHovered(Vector mousePos);
 
     // =================================================
 
@@ -53,7 +41,7 @@ public abstract class Element {
     protected void setHovered(boolean hovered) {
         if (hovered) {
             getScene().getMouseHoveredManager().queueElement(this);
-            this.mouseHovered = getScene().getMouseHoveredManager().isFirst(this);
+            this.mouseHovered = getScene().getMouseHoveredManager().isTop(this);
         } else {
             this.mouseHovered = false;
         }
@@ -77,4 +65,8 @@ public abstract class Element {
         return scene;
     }
 
+    @Override
+    public String toString() {
+        return "(" + getClass().getSimpleName() + ")";
+    }
 }

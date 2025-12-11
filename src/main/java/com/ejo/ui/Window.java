@@ -1,10 +1,9 @@
 package com.ejo.ui;
 
-import com.ejo.ui.element.builder.TextureUtil;
 import com.ejo.ui.scene.Scene;
+import com.ejo.util.misc.ImageUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
-import com.ejo.ui.element.builder.GLManager;
 import com.ejo.util.time.TickRateLogger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
@@ -111,7 +110,6 @@ public class Window {
         //Sets the window context to display graphics
         glfwMakeContextCurrent(windowId);
         GL.createCapabilities();
-        GL11.glClearColor(0f, 0f, 0f, 0f);
 
         //Setup VSync
         setVSync(vSync);
@@ -145,7 +143,7 @@ public class Window {
             int height = 512;
             GLFWImage glfwImage = GLFWImage.malloc();
             GLFWImage.Buffer glfwImageBuffer = GLFWImage.malloc(1);
-            glfwImage.set(width, height, TextureUtil.getByteBuffer(TextureUtil.getBufferedImage(width, height, imageURL)));
+            glfwImage.set(width, height, ImageUtil.getByteBuffer(ImageUtil.getBufferedImage(width, height, imageURL)));
             glfwImageBuffer.close();
             glfwSetWindowIcon(windowId, glfwImageBuffer.put(0, glfwImage));
         }
@@ -174,21 +172,17 @@ public class Window {
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         //Update Draw Scale before drawing elements
-        GLManager.scale(uiScale);
-        GLManager.textureScale(uiScale);
+        GLUtil.scale(uiScale);
+        GLUtil.textureScale(uiScale);
 
         //Draw all scene elements
         scene.draw();
 
         //Draw debug menu on top
-        switch (debugMode) {
-            case DEBUG_SIMPLE -> scene.drawSimpleDebugMenu();
-            case DEBUG_ADVANCED -> scene.drawAdvancedDebugMenu();
-        }
+        scene.getDebugManager().drawDebugMenu(debugMode);
 
         //Finish Drawing here
         glfwSwapBuffers(windowId);
@@ -204,7 +198,7 @@ public class Window {
         updateWindowPosSize();
         updateMousePos();
         scene.tick();
-        scene.updateMouseHovered();
+        scene.updateMouseHovered(); //Maybe think about having this in the render loop?
     }
 
     // =================================================

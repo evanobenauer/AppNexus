@@ -33,11 +33,6 @@ public class Rectangle extends Polygon {
         setHovered(mouseHoveredX && mouseHoveredY);
     }
 
-    @Override
-    public void tick(Vector mousePos) {
-        //NA
-    }
-
     public void setSize(Vector size) {
         this.size = size;
     }

@@ -1,7 +1,7 @@
 package com.ejo.ui.element.elements;
 
 import com.ejo.ui.element.Element;
-import com.ejo.ui.element.builder.FontManager;
+import com.ejo.ui.scene.manager.FontManager;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 
@@ -32,11 +32,6 @@ public class Text extends Element {
             case STATIC -> fontManager.drawStaticString(getScene(),text,getPos(),color);
             case DYNAMIC -> fontManager.drawDynamicString(getScene(),text,getPos(),color);
         }
-    }
-
-    @Override
-    public void tick(Vector mousePos) {
-        //NA
     }
 
     @Override
