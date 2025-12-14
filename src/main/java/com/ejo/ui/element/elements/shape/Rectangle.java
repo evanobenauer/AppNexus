@@ -9,21 +9,20 @@ public class Rectangle extends Polygon {
 
     private Vector size;
 
-    public Rectangle(Scene scene, Vector pos, Color color, Vector size, boolean outlined, float outlineWidth) {
+    public Rectangle(Scene scene, Vector pos, Vector size, Color color, boolean outlined, float outlineWidth) {
         super(scene, pos, color, outlined,outlineWidth,new Vector(0,0),new Vector(0,size.getY()),size,new Vector(size.getX(),0));
         this.size = size;
     }
 
-    public Rectangle(Scene scene, Vector pos, Color color, Vector size) {
-        this(scene,pos,color, size,false,1);
+    public Rectangle(Scene scene, Vector pos, Vector size, Color color) {
+        this(scene,pos,size, color,false,1);
     }
 
     @Override
-    public void draw(Vector mousePos) {
+    protected void updateVertices() {
         vertices[1] = new Vector(0,getSize().getY());
         vertices[2] = getSize();
         vertices[3] = new Vector(getSize().getX(),0);
-        super.draw(mousePos);
     }
 
     @Override

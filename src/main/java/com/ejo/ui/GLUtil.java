@@ -72,4 +72,21 @@ public class GLUtil {
         GL11.glDrawPixels(image.getWidth(),image.getHeight(),GL11.GL_RGBA,GL11.GL_UNSIGNED_BYTE, ImageUtil.getByteBuffer(image));
     }
 
+    public static void drawQuad(Vector pos, Vector size, Color color, boolean outlined) {
+        drawGradientQuad(pos,size,color,color,outlined);
+    }
+
+    public static void drawGradientQuad(Vector pos, Vector size, Color colorT, Color colorB, boolean outlined) {
+        GL11.glDisable(GL11.GL_LINE_STIPPLE);
+        GL11.glBegin(outlined ? GL11.GL_LINE_LOOP : GL11.GL_QUADS);
+        GL11.glColor4f(colorT.getRed() / 255f, colorT.getGreen() / 255f, colorT.getBlue() / 255f, colorT.getAlpha() / 255f);
+        GL11.glVertex2f((float) pos.getX(), (float) pos.getY());
+        GL11.glVertex2f((float) pos.getX() + (float) size.getX(), (float) pos.getY());
+        GL11.glColor4f(colorB.getRed() / 255f, colorB.getGreen() / 255f, colorB.getBlue() / 255f, colorB.getAlpha() / 255f);
+        GL11.glVertex2f((float) pos.getX() + (float) size.getX(), (float) pos.getY() + (float) size.getY());
+        GL11.glVertex2f((float) pos.getX(), (float) pos.getY() + (float) size.getY());
+        GL11.glEnd();
+        GL11.glColor4f(1, 1, 1, 1);
+    }
+
 }

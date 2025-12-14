@@ -32,14 +32,17 @@ public class Polygon extends Element {
 
     @Override
     public void draw(Vector mousePos) {
-        GL11.glColor4f(getColor().getRed() / 255f, getColor().getGreen() / 255f, getColor().getBlue() / 255f, getColor().getAlpha() / 255f);
+        updateVertices();
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
-        GL11.glLineWidth(getOutlineWidth());
+        GL11.glLineWidth(outlineWidth);
         GL11.glBegin(outlined ? GL11.GL_LINE_LOOP : GL11.GL_POLYGON);
         for (Vector vert : vertices) GL11.glVertex2f((float) getPos().getX() + (float) vert.getX(), (float) getPos().getY() + (float) vert.getY());
         GL11.glEnd();
         GL11.glColor4f(1f, 1f, 1f, 1f);
     }
+
+    protected void updateVertices() {}
 
     @Override
     //This algorithm (Separating Axis Thm). This only works if the polygon is convex

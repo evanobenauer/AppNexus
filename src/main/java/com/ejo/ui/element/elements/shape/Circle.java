@@ -17,7 +17,7 @@ public class Circle extends Polygon {
     private Angle range;
     private Type type;
 
-    public Circle(Scene scene, Vector pos, Color color, boolean outlined, float outlineWidth, double radius, Angle range, Type type) {
+    public Circle(Scene scene, Vector pos, double radius, Color color, boolean outlined, float outlineWidth, Angle range, Type type) {
         super(scene, pos, color, outlined, outlineWidth);
         this.radius = radius;
         this.range = range;
@@ -25,21 +25,16 @@ public class Circle extends Polygon {
         updateVertices();
     }
 
-    public Circle(Scene scene, Vector pos, Color color, double radius, Angle range, Type type) {
-        this(scene,pos,color,false,1,radius,range,type);
+    public Circle(Scene scene, Vector pos, double radius, Color color, Angle range, Type type) {
+        this(scene,pos,radius,color,false,1,range,type);
     }
 
-    public Circle(Scene scene, Vector pos, Color color, double radius, Type type) {
-        this(scene,pos,color,radius,FULL,type);
+    public Circle(Scene scene, Vector pos, double radius, Color color, Type type) {
+        this(scene,pos,radius,color,FULL,type);
     }
 
     @Override
-    public void draw(Vector mousePos) {
-        updateVertices();
-        super.draw(mousePos);
-    }
-
-    private void updateVertices() {
+    protected void updateVertices() {
         double radianIncrement = range.getRadians() / type.getVertices();
         ArrayList<Vector> vertices = new ArrayList<>();
         if (!range.equals(FULL)) vertices.add(Vector.NULL()); //Add center vertex if not full to make partial circle

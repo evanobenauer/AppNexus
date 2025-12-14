@@ -2,10 +2,10 @@ package com.ejo.ui.element.base;
 
 public interface IAnimatable {
 
-    void runAnimation(float speed); //Game plan for this is to eventually have it in a self-contained thread
+    void updateAnimation(float speed); //Game plan for this is to eventually have it in a self-contained thread
 
-    default void runAnimation() {
-        runAnimation(getAnimationSpeed());
+    default void updateAnimation() {
+        updateAnimation(getAnimationSpeed());
     }
 
     float getAnimationSpeed();

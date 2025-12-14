@@ -51,8 +51,8 @@ public abstract class Scene {
         for (ITickable e : tickables) e.tick(getWindow().getMousePos());
     }
 
-    public void runAnimation() {
-        for (IAnimatable e : animatables) e.runAnimation();
+    public void updateAnimation() {
+        for (IAnimatable e : animatables) e.updateAnimation();
     }
 
     public void onKeyPress(int key, int scancode, int action, int mods) {

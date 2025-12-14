@@ -34,17 +34,11 @@ public class RegularPolygon extends Polygon {
         this(scene,pos,color,radius,vertexCount,Angle.NULL());
     }
 
-
     @Override
-    public void draw(Vector mousePos) {
-        updateVertices();
-        super.draw(mousePos);
-    }
-
     protected void updateVertices() {
         double rot = (getRotation() != null ? getRotation().getRadians() : 0);
         double radianIncrement = range.getRadians() / getVertexCount();
-        ArrayList<Vector> vertices = new ArrayList<>(); //Add center vertex if not full to make partial circle
+        ArrayList<Vector> vertices = new ArrayList<>();
         if (!range.equals(FULL)) vertices.add(Vector.NULL()); //Add center vertex if not full to make partial circle
         for (int i = 0; i < getVertexCount(); i++) {
             Vector vert = new Vector(Math.cos(radianIncrement * i + rot), Math.sin(radianIncrement * i + rot)).getMultiplied(getRadius());

@@ -210,7 +210,7 @@ public class Window {
     public void runMainRenderLoop() {
         Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId); //Update if the window is open constantly in here
-            scene.runAnimation(); //TODO: Move this to a separate thread??
+            scene.updateAnimation(); //TODO: Move this to a separate thread??
             draw();
             fpsLogger.updateTickRate();
             fpsLogger.tick();
@@ -281,8 +281,8 @@ public class Window {
         this.mousePos = new Vector(mouseX, mouseY);
     }
 
-    //TODO: Test and properly implement this. Have when called force close the window. It currently doesn't
     public void close() {
+        this.open = false;
         GLFW.glfwDestroyWindow(windowId);
         GLFW.glfwTerminate();
     }

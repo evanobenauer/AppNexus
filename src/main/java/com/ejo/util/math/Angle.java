@@ -43,6 +43,9 @@ public class Angle {
         return getSubtracted(angle.value,false);
     }
 
+    public Angle getMultiplied(double mul) {
+        return new Angle(value * mul);
+    }
     /**
      * Simplifies the angle to be between 0 and 2PI
      * @return
@@ -91,6 +94,11 @@ public class Angle {
 
     public Angle subtract(Angle angle) {
         this.value -= angle.getRadians();
+        return this;
+    }
+
+    public Angle multiply(double mul) {
+        this.value *= mul;
         return this;
     }
 
