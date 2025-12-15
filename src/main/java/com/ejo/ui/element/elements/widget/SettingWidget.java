@@ -18,7 +18,8 @@ public abstract class SettingWidget<T> extends Widget {
     private String title;
     private String description;
 
-    //Tooltips
+    //Tooltips (Idk if i want to keep tooltips on SettingWidget)
+    //TODO: Think about simply rerouting it to a separate element and removing all trace from here
     private final StopWatch tooltipHoverWatch;
     private boolean tooltipVisible;
 

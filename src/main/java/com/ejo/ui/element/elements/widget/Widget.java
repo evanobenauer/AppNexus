@@ -21,7 +21,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     private boolean drawHoverHighlight;
     protected float hoverHighlightFade;
 
-    //Action
+    //Every widget has some sort of action. This action is to be called whenever interacted with
     protected Runnable action;
 
     public Widget(Scene scene, Vector pos, Vector size, Runnable action) {
@@ -67,6 +67,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
 
     @Override
     public void updateAnimation(float speed) {
+        //All widgets have a fade overlay that appears when hovered. This updates the fade value depending on if hovered
         this.hoverHighlightFade = AnimationUtil.getNextAnimationValue(isMouseHovered(), hoverHighlightFade, 0, 50, speed);
     }
 

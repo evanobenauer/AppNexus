@@ -30,6 +30,7 @@ public class FontManager {
     //Use this if the string is not going to be changing its text value often.
     // This method will cache the full texture file and will save on memory and processing power
     public void drawStaticString(Scene scene, String text, Vector pos, Color color) {
+        if (text.isEmpty()) return;
         drawCachedText(scene,text,pos,color,staticStringCache);
     }
 
@@ -37,6 +38,7 @@ public class FontManager {
     // It will draw each character individually, which takes more memory, but will not have to regenerate the image
     // every time it changes which can be super costly
     public void drawDynamicString(Scene scene, String text, Vector pos, Color color) {
+        if (text.isEmpty()) return;
         pos = pos.clone(); //The position is cloned to avoid modifiying the original position vector
         for (char c : text.toCharArray()) {
             drawCachedText(scene,c,pos,color,dynamicCharCache);

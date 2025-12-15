@@ -16,7 +16,7 @@ public class Toggle extends SettingWidget<Boolean> {
     private Color color;
 
     public Toggle(Scene scene, Vector pos, Vector size, Color color, Container<Boolean> toggleContainer, String title, String description) {
-        super(scene, pos, size,toggleContainer, () ->{},title,description);
+        super(scene, pos, size, toggleContainer, () -> {}, title, description);
         this.color = color;
         this.toggleFade = 0;
 
@@ -26,7 +26,7 @@ public class Toggle extends SettingWidget<Boolean> {
     }
 
     public Toggle(Scene scene, Vector pos, Vector size, Color color, Container<Boolean> toggleContainer) {
-        this(scene,pos,size,color,toggleContainer,"","");
+        this(scene, pos, size, color, toggleContainer, "", "");
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Toggle extends SettingWidget<Boolean> {
         new RoundedRectangle(getScene(), getPos(), getSize(), WIDGET_BACKGROUND_COLOR).draw();
 
         //Draw Fill
-        new RoundedRectangle(getScene(), getPos(), getSize(), new Color(color.getRed(),color.getGreen(),color.getBlue(),(int) toggleFade)).draw();
+        new RoundedRectangle(getScene(), getPos(), getSize(), new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) toggleFade)).draw();
 
         //Draw Title
         int border = getSize().getXi() / 20;
@@ -44,8 +44,7 @@ public class Toggle extends SettingWidget<Boolean> {
         int textSize = getSize().getYi() - border * 2;
 
         Text.Type type = Text.Type.STATIC;
-        Text text = new Text(getScene(), getPos().getAdded(border + 2, border), getTitle(), new Font("Arial", Font.PLAIN, textSize), Color.WHITE, type);
-        text.draw();
+        new Text(getScene(), getPos().getAdded(border + 2, border), getTitle(), new Font("Arial", Font.PLAIN, textSize), Color.WHITE, type).draw();
     }
 
 
