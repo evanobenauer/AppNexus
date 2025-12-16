@@ -2,13 +2,13 @@ package com.ejo.util.misc;
 
 public class AnimationUtil {
 
-    public static float getNextAnimationValue(boolean condition, float fade, int min, int max, float speed) {
+    public static float getNextAnimationValue(boolean condition, float value, int min, int max, float speed) {
         if (condition) {
-            if (fade < max) fade += speed;
+            if (value < max) value += speed;
         } else {
-            if (fade > min) fade -= speed;
+            if (value > min) value -= speed;
         }
-        return Math.clamp(fade,0,255);
+        return Math.clamp(value,0,255);
     }
 
 }

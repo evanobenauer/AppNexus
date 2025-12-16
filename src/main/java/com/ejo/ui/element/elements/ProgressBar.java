@@ -39,7 +39,7 @@ public class ProgressBar<T extends Number> extends Element {
         //Draw Background
         new RoundedRectangle(getScene(),getPos(),size,new Color(50,50,50,200)).draw();
 
-        int border = 4;
+        int border = getSize().getYi() / 5;
 
         //Draw Bar Fill
         double barPercent = Math.clamp(getProgressContainer().get().doubleValue(),getMin(),getMax()) / getMax();
@@ -47,17 +47,15 @@ public class ProgressBar<T extends Number> extends Element {
         new RoundedRectangle(getScene(),getPos().getAdded(border,border),size,getColor()).draw();
 
         //Draw Title
-        Text text = new Text(getScene(),Vector.NULL(),getTitle(),new Font("Arial", Font.PLAIN,getSize().getYi() - border * 2),Color.WHITE, Text.Type.STATIC);
-        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2,border - 1));
+        Text text = new Text(getScene(),Vector.NULL(),getTitle(),new Font("Arial", Font.PLAIN,getSize().getYi() - border),Color.WHITE, Text.Type.STATIC);
+        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2,border / 2 - 1));
         //text.setPos(getPos().getAdded(border + 2,2)); //Left-oriented Position
         text.draw();
     }
 
     @Override
     public void updateMouseHovered(Vector mousePos) {
-        boolean mouseOverX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
-        boolean mouseOverY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        setHovered(mouseOverX && mouseOverY);
+        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
     }
 
     public void setTitle(String title) {

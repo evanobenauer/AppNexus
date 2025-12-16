@@ -27,9 +27,7 @@ public class Rectangle extends Polygon {
 
     @Override
     public void updateMouseHovered(Vector mousePos) {
-        boolean mouseHoveredX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
-        boolean mouseHoveredY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        setHovered(mouseHoveredX && mouseHoveredY);
+        setHovered(isInRectangleBoundingBox(getPos(),getSize(),mousePos));
     }
 
     public void setSize(Vector size) {
@@ -39,6 +37,12 @@ public class Rectangle extends Polygon {
 
     public Vector getSize() {
         return size;
+    }
+
+    public static boolean isInRectangleBoundingBox(Vector pos, Vector size, Vector location) {
+        boolean insideX = location.getX() >= pos.getX() && location.getX() <= pos.getX() + size.getX();
+        boolean insideY = location.getY() >= pos.getY() && location.getY() <= pos.getY() + size.getY();
+        return insideX && insideY;
     }
 
 }

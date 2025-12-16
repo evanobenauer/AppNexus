@@ -49,12 +49,14 @@ public class Button extends Widget {
     @Override
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            if (action == GLFW.GLFW_PRESS && isMouseHovered()) {
-                pressed = true;
-            }
-            if (action == GLFW.GLFW_RELEASE) {
-                if (isMouseHovered() && pressed) getAction().run();
-                pressed = false;
+            switch (action) {
+                case GLFW.GLFW_PRESS -> {
+                    if (isMouseHovered()) pressed = true;
+                }
+                case GLFW.GLFW_RELEASE -> {
+                    if (isMouseHovered() && pressed) getAction().run();
+                    pressed = false;
+                }
             }
         }
     }

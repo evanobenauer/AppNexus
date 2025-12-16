@@ -42,6 +42,7 @@ public class Polygon extends Element {
         GL11.glColor4f(1f, 1f, 1f, 1f);
     }
 
+    //TODO: UpdateVertices is a little costly in child classes. Maybe only call when needed??
     protected void updateVertices() {}
 
     @Override

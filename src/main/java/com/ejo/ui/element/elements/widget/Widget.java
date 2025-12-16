@@ -3,6 +3,7 @@ package com.ejo.ui.element.elements.widget;
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
+import com.ejo.ui.element.elements.shape.Rectangle;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
@@ -60,9 +61,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
 
     @Override
     public void updateMouseHovered(Vector mousePos) {
-        boolean mouseHoveredX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
-        boolean mouseHoveredY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        setHovered(mouseHoveredX && mouseHoveredY);
+        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
     }
 
     @Override

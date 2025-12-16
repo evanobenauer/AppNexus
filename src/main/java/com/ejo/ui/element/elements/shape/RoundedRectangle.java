@@ -10,16 +10,22 @@ import java.util.ArrayList;
 public class RoundedRectangle extends Rectangle {
 
     private int cornerRadius;
+    private final int originalCornerRadius;
 
     private static final int DEFAULT_CORNER_RADIUS = 30;
 
-    public RoundedRectangle(Scene scene, Vector pos, Vector size, Color color, boolean outlined, float outlineWidth) {
+    public RoundedRectangle(Scene scene, Vector pos, Vector size, Color color, int cornerRadius, boolean outlined, float outlineWidth) {
         super(scene, pos, size, color, outlined, outlineWidth);
-        this.cornerRadius = DEFAULT_CORNER_RADIUS;
+        this.cornerRadius = cornerRadius;
+        this.originalCornerRadius = cornerRadius;
+    }
+
+    public RoundedRectangle(Scene scene, Vector pos, Vector size, Color color, int cornerRadius) {
+        this(scene, pos, size, color,cornerRadius,false,1);
     }
 
     public RoundedRectangle(Scene scene, Vector pos, Vector size, Color color) {
-        this(scene, pos, size, color,false,1);
+        this(scene, pos, size, color, DEFAULT_CORNER_RADIUS);
     }
 
     @Override
@@ -71,7 +77,7 @@ public class RoundedRectangle extends Rectangle {
                 cornerRadius = getSize().getXi() / 2;
             }
         } else {
-            cornerRadius = DEFAULT_CORNER_RADIUS;
+            cornerRadius = originalCornerRadius;
         }
     }
 

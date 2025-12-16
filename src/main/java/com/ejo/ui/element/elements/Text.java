@@ -1,6 +1,7 @@
 package com.ejo.ui.element.elements;
 
 import com.ejo.ui.element.Element;
+import com.ejo.ui.element.elements.shape.Rectangle;
 import com.ejo.ui.scene.manager.FontManager;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
@@ -36,9 +37,7 @@ public class Text extends Element {
 
     @Override
     public void updateMouseHovered(Vector mousePos) {
-        boolean mouseHoveredX = mousePos.getX() >= getPos().getX() && mousePos.getX() <= getPos().getX() + getSize().getX();
-        boolean mouseHoveredY = mousePos.getY() >= getPos().getY() && mousePos.getY() <= getPos().getY() + getSize().getY();
-        setHovered(mouseHoveredX && mouseHoveredY);
+        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
     }
 
     //If a manager has already been created for the specific font, check for that manager. If the manager exists,
