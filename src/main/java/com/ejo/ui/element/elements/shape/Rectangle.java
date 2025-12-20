@@ -5,7 +5,7 @@ import com.ejo.util.math.Vector;
 
 import java.awt.*;
 
-public class Rectangle extends Polygon {
+public class Rectangle extends ConvexPolygon {
 
     private Vector size;
 

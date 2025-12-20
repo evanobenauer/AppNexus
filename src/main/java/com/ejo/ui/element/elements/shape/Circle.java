@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 //Yes, I understand a circle is NOT a polygon. But for all purposes, it is a polygon according to this program.
 // It is just made up of many vertices so it is a "Circle"...
-public class Circle extends Polygon {
+public class Circle extends ConvexPolygon {
 
     private static final Angle FULL = new Angle(360,true);
 

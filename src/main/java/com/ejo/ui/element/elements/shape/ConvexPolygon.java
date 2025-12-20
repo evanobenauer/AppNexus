@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Polygon extends Element {
+public class ConvexPolygon extends Element {
 
     protected Vector[] vertices;
 
@@ -16,7 +16,7 @@ public class Polygon extends Element {
     private float outlineWidth;
     private Color color;
 
-    public Polygon(Scene scene, Vector pos, Color color, boolean outlined, float outlineWidth, Vector... vertices) {
+    public ConvexPolygon(Scene scene, Vector pos, Color color, boolean outlined, float outlineWidth, Vector... vertices) {
         super(scene, pos);
         this.outlined = outlined;
         this.outlineWidth = outlineWidth;
@@ -25,7 +25,7 @@ public class Polygon extends Element {
         this.vertices = vertices;
     }
 
-    public Polygon(Scene scene, Vector pos, Color color, Vector... vertices) {
+    public ConvexPolygon(Scene scene, Vector pos, Color color, Vector... vertices) {
         this(scene,pos,color, false,1,vertices);
     }
 

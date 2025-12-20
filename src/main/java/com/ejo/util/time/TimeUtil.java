@@ -9,7 +9,7 @@ public class TimeUtil {
         return new DateTime(localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
     }
 
-    public static double getDateTimePercent(DateTime start, DateTime current, DateTime end) {
+    public static double getDateTimePercent(DateTime current, DateTime start, DateTime end) {
         return (double) getSecondDifference(current, start) / (getSecondDifference(end,start));
     }
 

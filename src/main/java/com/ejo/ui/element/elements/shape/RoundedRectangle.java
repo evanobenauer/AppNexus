@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class RoundedRectangle extends Rectangle {
 
     private int cornerRadius;
-    private final int originalCornerRadius;
+    private int originalCornerRadius;
 
     private static final int DEFAULT_CORNER_RADIUS = 30;
 
@@ -82,7 +82,7 @@ public class RoundedRectangle extends Rectangle {
     }
 
     public void setCornerRadius(int cornerRadius) {
-        this.cornerRadius = cornerRadius;
+        this.originalCornerRadius = cornerRadius;
     }
 
     public int getCornerRadius() {

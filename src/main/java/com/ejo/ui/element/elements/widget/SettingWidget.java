@@ -4,6 +4,8 @@ import com.ejo.ui.element.elements.Text;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
+import com.ejo.util.misc.AnimationUtil;
+import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import com.ejo.util.time.StopWatch;
 
@@ -54,6 +56,12 @@ public abstract class SettingWidget<T> extends Widget {
         }
     }
 
+    // =================================================
+
+    // SPECIAL SETTING DRAW METHODS
+
+    // =================================================
+
     //TODO: Replace this eventually with a tooltip element object. This'll do for now
     private void drawTooltip(Vector mousePos, String description, int size, Text.Type type) {
         Vector pos = mousePos.getAdded(6, -size / 2);
@@ -67,9 +75,26 @@ public abstract class SettingWidget<T> extends Widget {
         if (pos.getX() + width + border > getScene().getWindow().getSize().getX())
             pos.setX(getScene().getWindow().getSize().getX() - width - border);
 
-        new RoundedRectangle(getScene(), pos, new Vector(width + border * 2, text.getSize().getYi() + border * 2), new Color(0,0,0,150)).draw();
+        new RoundedRectangle(getScene(), pos, new Vector(width + border * 2, text.getSize().getYi() + border * 2), new Color(0, 0, 0, 150)).draw();
 
         text.draw();
+    }
+
+    protected void drawWidgetTitle(String title, int border, boolean centered) {
+        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
+        int textSize = getSize().getYi() - border;
+
+        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), Color.WHITE, Text.Type.STATIC);
+        if (centered) {
+            text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2, getSize().getY() / 2 - textSize / 2));
+        } else {
+            text.setPos(getPos().getAdded(border + 2, getSize().getY() / 2 - textSize / 2)); //Left-oriented Position
+        }
+        text.draw();
+    }
+
+    protected void drawWidgetBackground() {
+        new RoundedRectangle(getScene(), getPos(), getSize(), ColorUtil.getWithAlpha(WIDGET_BACKGROUND_COLOR, 175)).draw();
     }
 
     // =================================================
@@ -81,7 +106,6 @@ public abstract class SettingWidget<T> extends Widget {
     public void setTooltipVisible(boolean drawTooltip) {
         this.tooltipVisible = drawTooltip;
     }
-
 
     public void setContainer(Container<T> container) {
         this.container = container;

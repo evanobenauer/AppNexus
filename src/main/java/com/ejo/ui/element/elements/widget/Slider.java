@@ -4,6 +4,7 @@ import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.MathUtil;
 import com.ejo.util.math.Vector;
+import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import org.lwjgl.glfw.GLFW;
 
@@ -11,23 +12,27 @@ import java.awt.*;
 
 public class Slider<T extends Number> extends SettingWidget<T> {
 
+    private boolean sliding;
+
     private T min;
     private T max;
     private T step;
 
-    private boolean sliding;
+    private boolean showValue;
 
-    Color color;
+    private Color color;
+
 
     public Slider(Scene scene, Vector pos, Vector size, Color color, Container<T> container, T min, T max, T step, String title, String description) {
         super(scene, pos, size, container, () -> {}, title, description);
-        this.sliding = false;
-
         this.min = min;
         this.max = max;
         this.step = step;
 
         this.color = color;
+
+        this.sliding = false;
+        this.showValue = true;
     }
 
     public Slider(Scene scene, Vector pos, Vector size, Color color, Container<T> container, T min, T max, T step) {
@@ -38,39 +43,39 @@ public class Slider<T extends Number> extends SettingWidget<T> {
     protected void drawWidget(Vector mousePos) {
         double min = this.min.doubleValue();
         double max = this.max.doubleValue();
-        double step = this.step.doubleValue();
-        if (sliding) updateSliderValue(mousePos);
-
-        //Draw the background
-        new RoundedRectangle(getScene(), getPos(), getSize(), WIDGET_BACKGROUND_COLOR).draw();
 
         int border = getSize().getYi() / 5;
 
+        if (sliding) updateSliderValue(border, mousePos);
+
+        //Draw the background
+        drawWidgetBackground();
+
         //Draw Slider Fill
-        double barPercent = Math.clamp(getContainer().get().doubleValue(),min,max) / max;
-        Vector size = new Vector((getSize().getX() - 2 * border) * barPercent,getSize().getY() - 2 * border).getAdded(new Vector(getContainer().get().doubleValue() == min ? 2 : 0, 0));
         int colSub = 50;
+        double barPercent = Math.clamp(getContainer().get().doubleValue(),min,max) / max;
+        Vector size = getSize().getAdded(-2 * border, -2 * border).getScaled(barPercent,1);
         new RoundedRectangle(getScene(),getPos().getAdded(border,border),size,new Color(Math.clamp(color.getRed() - colSub,0,255),Math.clamp(color.getGreen() - colSub,0,255),Math.clamp(color.getBlue() - colSub,0,255),150)).draw();
 
-        //Draw the slider node //TODO: This is actually so terribly written its not funny. Fix it
+        //Draw the slider node
+        // -----------------------------------
+        int halfCornerRadius = 30 / 2;
         int nodeWidth = getSize().getYi() / 4;
         double nodeX = border + size.getX() - nodeWidth / 2f - 1;
 
-        boolean isNodeOnLeftCurve = nodeX < 15;
-        boolean isNodeOnRightCurve = nodeX + nodeWidth > getSize().getX() - 15;
+        boolean isNodeOnLeftCurve = nodeX < halfCornerRadius;
+        boolean isNodeOnRightCurve = nodeX + nodeWidth > getSize().getX() - halfCornerRadius;
         boolean isNodeOnCurve = isNodeOnLeftCurve || isNodeOnRightCurve;
 
-        double sidePercent = isNodeOnLeftCurve ? nodeX / 15 : -(nodeX + nodeWidth - getSize().getX()) / 15;
-        double nodeHeight = isNodeOnCurve ? getSize().getY() - 15 + (15 * sidePercent) : getSize().getY();
+        double sidePercent = (isNodeOnLeftCurve ? nodeX : getSize().getX() - nodeX - nodeWidth) / halfCornerRadius;
+        double nodeHeight = getSize().getY() - (isNodeOnCurve ? halfCornerRadius - (halfCornerRadius * sidePercent) : 0);
         double nodeYOffset = isNodeOnCurve ? getSize().getY() / 2 - nodeHeight / 2 : 0;
-        new RoundedRectangle(getScene(), getPos().getAdded(new Vector(nodeX, nodeYOffset)), new Vector(nodeWidth, nodeHeight), new Color(color.getRed(), color.getGreen(), color.getBlue(), 255)).draw();
+        new RoundedRectangle(getScene(), getPos().getAdded(new Vector(nodeX, nodeYOffset)), new Vector(nodeWidth, nodeHeight), ColorUtil.getWithAlpha(color,255)).draw();
+        //-------------------------------
 
         //Draw the slider text
-    }
-
-    @Override
-    public void onKeyPress(int key, int scancode, int action, int mods) {
-        //NA
+        String title = getTitle() + (!getTitle().isEmpty() ? ": " : "") + (showValue ? getContainer().get() : "");
+        drawWidgetTitle(title,border * 2,false);
     }
 
     @Override
@@ -87,27 +92,76 @@ public class Slider<T extends Number> extends SettingWidget<T> {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
-        // add scroll sliding
+    public void onKeyPress(int key, int scancode, int action, int mods) {
+        if (action == GLFW.GLFW_RELEASE || (key != GLFW.GLFW_KEY_RIGHT && key != GLFW.GLFW_KEY_LEFT)) return;
+        if (!isMouseHovered()) return;
+        double min = this.min.doubleValue();
+        double max = this.max.doubleValue();
+        double step = this.step.doubleValue();
+        double add = switch (key) {
+            case GLFW.GLFW_KEY_RIGHT -> step;
+            case GLFW.GLFW_KEY_LEFT -> -step;
+            default -> 0;
+        };
+        double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() + add,min,max),5);
+        setCastedContainer(val);
     }
 
-    private void updateSliderValue(Vector mousePos) {
+    @Override
+    public void onMouseScroll(int scroll, Vector mousePos) {
+        if (!isMouseHovered()) return;
+        double min = this.min.doubleValue();
+        double max = this.max.doubleValue();
+        double step = this.step.doubleValue();
+        double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() - (scroll * step),min,max),5);
+        setCastedContainer(val);
+    }
+
+    private void updateSliderValue(int border, Vector mousePos) {
         double min = this.min.doubleValue();
         double max = this.max.doubleValue();
         double step = this.step.doubleValue();
 
-        int border = getSize().getYi() / 5;
-
         double settingRange = max - min;
+        double sliderMin = getPos().getX() + border;
+        double sliderMax = getSize().getX() - border * 2;
 
-        double sliderWidth = mousePos.getX() - (getPos().getX() + border);
-        double sliderPercent = Math.clamp(sliderWidth, 0, getSize().getX()) / (getSize().getX() - border * 2);
+        double sliderWidth = mousePos.getX() - sliderMin;
+        double sliderPercent = Math.clamp(sliderWidth, 0, sliderMax) / sliderMax;
 
         double calculatedValue = min + sliderPercent * settingRange;
-        double val = MathUtil.roundDouble((((Math.round(calculatedValue / step)) * step)), 2); //Rounds the slider based off of the step val
+        double val = MathUtil.roundDouble(Math.round(calculatedValue / step) * step, 5); //Rounds the slider based off of the step val
 
+        setCastedContainer(val);
+    }
+
+    private void setCastedContainer(double val) {
         T value = getContainer().get() instanceof Integer ? (T) (Integer) (int) val : (T) (Double) val;
         getContainer().set(value);
+    }
+
+    public void setValueShown(boolean shown) {
+        this.showValue = shown;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setMin(T min) {
+        this.min = min;
+    }
+
+    public void setMax(T max) {
+        this.max = max;
+    }
+
+    public void setStep(T step) {
+        this.step = step;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public T getMin() {
@@ -122,15 +176,4 @@ public class Slider<T extends Number> extends SettingWidget<T> {
         return step;
     }
 
-    public void setMin(T min) {
-        this.min = min;
-    }
-
-    public void setMax(T max) {
-        this.max = max;
-    }
-
-    public void setStep(T step) {
-        this.step = step;
-    }
 }

@@ -8,11 +8,13 @@ import java.awt.*;
 
 //TODO: If there is anything needed for debug keybinding, drawing, or actions. Please route it through this class
 // Potentially think about adding a debug manager to each element
+
+//Think about routing this to the Window class. The window can be in debug mode, so the Window should contain the manager
 public class DebugManager {
 
-    private final FontManager debugFontManager;
-
     private final Scene scene;
+
+    private final FontManager debugFontManager;
 
     public DebugManager(Scene scene) {
         this.scene = scene;

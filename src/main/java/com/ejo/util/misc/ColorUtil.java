@@ -17,6 +17,10 @@ public class ColorUtil {
         return new Color(r, g, b);
     }
 
+    public static Color getWithAlpha(Color color, float alpha) {
+        return new Color(color.getRed() / 255f,color.getGreen() / 255f,color.getBlue() / 255f,alpha / 255f);
+    }
+
     public static Color getRainbowColor(float rainbowSpeed, long offset, float strength, float saturation, float brightness) {
         float speed = (float)(rainbowSpeed * Math.pow(10,10));
         float hue = (float) (System.nanoTime() - offset * Math.pow(10,8)) / speed;

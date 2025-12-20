@@ -2,6 +2,7 @@ package com.ejo.util.input;
 
 import com.ejo.util.math.Vector;
 
+//TODO: Port from GlowUI
 public class Mouse {
 
     private static final Vector NULL_POS = new Vector(-1,-1);

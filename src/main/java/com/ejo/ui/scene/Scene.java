@@ -52,7 +52,7 @@ public abstract class Scene {
     }
 
     public void updateAnimation() {
-        for (IAnimatable e : animatables) e.updateAnimation();
+        for (IAnimatable e : animatables) e.updateAnimation(e.getAnimationSpeed());
     }
 
     public void onKeyPress(int key, int scancode, int action, int mods) {

@@ -52,18 +52,21 @@ public class FontManager {
         if (cache.containsKey(text)) {
             cachedImage = cache.get(text);
         } else {
-            cachedImage = ImageUtil.getByteBuffer(getTextBufferedImage(String.valueOf(text)));
+            cachedImage = ImageUtil.getByteBuffer(generateTextBufferedImage(String.valueOf(text)));
             cache.put(text, cachedImage);
         }
-
+        int yOffset = switch (font.getFontName()) {
+            case "Arial" -> -2;
+            default -> 0;
+        };
         Vector size = new Vector(fontMetrics.stringWidth(String.valueOf(text)),fontMetrics.getHeight());
         GLUtil.applyTextureColorTint(color);
         if (color.getAlpha() <= 0) return;
-        GLUtil.drawTexture(cachedImage,pos,size);
+        GLUtil.drawTexture(cachedImage,pos.getAdded(0,yOffset),size);
         GLUtil.resetTextureColorTint();
     }
 
-    protected BufferedImage getTextBufferedImage(String text) {
+    protected BufferedImage generateTextBufferedImage(String text) {
         if (text.isEmpty()) return null;
         int width = Math.max(1,fontMetrics.stringWidth(text));
         int height = Math.max(1,fontMetrics.getHeight());

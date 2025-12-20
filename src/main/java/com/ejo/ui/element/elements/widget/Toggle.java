@@ -1,10 +1,10 @@
 package com.ejo.ui.element.elements.widget;
 
-import com.ejo.ui.element.elements.Text;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
+import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import org.lwjgl.glfw.GLFW;
 
@@ -32,19 +32,14 @@ public class Toggle extends SettingWidget<Boolean> {
     @Override
     protected void drawWidget(Vector mousePos) {
         //Draw Background
-        new RoundedRectangle(getScene(), getPos(), getSize(), WIDGET_BACKGROUND_COLOR).draw();
+        drawWidgetBackground();
 
         //Draw Fill
-        new RoundedRectangle(getScene(), getPos(), getSize(), new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) toggleFade)).draw();
+        new RoundedRectangle(getScene(), getPos(), getSize(), ColorUtil.getWithAlpha(color,toggleFade)).draw();
 
         //Draw Title
-        int border = getSize().getXi() / 20;
-
-        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
-        int textSize = getSize().getYi() - border * 2;
-
-        Text.Type type = Text.Type.STATIC;
-        new Text(getScene(), getPos().getAdded(border + 2, border), getTitle(), new Font("Arial", Font.PLAIN, textSize), Color.WHITE, type).draw();
+        int border = getSize().getYi() / 5;
+        drawWidgetTitle(getTitle(),border,true);
     }
 
 
@@ -53,15 +48,14 @@ public class Toggle extends SettingWidget<Boolean> {
         super.updateAnimation(speed);
 
         //Update the solid fill of the widget, depending on whether it is enabled or not
-        toggleFade = (int) AnimationUtil.getNextAnimationValue(getContainer().get(), toggleFade, 0, 150, speed);
+        toggleFade = AnimationUtil.getNextAnimationValue(getContainer().get(), toggleFade, 0, 150, speed);
     }
 
     @Override
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         if (!isMouseHovered()) return;
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE)
             this.action.run();
-        }
     }
 
     @Override
@@ -80,12 +74,12 @@ public class Toggle extends SettingWidget<Boolean> {
 
     // =================================================
 
-    public Color getColor() {
-        return color;
-    }
-
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
 }

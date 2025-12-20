@@ -7,7 +7,7 @@ import com.ejo.util.math.Vector;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class RegularPolygon extends Polygon {
+public class RegularPolygon extends ConvexPolygon {
 
     protected static final Angle FULL = new Angle(Math.TAU,true);
 

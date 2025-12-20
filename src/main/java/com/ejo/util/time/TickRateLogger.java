@@ -1,5 +1,8 @@
 package com.ejo.util.time;
 
+import com.ejo.util.math.MathUtil;
+import java.util.LinkedList;
+
 public class TickRateLogger {
 
     private final StopWatch watch;
@@ -9,11 +12,20 @@ public class TickRateLogger {
 
     private final float frequencyS;
 
-    public TickRateLogger(float frequencyS) {
+    private final LinkedList<Float> avgList;
+    private int avgLength;
+
+    public TickRateLogger(float frequencyS, int avgLength) {
         this.watch = new StopWatch();
         this.ticks = 0;
         this.tickRate = 0;
         this.frequencyS = frequencyS;
+        this.avgLength = avgLength;
+        this.avgList = new LinkedList<>();
+    }
+
+    public TickRateLogger(float frequencyS) {
+        this(frequencyS,1);
     }
 
     public TickRateLogger() {
@@ -26,11 +38,24 @@ public class TickRateLogger {
 
     public void updateTickRate() {
         watch.start();
-        if (watch.hasTimePassedS(frequencyS)) { //TPS-FPS Updater
+        if (watch.hasTimePassedS(frequencyS)) {
             tickRate = ticks * (1 / frequencyS);
             ticks = 0;
+
+            avgList.addLast(tickRate);
+            if (avgList.size() > avgLength) avgList.poll();
+
             watch.restart();
         }
+
+    }
+
+    public void setAvgLength(int avgLength) {
+        this.avgLength = avgLength;
+    }
+
+    public float getAverageTickRate() {
+        return (float)MathUtil.calculateAverage(avgList.toArray(new Float[0]));
     }
 
     public float getTickRate() {

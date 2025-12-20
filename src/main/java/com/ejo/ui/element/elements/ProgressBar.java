@@ -4,6 +4,7 @@ import com.ejo.ui.element.Element;
 import com.ejo.ui.element.elements.shape.Rectangle;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
+import com.ejo.util.math.MathUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
 
@@ -15,10 +16,11 @@ public class ProgressBar<T extends Number> extends Element {
     private Vector size;
     private Color color;
 
-
     private Container<T> progressContainer;
     private final double min;
     private final double max;
+
+    private boolean showPercentage;
 
     public ProgressBar(Scene scene, Vector pos, Vector size, Color color, Container<T> progressContainer, double min, double max, String title) {
         super(scene,pos);
@@ -28,6 +30,8 @@ public class ProgressBar<T extends Number> extends Element {
         this.min = min;
         this.max = max;
         this.color = color;
+
+        this.showPercentage = false;
     }
 
     public ProgressBar(Scene scene, Vector pos, Vector size, Color color, Container<T> progressContainer, double min, double max) {
@@ -37,7 +41,7 @@ public class ProgressBar<T extends Number> extends Element {
     @Override
     public void draw(Vector mousePos) {
         //Draw Background
-        new RoundedRectangle(getScene(),getPos(),size,new Color(50,50,50,200)).draw();
+        new RoundedRectangle(getScene(),getPos(),size,new Color(50,50,50,175)).draw();
 
         int border = getSize().getYi() / 5;
 
@@ -47,15 +51,20 @@ public class ProgressBar<T extends Number> extends Element {
         new RoundedRectangle(getScene(),getPos().getAdded(border,border),size,getColor()).draw();
 
         //Draw Title
-        Text text = new Text(getScene(),Vector.NULL(),getTitle(),new Font("Arial", Font.PLAIN,getSize().getYi() - border),Color.WHITE, Text.Type.STATIC);
-        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2,border / 2 - 1));
-        //text.setPos(getPos().getAdded(border + 2,2)); //Left-oriented Position
+        int percentage = (int)(barPercent * 100);
+        String title = getTitle() + (!getTitle().isEmpty() ? ": " : "") + (showPercentage ? percentage + "%" : "");
+        Text text = new Text(getScene(),Vector.NULL(),title,new Font("Arial", Font.PLAIN,getSize().getYi() - border),Color.WHITE, Text.Type.STATIC);
+        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2,border / 2));
         text.draw();
     }
 
     @Override
     public void updateMouseHovered(Vector mousePos) {
         setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
+    }
+
+    public void setPercentageShown(boolean shown) {
+        this.showPercentage = shown;
     }
 
     public void setTitle(String title) {

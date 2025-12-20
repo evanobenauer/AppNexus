@@ -8,6 +8,7 @@ import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
+import com.ejo.util.misc.ColorUtil;
 
 import java.awt.*;
 
@@ -18,21 +19,21 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     //Widget Size? TODO: Potentially replace this with a "Base Rectangle" that handles all the backend hovering and drawing
     protected Vector size;
 
+    //Every widget has some sort of action. This action is to be called whenever interacted with
+    protected Runnable action;
+
     //Hover Highlight Variables
     private boolean drawHoverHighlight;
     protected float hoverHighlightFade;
-
-    //Every widget has some sort of action. This action is to be called whenever interacted with
-    protected Runnable action;
 
     public Widget(Scene scene, Vector pos, Vector size, Runnable action) {
         super(scene, pos);
         this.size = size;
 
+        this.action = action;
+
         this.drawHoverHighlight = true;
         this.hoverHighlightFade = 0;
-
-        this.action = action;
     }
 
     // =================================================
@@ -56,7 +57,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     }
 
     private void drawHoverHighlight(Vector mousePos) {
-        new RoundedRectangle(getScene(),getPos(),getSize(),new Color(255,255,255,(int) hoverHighlightFade)).draw();
+        new RoundedRectangle(getScene(),getPos(),getSize(), ColorUtil.getWithAlpha(Color.WHITE,(int)hoverHighlightFade)).draw();
     }
 
     @Override
@@ -67,7 +68,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     @Override
     public void updateAnimation(float speed) {
         //All widgets have a fade overlay that appears when hovered. This updates the fade value depending on if hovered
-        this.hoverHighlightFade = AnimationUtil.getNextAnimationValue(isMouseHovered(), hoverHighlightFade, 0, 50, speed);
+        this.hoverHighlightFade = AnimationUtil.getNextAnimationValue(isMouseHovered(), hoverHighlightFade, 0, 20, speed);
     }
 
     @Override

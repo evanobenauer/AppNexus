@@ -47,9 +47,8 @@ public abstract class Element {
         }
     }
 
-    public Element setPos(Vector pos) {
+    public void setPos(Vector pos) {
         this.pos = pos;
-        return this;
     }
 
 

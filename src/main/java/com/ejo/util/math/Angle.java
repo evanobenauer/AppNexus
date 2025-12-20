@@ -1,6 +1,5 @@
 package com.ejo.util.math;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.TAU;
 
 public class Angle {

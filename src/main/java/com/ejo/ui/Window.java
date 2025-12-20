@@ -56,24 +56,24 @@ public class Window {
         this.title = title;
         this.pos = new Vector(100,100); //TODO: Make this position default to the center of the screen
         this.size = size;
+        this.scene = startingScene;
+
+        this.mousePos = Vector.NULL();
+        this.open = false;
 
         this.maxFPS = 60;
         this.maxTPS = 60;
 
         this.vSync = false; //Once the window starts, VSync cannot be changed for some reason... TODO: Look into this
-        this.antiAliasingLevel = 0;
+        this.antiAliasingLevel = 0;//Once the window starts, Aliasing cannot be changed either
 
         this.uiScale = 1;
 
         this.debugMode = DebugMode.OFF;
         this.performanceMode = PerformanceMode.STANDARD;
 
-        this.fpsLogger = new TickRateLogger(.25f);
-        this.tpsLogger = new TickRateLogger(.25f);
-
-        this.scene = startingScene;
-        this.mousePos = Vector.NULL();
-        this.open = false;
+        this.fpsLogger = new TickRateLogger(.25f, 20);
+        this.tpsLogger = new TickRateLogger(.25f,20);
     }
 
     // =================================================
@@ -239,6 +239,7 @@ public class Window {
 
     private void limitedRateLoop(Runnable runnable, int maxTickRate) {
         //We could not rout open through the method -> it would pass by value and wouldn't update inside the loop
+        // A workaround could be to use a container, but that's too ugly, so we'll keep the method non-static
         //TODO: Reformat this limited loop. At higher maxTickRates, the loop is too slow and fails
         while (open) {
             long startTimeNS = System.nanoTime();

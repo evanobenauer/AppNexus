@@ -4,6 +4,7 @@ import com.ejo.ui.element.elements.Text;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
+import com.ejo.util.misc.AnimationUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -14,6 +15,7 @@ public class Button extends Widget {
     private Color color;
 
     private boolean pressed;
+    private float pressFade;
 
     public Button(Scene scene, Vector pos, Vector size, Color color, String title, Runnable action) {
         super(scene, pos, size, action);
@@ -28,22 +30,28 @@ public class Button extends Widget {
     @Override
     protected void drawWidget(Vector mousePos) {
         //Draw Button
-        int sub = 50;
+        int sub = (int)pressFade;
         int r = Math.clamp(color.getRed() - sub,0,255);
         int g = Math.clamp(color.getGreen() - sub,0,255);
         int b = Math.clamp(color.getBlue() - sub,0,255);
         int a = Math.clamp(color.getAlpha(),0,255);
-        Color col = !pressed ? color : new Color(r,g,b,a);
+        Color col = new Color(r,g,b,a);
         new RoundedRectangle(getScene(), getPos(), getSize(), col).draw();
 
-        //Draw Title
-        int border = getSize().getXi() / 20;
-
+        //Draw Title (Copied from SettingWidget. Update that, then copy it over)
         //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
-        int textSize = getSize().getYi() - border * 2;
+        int border = getSize().getYi() / 5;
+        int textSize = getSize().getYi() - border;
 
-        Text.Type type = Text.Type.STATIC;
-        new Text(getScene(), getPos().getAdded(border + 2, border), getTitle(), new Font("Arial", Font.PLAIN, textSize), Color.WHITE, type).draw();
+        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), Color.WHITE, Text.Type.STATIC);
+        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2, getSize().getY() / 2 - textSize / 2));
+        text.draw();
+    }
+
+    @Override
+    public void updateAnimation(float speed) {
+        super.updateAnimation(speed);
+        pressFade = AnimationUtil.getNextAnimationValue(pressed,pressFade,0,50,speed);
     }
 
     @Override
