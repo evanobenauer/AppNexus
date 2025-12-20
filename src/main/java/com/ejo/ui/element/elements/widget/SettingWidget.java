@@ -63,6 +63,8 @@ public abstract class SettingWidget<T> extends Widget {
     // =================================================
 
     //TODO: Replace this eventually with a tooltip element object. This'll do for now
+    //TODO: Add a TooltipManager that uses the hovered manager and draws the elemented tooltip.
+    // This will prevent the tooltip from rendering underneath higher items.
     private void drawTooltip(Vector mousePos, String description, int size, Text.Type type) {
         Vector pos = mousePos.getAdded(6, -size / 2);
 

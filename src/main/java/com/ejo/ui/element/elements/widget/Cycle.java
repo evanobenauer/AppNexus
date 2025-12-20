@@ -72,9 +72,25 @@ public class Cycle<T> extends SettingWidget<T> {
     public void updateAnimation(float speed) {
         super.updateAnimation(speed);
 
-        //Add a fade to the mini toggles for left/right buttons
-        fadeR = AnimationUtil.getNextAnimationValue(pressingR,fadeR,0,255,pressingR ? speed * 2: speed);
-        fadeL = AnimationUtil.getNextAnimationValue(pressingL,fadeL,0,255,pressingL ? speed * 2: speed);
+        //--------------------------------------------------------
+        boolean isMouseOnRight = getScene().getMousePos().getX() > getSize().getX() / 2 + getPos().getX();
+        int maxHover = 25;
+        if (pressingR) {
+            fadeR = AnimationUtil.getNextAnimationValue(pressingR, fadeR, 0, 255, pressingR ? speed * 2 : speed);
+        } else {
+            boolean activateR = isMouseOnRight && isMouseHovered();
+            if (fadeR > maxHover) activateR = false;
+            fadeR = AnimationUtil.getNextAnimationValue(activateR, fadeR, 0, maxHover, fadeR < maxHover ? 1 : speed);
+        }
+
+        if (pressingL) {
+            fadeL = AnimationUtil.getNextAnimationValue(pressingL, fadeL, 0, 255, pressingL ? speed * 2 : speed);
+        } else {
+            boolean activateL = !isMouseOnRight && isMouseHovered();
+            if (fadeL > maxHover) activateL = false;
+            fadeL = AnimationUtil.getNextAnimationValue(activateL, fadeL, 0, maxHover, fadeL < maxHover ? 1 : speed);
+        }
+        //--------------------------------------------------------
 
         //TODO: Add a text left/right scrolling animation when the mode is changed
     }
@@ -110,28 +126,30 @@ public class Cycle<T> extends SettingWidget<T> {
 
     @Override
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
-        switch (button) {
-            case GLFW.GLFW_MOUSE_BUTTON_RIGHT -> {
-                switch (action) {
-                    case GLFW.GLFW_PRESS -> {
-                        if (isMouseHovered()) pressingR = true;
-                    }
-                    case GLFW.GLFW_RELEASE -> {
-                        if (isMouseHovered()) doCycle(true);
-                        pressingR = false;
-                    }
+        if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) return;
+        //You can use this to replace left/right-clicking in favor of sided clicking
+        boolean isMouseOnRight = getScene().getMousePos().getX() > getSize().getX() / 2 + getPos().getX();
+
+        if (isMouseOnRight) {
+            switch (action) {
+                case GLFW.GLFW_PRESS -> {
+                    if (isMouseHovered()) pressingR = true;
+                }
+                case GLFW.GLFW_RELEASE -> {
+                    if (isMouseHovered()) doCycle(true);
+                    pressingR = false;
                 }
             }
+        }
 
-            case GLFW.GLFW_MOUSE_BUTTON_LEFT -> {
-                switch (action) {
-                    case GLFW.GLFW_PRESS -> {
-                        if (isMouseHovered()) pressingL = true;
-                    }
-                    case GLFW.GLFW_RELEASE -> {
-                        if (isMouseHovered()) doCycle(false);
-                        pressingL = false;
-                    }
+        if (!isMouseOnRight) {
+            switch (action) {
+                case GLFW.GLFW_PRESS -> {
+                    if (isMouseHovered()) pressingL = true;
+                }
+                case GLFW.GLFW_RELEASE -> {
+                    if (isMouseHovered()) doCycle(false);
+                    pressingL = false;
                 }
             }
         }
