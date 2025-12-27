@@ -48,9 +48,6 @@ public class Slider<T extends Number> extends SettingWidget<T> {
 
         if (sliding) updateSliderValue(border, mousePos);
 
-        //Draw the background
-        drawWidgetBackground();
-
         //Draw Slider Fill
         int colSub = 50;
         double barPercent = Math.clamp(getContainer().get().doubleValue(),min,max) / max;
@@ -86,7 +83,10 @@ public class Slider<T extends Number> extends SettingWidget<T> {
                 if (isMouseHovered()) sliding = true;
             }
             case GLFW.GLFW_RELEASE -> {
-                if (sliding) sliding = false;
+                if (sliding) {
+                    sliding = false;
+                    getAction().run();
+                }
             }
         }
     }
@@ -105,6 +105,7 @@ public class Slider<T extends Number> extends SettingWidget<T> {
         };
         double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() + add,min,max),5);
         setCastedContainer(val);
+        getAction().run();
     }
 
     @Override
@@ -115,6 +116,7 @@ public class Slider<T extends Number> extends SettingWidget<T> {
         double step = this.step.doubleValue();
         double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() - (scroll * step),min,max),5);
         setCastedContainer(val);
+        getAction().run();
     }
 
     private void updateSliderValue(int border, Vector mousePos) {

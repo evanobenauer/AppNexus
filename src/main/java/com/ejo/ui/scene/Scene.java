@@ -68,7 +68,7 @@ public abstract class Scene {
     }
 
     public void updateMouseHovered() {
-        for (Element element : elements) element.updateMouseHovered(getWindow().getMousePos());
+        for (Element element : elements) element.updateMouseHovered(mouseHoveredManager,getWindow().getMousePos());
         mouseHoveredManager.cycleQueuedItems();
     }
 

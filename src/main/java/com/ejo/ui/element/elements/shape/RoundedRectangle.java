@@ -63,8 +63,8 @@ public class RoundedRectangle extends Rectangle {
 
     //This is terribly written. TODO: Make this less disgusting to look at
     private void updateCornerRadius() {
-        boolean xSmall = cornerRadius * 2 > getSize().getXi();
-        boolean ySmall = cornerRadius * 2 > getSize().getYi();
+        boolean xSmall = originalCornerRadius * 2 > getSize().getXi();
+        boolean ySmall = originalCornerRadius * 2 > getSize().getYi();
 
         if (xSmall && !ySmall) {
             cornerRadius = getSize().getXi() / 2;
@@ -87,5 +87,10 @@ public class RoundedRectangle extends Rectangle {
 
     public int getCornerRadius() {
         return cornerRadius;
+    }
+
+    @Override
+    public RoundedRectangle clone() {
+        return new RoundedRectangle(getScene(),getPos(),getSize(),getColor(),cornerRadius,isOutlined(),getOutlineWidth());
     }
 }

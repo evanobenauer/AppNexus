@@ -59,8 +59,8 @@ public class ProgressBar<T extends Number> extends Element {
     }
 
     @Override
-    public void updateMouseHovered(Vector mousePos) {
-        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
+        return Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos);
     }
 
     public void setPercentageShown(boolean shown) {

@@ -1,10 +1,11 @@
 package com.ejo.ui.element.elements.widget;
 
 import com.ejo.ui.element.elements.Text;
+import com.ejo.ui.element.elements.shape.ConvexPolygon;
+import com.ejo.ui.element.elements.shape.Rectangle;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
-import com.ejo.util.misc.AnimationUtil;
 import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import com.ejo.util.time.StopWatch;
@@ -26,7 +27,7 @@ public abstract class SettingWidget<T> extends Widget {
     private boolean tooltipVisible;
 
     public SettingWidget(Scene scene, Vector pos, Vector size, Container<T> container, Runnable action, String title, String description) {
-        super(scene, pos, size, action);
+        super(scene, pos, new RoundedRectangle(scene,pos,size,WIDGET_BACKGROUND_COLOR), action);
         this.container = container;
 
         this.title = title;
@@ -81,22 +82,21 @@ public abstract class SettingWidget<T> extends Widget {
 
         text.draw();
     }
-
     protected void drawWidgetTitle(String title, int border, boolean centered) {
+        drawWidgetTitle(title,border,centered,Color.WHITE);
+    }
+
+    protected void drawWidgetTitle(String title, int border, boolean centered, Color color) {
         //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
         int textSize = getSize().getYi() - border;
 
-        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), Color.WHITE, Text.Type.STATIC);
+        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), color, Text.Type.STATIC);
         if (centered) {
             text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2, getSize().getY() / 2 - textSize / 2));
         } else {
             text.setPos(getPos().getAdded(border + 2, getSize().getY() / 2 - textSize / 2)); //Left-oriented Position
         }
         text.draw();
-    }
-
-    protected void drawWidgetBackground() {
-        new RoundedRectangle(getScene(), getPos(), getSize(), ColorUtil.getWithAlpha(WIDGET_BACKGROUND_COLOR, 175)).draw();
     }
 
     // =================================================
@@ -109,6 +109,10 @@ public abstract class SettingWidget<T> extends Widget {
         this.tooltipVisible = drawTooltip;
     }
 
+    public void setSize(Vector size) {
+        ((Rectangle) baseShape).setSize(size);
+    }
+
     public void setContainer(Container<T> container) {
         this.container = container;
     }
@@ -119,6 +123,10 @@ public abstract class SettingWidget<T> extends Widget {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Vector getSize() {
+        return ((Rectangle) baseShape).getSize();
     }
 
     public Container<T> getContainer() {

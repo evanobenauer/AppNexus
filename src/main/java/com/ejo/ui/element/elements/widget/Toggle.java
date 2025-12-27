@@ -19,10 +19,6 @@ public class Toggle extends SettingWidget<Boolean> {
         super(scene, pos, size, toggleContainer, () -> {}, title, description);
         this.color = color;
         this.toggleFade = 0;
-
-        //Set the action after in order to call getContainer(), which can change.
-        // if you just call it from the constructor, it will only modify the default set container
-        setAction(() -> getContainer().set(!getContainer().get()));
     }
 
     public Toggle(Scene scene, Vector pos, Vector size, Color color, Container<Boolean> toggleContainer) {
@@ -31,9 +27,6 @@ public class Toggle extends SettingWidget<Boolean> {
 
     @Override
     protected void drawWidget(Vector mousePos) {
-        //Draw Background
-        drawWidgetBackground();
-
         //Draw Fill
         new RoundedRectangle(getScene(), getPos(), getSize(), ColorUtil.getWithAlpha(color,toggleFade)).draw();
 
@@ -54,8 +47,10 @@ public class Toggle extends SettingWidget<Boolean> {
     @Override
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         if (!isMouseHovered()) return;
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE)
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
+            getContainer().set(!getContainer().get());
             this.action.run();
+        }
     }
 
     @Override

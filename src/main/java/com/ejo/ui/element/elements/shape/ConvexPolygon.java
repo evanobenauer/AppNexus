@@ -48,10 +48,9 @@ public class ConvexPolygon extends Element {
     @Override
     //This algorithm (Separating Axis Thm). This only works if the polygon is convex
     // is kinda slow. So override it with polygon branches If possible. Use this only if unavailable
-    public void updateMouseHovered(Vector mousePos) {
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
         if (mousePos.getSubtracted(getCenter()).getMagnitude() > getMaximumVectorDistance()) {
-            setHovered(false);
-            return;
+            return false;
         }
         ArrayList<Vector> axisList = new ArrayList<>();
 
@@ -93,12 +92,11 @@ public class ConvexPolygon extends Element {
             if (mouseComponent > polygon1Min && mouseComponent < polygon1Max) {
                 continue;
             } else {
-                setHovered(false);
-                return;
+                return false;
             }
 
         }
-        setHovered(true);
+        return true;
     }
 
 
@@ -173,5 +171,10 @@ public class ConvexPolygon extends Element {
 
     public Vector[] getVertices() {
         return vertices;
+    }
+
+    @Override
+    public ConvexPolygon clone() {
+        return new ConvexPolygon(getScene(),getPos(),color,outlined,outlineWidth,vertices);
     }
 }

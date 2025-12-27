@@ -46,18 +46,16 @@ public class Circle extends ConvexPolygon {
     }
 
     @Override
-    public void updateMouseHovered(Vector mousePos) {
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
         Vector relativeMousePos = mousePos.getSubtracted(getCenter());
         if (radius < relativeMousePos.getMagnitude()) {
-            setHovered(false);
-            return;
+            return false;
         }
         if (range.equals(FULL)) {
-            setHovered(true);
-            return;
+            return true;
         }
         Angle theta = relativeMousePos.getTheta().getSimplified();
-        setHovered(theta.getDegrees() <= range.getDegrees());
+        return theta.getDegrees() <= range.getDegrees();
     }
 
 

@@ -3,8 +3,7 @@ package com.ejo.ui.element.elements.widget;
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
-import com.ejo.ui.element.elements.shape.Rectangle;
-import com.ejo.ui.element.elements.shape.RoundedRectangle;
+import com.ejo.ui.element.elements.shape.ConvexPolygon;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
@@ -14,10 +13,9 @@ import java.awt.*;
 
 public abstract class Widget extends Element implements IInteractable, IAnimatable  {
 
-    protected static final Color WIDGET_BACKGROUND_COLOR = new Color(50,50,50,200);
+    protected static final Color WIDGET_BACKGROUND_COLOR = new Color(50,50,50,175);
 
-    //Widget Size? TODO: Potentially replace this with a "Base Rectangle" that handles all the backend hovering and drawing
-    protected Vector size;
+    protected final ConvexPolygon baseShape;
 
     //Every widget has some sort of action. This action is to be called whenever interacted with
     protected Runnable action;
@@ -26,14 +24,16 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     private boolean drawHoverHighlight;
     protected float hoverHighlightFade;
 
-    public Widget(Scene scene, Vector pos, Vector size, Runnable action) {
+    public Widget(Scene scene, Vector pos, ConvexPolygon baseShape, Runnable action) {
         super(scene, pos);
-        this.size = size;
+        this.baseShape = baseShape;
 
         this.action = action;
 
         this.drawHoverHighlight = true;
         this.hoverHighlightFade = 0;
+
+        baseShape.setPos(pos);
     }
 
     // =================================================
@@ -52,17 +52,24 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
 
     @Override
     public void draw(Vector mousePos) {
+        drawWidgetBase(mousePos);
         drawWidget(mousePos);
         if (drawHoverHighlight) drawHoverHighlight(mousePos);
     }
 
-    private void drawHoverHighlight(Vector mousePos) {
-        new RoundedRectangle(getScene(),getPos(),getSize(), ColorUtil.getWithAlpha(Color.WHITE,(int)hoverHighlightFade)).draw();
+    protected void drawWidgetBase(Vector mousePos) {
+        baseShape.draw();
+    }
+
+    protected void drawHoverHighlight(Vector mousePos) {
+        ConvexPolygon hov = baseShape.clone();
+        hov.setColor(ColorUtil.getWithAlpha(Color.WHITE,(int)hoverHighlightFade));
+        hov.draw();
     }
 
     @Override
-    public void updateMouseHovered(Vector mousePos) {
-        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
+        return baseShape.getMouseHoveredCalculation(mousePos);
     }
 
     @Override
@@ -72,7 +79,7 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
     }
 
     @Override
-    public float getAnimationSpeed() {
+    public final float getAnimationSpeed() {
         return 10;
     }
 
@@ -87,21 +94,17 @@ public abstract class Widget extends Element implements IInteractable, IAnimatab
         this.drawHoverHighlight = drawHoverHighlight;
     }
 
-    public void setSize(Vector vector) {
-        this.size = vector;
-    }
-
     public void setAction(Runnable action) {
         this.action = action;
     }
 
-
-    public Vector getSize() {
-        return size;
+    @Override
+    public void setPos(Vector pos) {
+        super.setPos(pos);
+        this.baseShape.setPos(pos);
     }
 
     public Runnable getAction() {
         return action;
     }
-
 }

@@ -46,9 +46,6 @@ public class Cycle<T> extends SettingWidget<T> {
 
     @Override
     protected void drawWidget(Vector mousePos) {
-        //Draw Background
-        drawWidgetBackground();
-
         int border = getSize().getYi() / 5;
 
         //Draw Left & Right Buttons
@@ -76,19 +73,17 @@ public class Cycle<T> extends SettingWidget<T> {
         boolean isMouseOnRight = getScene().getMousePos().getX() > getSize().getX() / 2 + getPos().getX();
         int maxHover = 25;
         if (pressingR) {
-            fadeR = AnimationUtil.getNextAnimationValue(pressingR, fadeR, 0, 255, pressingR ? speed * 2 : speed);
+            fadeR = AnimationUtil.getNextAnimationValue(pressingR, fadeR, 0, 255, speed * 3);
         } else {
-            boolean activateR = isMouseOnRight && isMouseHovered();
-            if (fadeR > maxHover) activateR = false;
-            fadeR = AnimationUtil.getNextAnimationValue(activateR, fadeR, 0, maxHover, fadeR < maxHover ? 1 : speed);
+            boolean activateR = isMouseOnRight && isMouseHovered() && fadeR < maxHover + speed;
+            fadeR = AnimationUtil.getNextAnimationValue(activateR, fadeR, 0, maxHover, fadeR < maxHover ? speed / 5 : speed * 1.5f);
         }
 
         if (pressingL) {
-            fadeL = AnimationUtil.getNextAnimationValue(pressingL, fadeL, 0, 255, pressingL ? speed * 2 : speed);
+            fadeL = AnimationUtil.getNextAnimationValue(pressingL, fadeL, 0, 255, speed * 3);
         } else {
-            boolean activateL = !isMouseOnRight && isMouseHovered();
-            if (fadeL > maxHover) activateL = false;
-            fadeL = AnimationUtil.getNextAnimationValue(activateL, fadeL, 0, maxHover, fadeL < maxHover ? 1 : speed);
+            boolean activateL = !isMouseOnRight && isMouseHovered() && fadeL < maxHover + speed;
+            fadeL = AnimationUtil.getNextAnimationValue(activateL, fadeL, 0, maxHover, fadeL < maxHover ? speed / 5 : speed * 1.5f);
         }
         //--------------------------------------------------------
 
@@ -170,6 +165,7 @@ public class Cycle<T> extends SettingWidget<T> {
 
         int arrayNumber = cycles.indexOf(getContainer().get()) + increment;
         getContainer().set(cycles.get(arrayNumber == wrapAroundIndex ? endIndex : arrayNumber));
+        getAction().run();
     }
 
     private void drawLArrow(Vector pos, int size, Color color) {

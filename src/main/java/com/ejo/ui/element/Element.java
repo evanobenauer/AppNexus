@@ -1,6 +1,7 @@
 package com.ejo.ui.element;
 
 import com.ejo.ui.scene.Scene;
+import com.ejo.ui.scene.manager.MouseHoveredManager;
 import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 
@@ -30,22 +31,28 @@ public abstract class Element {
         draw(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
     }
 
-    public abstract void updateMouseHovered(Vector mousePos);
+    public abstract boolean getMouseHoveredCalculation(Vector mousePos);
+
+    // =================================================
+
+    // FUNCTIONAL METHODS
+
+    // =================================================
+
+    public void updateMouseHovered(MouseHoveredManager manager, Vector mousePos) {
+        if (getMouseHoveredCalculation(mousePos)) {
+            manager.queueElement(this);
+            this.mouseHovered = manager.isTop(this);
+        } else {
+            this.mouseHovered = false;
+        }
+    }
 
     // =================================================
 
     // GETTERS/SETTERS
 
     // =================================================
-
-    protected void setHovered(boolean hovered) {
-        if (hovered) {
-            getScene().getMouseHoveredManager().queueElement(this);
-            this.mouseHovered = getScene().getMouseHoveredManager().isTop(this);
-        } else {
-            this.mouseHovered = false;
-        }
-    }
 
     public void setPos(Vector pos) {
         this.pos = pos;
@@ -68,4 +75,5 @@ public abstract class Element {
     public String toString() {
         return "(" + getClass().getSimpleName() + ")";
     }
+
 }

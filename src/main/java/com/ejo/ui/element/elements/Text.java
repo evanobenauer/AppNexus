@@ -36,8 +36,8 @@ public class Text extends Element {
     }
 
     @Override
-    public void updateMouseHovered(Vector mousePos) {
-        setHovered(Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos));
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
+        return Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos);
     }
 
     //If a manager has already been created for the specific font, check for that manager. If the manager exists,

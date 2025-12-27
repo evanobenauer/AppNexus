@@ -1,6 +1,8 @@
 package com.ejo.ui.element.elements.widget;
 
 import com.ejo.ui.element.elements.Text;
+import com.ejo.ui.element.elements.shape.ConvexPolygon;
+import com.ejo.ui.element.elements.shape.Rectangle;
 import com.ejo.ui.element.elements.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
@@ -18,7 +20,7 @@ public class Button extends Widget {
     private float pressFade;
 
     public Button(Scene scene, Vector pos, Vector size, Color color, String title, Runnable action) {
-        super(scene, pos, size, action);
+        super(scene, pos, new RoundedRectangle(scene,pos,size,color), action);
         this.color = color;
         this.title = title;
     }
@@ -36,7 +38,7 @@ public class Button extends Widget {
         int b = Math.clamp(color.getBlue() - sub,0,255);
         int a = Math.clamp(color.getAlpha(),0,255);
         Color col = new Color(r,g,b,a);
-        new RoundedRectangle(getScene(), getPos(), getSize(), col).draw();
+        this.baseShape.setColor(col);
 
         //Draw Title (Copied from SettingWidget. Update that, then copy it over)
         //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
@@ -79,12 +81,20 @@ public class Button extends Widget {
         //NA
     }
 
+    public void setSize(Vector size) {
+        ((Rectangle) baseShape).setSize(size);
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Vector getSize() {
+        return ((Rectangle) baseShape).getSize();
     }
 
     public String getTitle() {

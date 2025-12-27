@@ -26,8 +26,8 @@ public class Rectangle extends ConvexPolygon {
     }
 
     @Override
-    public void updateMouseHovered(Vector mousePos) {
-        setHovered(isInRectangleBoundingBox(getPos(),getSize(),mousePos));
+    public boolean getMouseHoveredCalculation(Vector mousePos) {
+        return isInRectangleBoundingBox(getPos(),getSize(),mousePos);
     }
 
     public void setSize(Vector size) {
