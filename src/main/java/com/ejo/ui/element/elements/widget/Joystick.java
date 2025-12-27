@@ -18,6 +18,7 @@ public class Joystick extends Widget implements ITickable {
     private Circle stick;
 
     private Angle angle;
+    private double magnitude;
 
     public Joystick(Scene scene, Vector pos, Color color, int radius) {
         super(scene, pos, new Circle(scene,pos,radius,WIDGET_BACKGROUND_COLOR, Circle.Type.ULTRA), () -> {});
@@ -26,6 +27,7 @@ public class Joystick extends Widget implements ITickable {
 
         this.stick = new Circle(scene,getPos(),radius / 1.5,color, Circle.Type.HIGH);
         this.angle = Angle.NULL();
+        this.magnitude = 0;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class Joystick extends Widget implements ITickable {
     public void tick(Vector mousePos) {
         Vector vec = stick.getPos().getSubtracted(getPos());
         this.angle = vec.getTheta();
+        this.magnitude = Math.clamp(vec.getMagnitude() / getRadius(),0,1);
     }
 
     @Override
@@ -93,4 +96,7 @@ public class Joystick extends Widget implements ITickable {
         return angle;
     }
 
+    public double getMagnitude() {
+        return magnitude;
+    }
 }
