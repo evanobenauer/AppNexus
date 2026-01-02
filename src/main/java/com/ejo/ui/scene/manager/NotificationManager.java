@@ -38,7 +38,7 @@ public class NotificationManager {
         for (Notification notification : notifications) {
 
             double width = notificationFontManager.getWidth(scene,notification.text);
-            Vector pos = new Vector(getScene().getWindow().getSize().getX() / 2 - width / 2,y);
+            Vector pos = new Vector(scene.getWindow().getSize().getX() / 2 - width / 2,y);
 
             new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2,notificationFontManager.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(notification.fade,0,175))).draw();
             new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2,notificationFontManager.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(notification.fade,0,175)),30,true,2).draw();
@@ -77,11 +77,6 @@ public class NotificationManager {
 
     public void setNotificationFont(Font font) {
         this.notificationFontManager = new FontManager(font);
-    }
-
-
-    public Scene getScene() {
-        return scene;
     }
 
 

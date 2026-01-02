@@ -7,6 +7,7 @@ import com.ejo.ui.element.base.IInteractable;
 import com.ejo.ui.element.base.ITickable;
 import com.ejo.ui.scene.manager.DebugManager;
 import com.ejo.ui.scene.manager.MouseHoveredManager;
+import com.ejo.ui.scene.manager.NotificationManager;
 import com.ejo.util.math.Vector;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public abstract class Scene {
     private final ArrayList<IAnimatable> animatables;
 
     private final MouseHoveredManager mouseHoveredManager;
+    private final NotificationManager notificationManager;
     private final DebugManager debugManager;
 
     public Scene(String title) {
@@ -34,6 +36,7 @@ public abstract class Scene {
         this.animatables = new ArrayList<>();
 
         this.mouseHoveredManager = new MouseHoveredManager();
+        this.notificationManager = new NotificationManager(this,30,5);
         this.debugManager = new DebugManager(this);
     }
 
@@ -123,6 +126,10 @@ public abstract class Scene {
 
     public MouseHoveredManager getMouseHoveredManager() {
         return mouseHoveredManager;
+    }
+
+    public NotificationManager getNotificationManager() {
+        return notificationManager;
     }
 
     public DebugManager getDebugManager() {

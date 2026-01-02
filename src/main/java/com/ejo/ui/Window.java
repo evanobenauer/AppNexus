@@ -181,6 +181,9 @@ public class Window {
         //Draw all scene elements
         scene.draw();
 
+        //Draw all notifications on top
+        scene.getNotificationManager().drawNotifications();
+
         //Draw debug menu on top
         scene.getDebugManager().drawDebugMenu(debugMode);
 
