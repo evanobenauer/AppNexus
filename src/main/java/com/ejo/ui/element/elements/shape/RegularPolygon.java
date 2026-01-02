@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class RegularPolygon extends ConvexPolygon {
 
-    protected static final Angle FULL = new Angle(Math.TAU,true);
+    protected static final Angle FULL = new Angle(Math.TAU);
 
     private double radius;
     private int vertexCount;
@@ -36,11 +36,11 @@ public class RegularPolygon extends ConvexPolygon {
 
     @Override
     protected void updateVertices() {
-        double rot = (getRotation() != null ? getRotation().getRadians() : 0);
-        double radianIncrement = range.getRadians() / getVertexCount();
+        double rot = getRotation().getRadians();
+        double radianIncrement = range.getRadians() / vertexCount;
         ArrayList<Vector> vertices = new ArrayList<>();
         if (!range.equals(FULL)) vertices.add(Vector.NULL()); //Add center vertex if not full to make partial circle
-        for (int i = 0; i < getVertexCount(); i++) {
+        for (int i = 0; i < vertexCount; i++) {
             Vector vert = new Vector(Math.cos(radianIncrement * i + rot), Math.sin(radianIncrement * i + rot)).getMultiplied(getRadius());
             vertices.add(vert);
         }

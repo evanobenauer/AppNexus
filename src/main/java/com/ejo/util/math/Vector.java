@@ -141,6 +141,7 @@ public class Vector {
     }
 
     public Vector getUnitVector() {
+        if (getMagnitude() == 0) return Vector.NULL();
         return getMultiplied(1 / getMagnitude());
     }
 
@@ -269,7 +270,7 @@ public class Vector {
 
     @Override
     public String toString() {
-        return "<" + getX() + "|" + getY() + "|" + getZ() + ">";
+        return "<" + getXf() + "|" + getYf() + "|" + getZf() + ">";
     }
 
     @Override

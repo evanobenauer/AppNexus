@@ -4,5 +4,7 @@ public interface IAnimatable {
 
     void updateAnimation(float speed);
 
-    float getAnimationSpeed();
+    default float getAnimationSpeed() {
+        return 1f;
+    }
 }

@@ -2,6 +2,7 @@ package com.ejo.ui.element.elements.shape;
 
 import com.ejo.ui.element.Element;
 import com.ejo.ui.scene.Scene;
+import com.ejo.util.action.OnChange;
 import com.ejo.util.math.Vector;
 import org.lwjgl.opengl.GL11;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 public class ConvexPolygon extends Element {
 
+    private final OnChange<Vector[]> onChange;
     protected Vector[] vertices;
 
     private boolean outlined;
@@ -23,6 +25,7 @@ public class ConvexPolygon extends Element {
         this.color = color;
 
         this.vertices = vertices;
+        this.onChange = new OnChange<>();
     }
 
     public ConvexPolygon(Scene scene, Vector pos, Color color, Vector... vertices) {
@@ -32,7 +35,7 @@ public class ConvexPolygon extends Element {
 
     @Override
     public void draw(Vector mousePos) {
-        updateVertices();
+        onChange.run(vertices, this::updateVertices);
         GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GL11.glLineWidth(outlineWidth);
@@ -49,9 +52,9 @@ public class ConvexPolygon extends Element {
     //This algorithm (Separating Axis Thm). This only works if the polygon is convex
     // is kinda slow. So override it with polygon branches If possible. Use this only if unavailable
     public boolean getMouseHoveredCalculation(Vector mousePos) {
-        if (mousePos.getSubtracted(getCenter()).getMagnitude() > getMaximumVectorDistance()) {
+        if (mousePos.getSubtracted(getCenter()).getMagnitude() > getMaximumVectorDistance())
             return false;
-        }
+
         ArrayList<Vector> axisList = new ArrayList<>();
 
         //Get Axes
@@ -61,14 +64,7 @@ public class ConvexPolygon extends Element {
             Vector sideVector = vertex2.getSubtracted(vertex);
             Vector perpendicular = sideVector.getCross(new Vector(0, 0, 1));
             Vector axis = perpendicular.getUnitVector();
-            boolean isDuplicate = false;
-            for (Vector currentAxis : axisList) {
-                if (axis.equals(currentAxis)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if (!isDuplicate) axisList.add(axis);
+            /*if (!axisList.contains(axis))*/ axisList.add(axis);
         }
 
         //Check Axes for Separation
@@ -141,7 +137,8 @@ public class ConvexPolygon extends Element {
     // =================================================
 
     public void setCenter(Vector pos) {
-        setPos(getPos().getAdded(pos.getSubtracted(getCenter())));
+        Vector offset = getPos().getSubtracted(getCenter());
+        setPos(offset.getAdded(pos));
     }
 
     public void setOutlined(boolean outlined) {

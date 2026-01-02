@@ -21,11 +21,11 @@ public class Joystick extends Widget implements ITickable {
     private double magnitude;
 
     public Joystick(Scene scene, Vector pos, Color color, int radius) {
-        super(scene, pos, new Circle(scene,pos,radius,WIDGET_BACKGROUND_COLOR, Circle.Type.ULTRA), () -> {});
+        super(scene, pos, new Circle(scene,pos,radius,WIDGET_BACKGROUND_COLOR, Circle.Quality.ULTRA), () -> {});
         this.color = color;
         this.dragging = false;
 
-        this.stick = new Circle(scene,getPos(),radius / 1.5,color, Circle.Type.HIGH);
+        this.stick = new Circle(scene,getPos(),radius / 1.5,color, Circle.Quality.HIGH);
         this.angle = Angle.NULL();
         this.magnitude = 0;
     }

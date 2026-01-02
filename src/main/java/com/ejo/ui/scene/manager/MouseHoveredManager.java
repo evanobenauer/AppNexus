@@ -28,6 +28,7 @@ public class MouseHoveredManager {
 
     //Checks if the hovered element is in the list at all.
     // This method can be used to bypass the "isFirst"
+    // Think about potentially switching to a LinkedHashSet which is better for contains. May be unnecessary.
     public boolean isHovered(Element element) {
         return hoveredElements.contains(element);
     }

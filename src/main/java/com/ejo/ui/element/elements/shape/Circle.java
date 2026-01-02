@@ -11,34 +11,34 @@ import java.util.ArrayList;
 // It is just made up of many vertices so it is a "Circle"...
 public class Circle extends ConvexPolygon {
 
-    private static final Angle FULL = new Angle(360,true);
+    private static final Angle FULL = new Angle(Math.TAU);
 
     private double radius;
     private Angle range;
-    private Type type;
+    private Quality quality;
 
-    public Circle(Scene scene, Vector pos, double radius, Color color, boolean outlined, float outlineWidth, Angle range, Type type) {
+    public Circle(Scene scene, Vector pos, double radius, Color color, boolean outlined, float outlineWidth, Angle range, Quality quality) {
         super(scene, pos, color, outlined, outlineWidth);
         this.radius = radius;
         this.range = range;
-        this.type = type;
+        this.quality = quality;
         updateVertices();
     }
 
-    public Circle(Scene scene, Vector pos, double radius, Color color, Angle range, Type type) {
-        this(scene,pos,radius,color,false,1,range,type);
+    public Circle(Scene scene, Vector pos, double radius, Color color, Angle range, Quality quality) {
+        this(scene,pos,radius,color,false,1,range, quality);
     }
 
-    public Circle(Scene scene, Vector pos, double radius, Color color, Type type) {
-        this(scene,pos,radius,color,FULL,type);
+    public Circle(Scene scene, Vector pos, double radius, Color color, Quality quality) {
+        this(scene,pos,radius,color,FULL, quality);
     }
 
     @Override
     protected void updateVertices() {
-        double radianIncrement = range.getRadians() / type.getVertices();
+        double radianIncrement = range.getRadians() / quality.getVertices();
         ArrayList<Vector> vertices = new ArrayList<>();
         if (!range.equals(FULL)) vertices.add(Vector.NULL()); //Add center vertex if not full to make partial circle
-        for (int i = 0; i < type.getVertices(); i++) {
+        for (int i = 0; i < quality.getVertices(); i++) {
             Vector vert = new Vector(Math.cos(radianIncrement*i),Math.sin(radianIncrement*i)).getMultiplied(getRadius());
             vertices.add(vert);
         }
@@ -67,8 +67,8 @@ public class Circle extends ConvexPolygon {
         this.range = range;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setQuality(Quality quality) {
+        this.quality = quality;
     }
 
     @Override
@@ -84,11 +84,11 @@ public class Circle extends ConvexPolygon {
         return range;
     }
 
-    public Type getType() {
-        return type;
+    public Quality getQuality() {
+        return quality;
     }
 
-    public enum Type {
+    public enum Quality {
         POOR(10),
         LOW(16),
         MEDIUM(22),
@@ -96,7 +96,7 @@ public class Circle extends ConvexPolygon {
         ULTRA(34);
 
         private final int vertices;
-        Type(int vertices) {
+        Quality(int vertices) {
             this.vertices = vertices;
         }
         public int getVertices() {

@@ -12,8 +12,8 @@ import java.util.HashMap;
 
 public class FontManager {
 
-    private final HashMap<String, ByteBuffer> staticStringCache = new HashMap<>();
-    private final HashMap<Character, ByteBuffer> dynamicCharCache = new HashMap<>();
+    private final HashMap<String, ByteBuffer> staticStringCache;
+    private final HashMap<Character, ByteBuffer> dynamicCharCache;
 
     private final Font font;
     private final FontMetrics fontMetrics;
@@ -21,6 +21,9 @@ public class FontManager {
     public FontManager(Font font) {
         this.font = font;
         this.fontMetrics = generateFontMetrics();
+
+        this.staticStringCache = new HashMap<>();
+        this.dynamicCharCache = new HashMap<>();
     }
 
     public FontManager(String font, int style, int size) {
@@ -39,7 +42,7 @@ public class FontManager {
     // every time it changes which can be super costly
     public void drawDynamicString(Scene scene, String text, Vector pos, Color color) {
         if (text.isEmpty()) return;
-        pos = pos.clone(); //The position is cloned to avoid modifiying the original position vector
+        pos = pos.clone(); //The position is cloned to avoid modifying the original position vector
         for (char c : text.toCharArray()) {
             drawCachedText(scene,c,pos,color,dynamicCharCache);
             //Increment to the next position for the next character
@@ -48,6 +51,7 @@ public class FontManager {
     }
 
     private <T> void drawCachedText(Scene scene, T text, Vector pos, Color color, HashMap<T, ByteBuffer> cache) {
+        if (color.getAlpha() <= 0) return;
         ByteBuffer cachedImage;
         if (cache.containsKey(text)) {
             cachedImage = cache.get(text);
@@ -61,17 +65,16 @@ public class FontManager {
         };
         Vector size = new Vector(fontMetrics.stringWidth(String.valueOf(text)),fontMetrics.getHeight());
         GLUtil.applyTextureColorTint(color);
-        if (color.getAlpha() <= 0) return;
         GLUtil.drawTexture(cachedImage,pos.getAdded(0,yOffset),size);
         GLUtil.resetTextureColorTint();
     }
 
     protected BufferedImage generateTextBufferedImage(String text) {
         if (text.isEmpty()) return null;
-        int width = Math.max(1,fontMetrics.stringWidth(text));
-        int height = Math.max(1,fontMetrics.getHeight());
+        int width = fontMetrics.stringWidth(text);
+        int height = fontMetrics.getHeight();
         return ImageUtil.getBufferedImage(width,height,(graphics) -> {
-            graphics.setFont(getFont());
+            graphics.setFont(font);
             graphics.setColor(Color.WHITE);
 
             graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
