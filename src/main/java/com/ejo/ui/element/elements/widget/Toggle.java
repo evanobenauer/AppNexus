@@ -59,7 +59,7 @@ public class Toggle extends SettingWidget<Boolean> {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
         //NA
     }
 

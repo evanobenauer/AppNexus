@@ -14,6 +14,7 @@ public class PhysicsObject extends Element implements ITickable {
 
     private double mass;
     private double charge;
+    private double rotationalInertia;
 
     private Vector velocity;
     private Vector acceleration;
@@ -34,6 +35,7 @@ public class PhysicsObject extends Element implements ITickable {
 
         this.mass = 1;
         this.charge = 0;
+        this.rotationalInertia = 1;
 
         this.velocity = Vector.NULL();
         this.acceleration = Vector.NULL();
@@ -92,6 +94,10 @@ public class PhysicsObject extends Element implements ITickable {
         this.netForce.add(force);
     }
 
+    public void addTorque(double torque) {
+        this.netTorque += torque;
+    }
+
     // =================================================
 
     // SETTERS
@@ -115,9 +121,22 @@ public class PhysicsObject extends Element implements ITickable {
         return this;
     }
 
+    public PhysicsObject setRotationalInertia(double rotationalInertia) {
+        this.rotationalInertia = rotationalInertia;
+        return this;
+    }
+
     public PhysicsObject setVelocity(Vector velocity) {
         this.velocity = velocity;
         return this;
+    }
+
+    public void setTheta(double theta) {
+        this.theta = theta;
+    }
+
+    public void setOmega(double omega) {
+        this.omega = omega;
     }
 
     public PhysicsObject setDeltaT(double deltaT) {
@@ -135,6 +154,11 @@ public class PhysicsObject extends Element implements ITickable {
         return charge;
     }
 
+    public double getRotationalInertia() {
+        return rotationalInertia;
+    }
+
+
     public Vector getVelocity() {
         return velocity;
     }
@@ -146,6 +170,24 @@ public class PhysicsObject extends Element implements ITickable {
     public Vector getNetForce() {
         return netForce;
     }
+
+
+    public double getTheta() {
+        return theta;
+    }
+
+    public double getOmega() {
+        return omega;
+    }
+
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public double getNetTorque() {
+        return netTorque;
+    }
+
 
     public double getDeltaT() {
         return deltaT;

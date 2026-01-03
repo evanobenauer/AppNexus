@@ -77,7 +77,7 @@ public class Button extends Widget {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
         //NA
     }
 

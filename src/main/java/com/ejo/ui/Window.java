@@ -1,6 +1,7 @@
 package com.ejo.ui;
 
 import com.ejo.ui.scene.Scene;
+import com.ejo.ui.scene.manager.scenemanager.SceneManager;
 import com.ejo.util.misc.ImageUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
@@ -10,6 +11,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.net.URL;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -54,7 +56,6 @@ public class Window {
 
     public Window(String title, Vector size, Scene startingScene) {
         this.title = title;
-        this.pos = new Vector(100,100); //TODO: Make this position default to the center of the screen
         this.size = size;
         this.scene = startingScene;
 
@@ -85,6 +86,9 @@ public class Window {
     public Window init() {
         final long NULL = 0L;
         if (!glfwInit()) throw new IllegalStateException("Failed to init GLFW");
+
+        //Initialize the window's on-screen position
+        initWindowPosition();
 
         //Set AntiAliasing Level (Must be set before window creation)
         GLFW.glfwWindowHint(GLFW_SAMPLES, antiAliasingLevel);
@@ -123,17 +127,30 @@ public class Window {
         return this;
     }
 
+    private void initWindowPosition() {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        double width = gd.getDisplayMode().getWidth();
+        double height = gd.getDisplayMode().getHeight();
+        this.pos = new Vector(width / 2 - size.getX() / 2,height / 2 - size.getY() / 2);
+    }
+
     private void initInputCallbacks() {
         glfwSetKeyCallback(windowId, (window, key, scancode, action, mods) -> {
             scene.onKeyPress(key, scancode, action, mods);
+            for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+                scene.getSceneManagers().get(i).onKeyPress(key, scancode, action, mods);
             //TODO: Put Key.java interface in here
         });
         glfwSetMouseButtonCallback(windowId, (window, button, action, mods) -> {
             scene.onMouseClick(button, action, mods, getMousePos());
+            for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+                scene.getSceneManagers().get(i).onMouseClick(button, action, mods, getMousePos());
             //TODO: Put Mouse.java interface in here
         });
         glfwSetScrollCallback(windowId, (window, scrollX, scrollY) -> {
-            scene.onMouseScroll((int) scrollY, getMousePos());
+            scene.onMouseScroll(scrollY, getMousePos());
+            for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+                scene.getSceneManagers().get(i).onMouseScroll(scrollY, getMousePos());
         });
     }
 
@@ -181,11 +198,9 @@ public class Window {
         //Draw all scene elements
         scene.draw();
 
-        //Draw all notifications on top
-        scene.getNotificationManager().drawNotifications();
-
-        //Draw debug menu on top
-        scene.getDebugManager().drawDebugMenu(debugMode);
+        //Draw all scene managers on top of the scene draw method
+        for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+            scene.getSceneManagers().get(i).draw();
 
         //Finish Drawing here
         glfwSwapBuffers(windowId);
@@ -202,6 +217,10 @@ public class Window {
         updateMousePos();
         scene.tick();
         scene.updateMouseHovered(); //Maybe think about having this in the render loop?
+
+        //Tick all scene managers
+        for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+            scene.getSceneManagers().get(i).tick();
     }
 
     // =================================================

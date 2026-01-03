@@ -8,6 +8,6 @@ public interface IInteractable {
 
     void onMouseClick(int button, int action, int mods, Vector mousePos);
 
-    void onMouseScroll(int scroll, Vector mousePos);
+    void onMouseScroll(double scroll, Vector mousePos);
 
 }

@@ -71,7 +71,7 @@ public class Joystick extends Widget implements ITickable {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
         //NA
     }
 

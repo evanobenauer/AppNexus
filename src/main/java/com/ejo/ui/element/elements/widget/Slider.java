@@ -109,12 +109,12 @@ public class Slider<T extends Number> extends SettingWidget<T> {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
         if (!isMouseHovered()) return;
         double min = this.min.doubleValue();
         double max = this.max.doubleValue();
         double step = this.step.doubleValue();
-        double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() - (scroll * step),min,max),5);
+        double val = MathUtil.roundDouble(Math.clamp(getContainer().get().doubleValue() - (Math.round(scroll) * step),min,max),5);
         setCastedContainer(val);
         getAction().run();
     }

@@ -91,13 +91,13 @@ public class TextInput extends SettingWidget<String> {
 
             case GLFW.GLFW_KEY_SPACE -> {
                 if (isValidPress(key))
-                    buttonText = buttonText + " ";
+                    buttonText += " ";
             }
 
             default -> {
                 if (GLFW.glfwGetKeyName(key, -1) == null || GLFW.glfwGetKeyName(key, -1).equals("null")) break;
                 if (isValidPress(key))
-                    buttonText = buttonText + GLFW.glfwGetKeyName(key, -1);
+                    buttonText += GLFW.glfwGetKeyName(key, -1);
             }
         }
         if (buttonText.length() > charLimit) return;
@@ -113,7 +113,7 @@ public class TextInput extends SettingWidget<String> {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
 
     }
 

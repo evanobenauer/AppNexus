@@ -151,7 +151,7 @@ public class Cycle<T> extends SettingWidget<T> {
     }
 
     @Override
-    public void onMouseScroll(int scroll, Vector mousePos) {
+    public void onMouseScroll(double scroll, Vector mousePos) {
         if (!isMouseHovered()) return;
         pressingR = scroll < 0;
         pressingL = scroll > 0;
