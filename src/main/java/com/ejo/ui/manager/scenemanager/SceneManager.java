@@ -1,6 +1,5 @@
-package com.ejo.ui.scene.manager.scenemanager;
+package com.ejo.ui.manager.scenemanager;
 
-import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 

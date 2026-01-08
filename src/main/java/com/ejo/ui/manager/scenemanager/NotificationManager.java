@@ -1,8 +1,8 @@
-package com.ejo.ui.scene.manager.scenemanager;
+package com.ejo.ui.manager.scenemanager;
 
-import com.ejo.ui.element.elements.shape.RoundedRectangle;
+import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
-import com.ejo.ui.scene.manager.FontManager;
+import com.ejo.ui.manager.FontManager;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ColorUtil;
 
@@ -92,10 +92,6 @@ public class NotificationManager extends SceneManager {
 
     public void setFont(Font font) {
         this.fontManager = new FontManager(font);
-    }
-
-    public int getMaximumNotifications() {
-        return maximumNotifications;
     }
 
     private static class Notification {

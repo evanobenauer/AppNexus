@@ -1,8 +1,8 @@
-package com.ejo.ui.scene.manager.scenemanager;
+package com.ejo.ui.manager.scenemanager;
 
 import com.ejo.ui.Window;
 import com.ejo.ui.scene.Scene;
-import com.ejo.ui.scene.manager.FontManager;
+import com.ejo.ui.manager.FontManager;
 import com.ejo.util.math.Vector;
 
 import java.awt.*;

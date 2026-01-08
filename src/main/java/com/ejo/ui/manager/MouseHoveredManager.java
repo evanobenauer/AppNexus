@@ -1,4 +1,4 @@
-package com.ejo.ui.scene.manager;
+package com.ejo.ui.manager;
 
 import com.ejo.ui.element.Element;
 
@@ -39,7 +39,7 @@ public class MouseHoveredManager {
     }
 
     public Element getTop() {
-        return hoveredElements.getLast();
+        return hoveredElements.getLast(); //This returned a NoSuchElementException one time... Double check consistency
     }
 
     public LinkedList<Element> getHoveredElements() {

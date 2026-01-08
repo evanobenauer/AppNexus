@@ -1,8 +1,7 @@
-package com.ejo.ui.element.elements;
+package com.ejo.ui.element;
 
-import com.ejo.ui.element.Element;
-import com.ejo.ui.element.elements.shape.Rectangle;
-import com.ejo.ui.scene.manager.FontManager;
+import com.ejo.ui.element.shape.Rectangle;
+import com.ejo.ui.manager.FontManager;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 

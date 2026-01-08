@@ -1,4 +1,4 @@
-package com.ejo.ui.scene.manager;
+package com.ejo.ui.manager;
 
 import com.ejo.ui.GLUtil;
 import com.ejo.ui.scene.Scene;

@@ -1,9 +1,9 @@
-package com.ejo.ui.element.elements.widget;
+package com.ejo.ui.element.widget;
 
 import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
-import com.ejo.ui.element.elements.shape.ConvexPolygon;
+import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;

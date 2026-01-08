@@ -1,12 +1,11 @@
-package com.ejo.ui.element.elements.widget;
+package com.ejo.ui.element.widget.settingwidget;
 
-import com.ejo.ui.element.elements.Text;
-import com.ejo.ui.element.elements.shape.ConvexPolygon;
-import com.ejo.ui.element.elements.shape.Rectangle;
-import com.ejo.ui.element.elements.shape.RoundedRectangle;
+import com.ejo.ui.element.Text;
+import com.ejo.ui.element.shape.Rectangle;
+import com.ejo.ui.element.shape.RoundedRectangle;
+import com.ejo.ui.element.widget.Widget;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
-import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import com.ejo.util.time.StopWatch;
 

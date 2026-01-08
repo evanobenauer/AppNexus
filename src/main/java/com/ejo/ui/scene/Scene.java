@@ -5,14 +5,16 @@ import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
 import com.ejo.ui.element.base.ITickable;
-import com.ejo.ui.scene.manager.scenemanager.DebugManager;
-import com.ejo.ui.scene.manager.MouseHoveredManager;
-import com.ejo.ui.scene.manager.scenemanager.NotificationManager;
-import com.ejo.ui.scene.manager.scenemanager.SceneManager;
+import com.ejo.ui.manager.RemovalQueueManager;
+import com.ejo.ui.manager.scenemanager.DebugManager;
+import com.ejo.ui.manager.MouseHoveredManager;
+import com.ejo.ui.manager.scenemanager.NotificationManager;
+import com.ejo.ui.manager.scenemanager.SceneManager;
 import com.ejo.util.math.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 
 public abstract class Scene {
 
@@ -21,11 +23,12 @@ public abstract class Scene {
     private final String title;
 
     private final ArrayList<Element> elements;
-    private final ArrayList<ITickable> tickables;
-    private final ArrayList<IInteractable> interactables;
-    private final ArrayList<IAnimatable> animatables;
+    protected final ArrayList<ITickable> tickables;
+    protected final ArrayList<IInteractable> interactables;
+    protected final ArrayList<IAnimatable> animatables;
 
     private final MouseHoveredManager mouseHoveredManager;
+    private final RemovalQueueManager<Element> removalQueueManager;
 
     private final ArrayList<SceneManager> sceneManagers;
 
@@ -37,6 +40,7 @@ public abstract class Scene {
         this.animatables = new ArrayList<>();
 
         this.mouseHoveredManager = new MouseHoveredManager();
+        this.removalQueueManager = new RemovalQueueManager(elements,tickables,interactables,animatables);
 
         this.sceneManagers = new ArrayList<>();
         this.sceneManagers.add(new DebugManager(this)); //The debug manager is ALWAYS first
@@ -50,34 +54,46 @@ public abstract class Scene {
 
     // =================================================
 
+    //Draw Thread
     public void draw() {
         for (Element element : elements) element.draw(getWindow().getMousePos());
+        removalQueueManager.cycleQueuedItems(elements);
     }
 
-    public void tick() {
-        for (ITickable e : tickables) e.tick(getWindow().getMousePos());
-    }
-
+    //Draw Thread
     public void updateAnimation() {
         for (IAnimatable e : animatables) e.updateAnimation(e.getAnimationSpeed());
+        removalQueueManager.cycleQueuedItems(animatables);
     }
 
-    public void onKeyPress(int key, int scancode, int action, int mods) {
-        for (IInteractable e : interactables) e.onKeyPress(key,scancode,action,mods);
-    }
-
-    public void onMouseClick(int button, int action, int mods, Vector mousePos) {
-        for (IInteractable e : interactables) e.onMouseClick(button, action,mods,mousePos);
-    }
-
-    public void onMouseScroll(double scroll, Vector mousePos) {
-        for (IInteractable e : interactables) e.onMouseScroll(scroll,mousePos);
-    }
-
-
+    //Draw Thread
     public final void updateMouseHovered() {
         for (Element element : elements) element.updateMouseHovered(mouseHoveredManager,getWindow().getMousePos());
         mouseHoveredManager.cycleQueuedItems();
+    }
+
+    //Tick Thread
+    public void tick() {
+        for (ITickable e : tickables) e.tick(getWindow().getMousePos());
+        removalQueueManager.cycleQueuedItems(tickables);
+    }
+
+    //Tick Thread
+    public void onKeyPress(int key, int scancode, int action, int mods) {
+        for (IInteractable e : interactables) e.onKeyPress(key,scancode,action,mods);
+        removalQueueManager.cycleQueuedItems(interactables);
+    }
+
+    //Tick Thread
+    public void onMouseClick(int button, int action, int mods, Vector mousePos) {
+        for (IInteractable e : interactables) e.onMouseClick(button, action,mods,mousePos);
+        removalQueueManager.cycleQueuedItems(interactables);
+    }
+
+    //Tick Thread
+    public void onMouseScroll(double scroll, Vector mousePos) {
+        for (IInteractable e : interactables) e.onMouseScroll(scroll,mousePos);
+        removalQueueManager.cycleQueuedItems(interactables);
     }
 
     // =================================================
@@ -96,10 +112,7 @@ public abstract class Scene {
     }
 
     public void removeElement(Element element) {
-        this.elements.remove(element);
-        this.tickables.remove(element);
-        this.animatables.remove(element);
-        this.interactables.remove(element);
+        this.removalQueueManager.queueRemoval(element);
     }
 
     // =================================================
@@ -142,6 +155,10 @@ public abstract class Scene {
 
     public MouseHoveredManager getMouseHoveredManager() {
         return mouseHoveredManager;
+    }
+
+    public RemovalQueueManager<Element> getRemovalQueueManager() {
+        return removalQueueManager;
     }
 
     public DebugManager getDebugManager() {

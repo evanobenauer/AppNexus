@@ -1,7 +1,6 @@
 package com.ejo.ui;
 
 import com.ejo.ui.scene.Scene;
-import com.ejo.ui.scene.manager.scenemanager.SceneManager;
 import com.ejo.util.misc.ImageUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
@@ -198,6 +197,9 @@ public class Window {
         //Draw all scene elements
         scene.draw();
 
+        //Update all element mouse positions
+        scene.updateMouseHovered(); //Maybe think about having this in the tick loop?
+
         //Draw all scene managers on top of the scene draw method
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
             scene.getSceneManagers().get(i).draw();
@@ -216,7 +218,6 @@ public class Window {
         updateWindowPosSize();
         updateMousePos();
         scene.tick();
-        scene.updateMouseHovered(); //Maybe think about having this in the render loop?
 
         //Tick all scene managers
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)

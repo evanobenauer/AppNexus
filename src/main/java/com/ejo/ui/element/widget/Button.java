@@ -1,9 +1,8 @@
-package com.ejo.ui.element.elements.widget;
+package com.ejo.ui.element.widget;
 
-import com.ejo.ui.element.elements.Text;
-import com.ejo.ui.element.elements.shape.ConvexPolygon;
-import com.ejo.ui.element.elements.shape.Rectangle;
-import com.ejo.ui.element.elements.shape.RoundedRectangle;
+import com.ejo.ui.element.Text;
+import com.ejo.ui.element.shape.Rectangle;
+import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.scene.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;

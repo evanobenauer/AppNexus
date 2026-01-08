@@ -1,4 +1,4 @@
-package com.ejo.ui.element.elements.shape;
+package com.ejo.ui.element.shape;
 
 import com.ejo.ui.element.Element;
 import com.ejo.ui.scene.Scene;

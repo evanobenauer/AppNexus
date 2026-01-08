@@ -1,7 +1,7 @@
 package com.ejo.ui.element;
 
 import com.ejo.ui.scene.Scene;
-import com.ejo.ui.scene.manager.MouseHoveredManager;
+import com.ejo.ui.manager.MouseHoveredManager;
 import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 
