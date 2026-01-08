@@ -5,7 +5,7 @@ import com.ejo.ui.element.Element;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
 import com.ejo.ui.element.base.ITickable;
-import com.ejo.ui.manager.RemovalQueueManager;
+import com.ejo.ui.manager.ElementRemovalManager;
 import com.ejo.ui.manager.scenemanager.DebugManager;
 import com.ejo.ui.manager.MouseHoveredManager;
 import com.ejo.ui.manager.scenemanager.NotificationManager;
@@ -14,7 +14,6 @@ import com.ejo.util.math.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 
 public abstract class Scene {
 
@@ -22,13 +21,13 @@ public abstract class Scene {
 
     private final String title;
 
-    private final ArrayList<Element> elements;
-    protected final ArrayList<ITickable> tickables;
-    protected final ArrayList<IInteractable> interactables;
-    protected final ArrayList<IAnimatable> animatables;
+    private final ArrayList<Element> elements; //0
+    protected final ArrayList<ITickable> tickables; //1
+    protected final ArrayList<IInteractable> interactables; //2
+    protected final ArrayList<IAnimatable> animatables; //3
 
     private final MouseHoveredManager mouseHoveredManager;
-    private final RemovalQueueManager<Element> removalQueueManager;
+    private final ElementRemovalManager<Element> elementRemovalManager;
 
     private final ArrayList<SceneManager> sceneManagers;
 
@@ -40,7 +39,7 @@ public abstract class Scene {
         this.animatables = new ArrayList<>();
 
         this.mouseHoveredManager = new MouseHoveredManager();
-        this.removalQueueManager = new RemovalQueueManager(elements,tickables,interactables,animatables);
+        this.elementRemovalManager = new ElementRemovalManager(elements,tickables,interactables,animatables);
 
         this.sceneManagers = new ArrayList<>();
         this.sceneManagers.add(new DebugManager(this)); //The debug manager is ALWAYS first
@@ -57,13 +56,13 @@ public abstract class Scene {
     //Draw Thread
     public void draw() {
         for (Element element : elements) element.draw(getWindow().getMousePos());
-        removalQueueManager.cycleQueuedItems(elements);
+        elementRemovalManager.cycleQueuedElements(0);
     }
 
     //Draw Thread
     public void updateAnimation() {
         for (IAnimatable e : animatables) e.updateAnimation(e.getAnimationSpeed());
-        removalQueueManager.cycleQueuedItems(animatables);
+        elementRemovalManager.cycleQueuedElements(3);
     }
 
     //Draw Thread
@@ -75,25 +74,25 @@ public abstract class Scene {
     //Tick Thread
     public void tick() {
         for (ITickable e : tickables) e.tick(getWindow().getMousePos());
-        removalQueueManager.cycleQueuedItems(tickables);
+        elementRemovalManager.cycleQueuedElements(1);
     }
 
     //Tick Thread
     public void onKeyPress(int key, int scancode, int action, int mods) {
         for (IInteractable e : interactables) e.onKeyPress(key,scancode,action,mods);
-        removalQueueManager.cycleQueuedItems(interactables);
+        elementRemovalManager.cycleQueuedElements(2);
     }
 
     //Tick Thread
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         for (IInteractable e : interactables) e.onMouseClick(button, action,mods,mousePos);
-        removalQueueManager.cycleQueuedItems(interactables);
+        elementRemovalManager.cycleQueuedElements(2);
     }
 
     //Tick Thread
     public void onMouseScroll(double scroll, Vector mousePos) {
         for (IInteractable e : interactables) e.onMouseScroll(scroll,mousePos);
-        removalQueueManager.cycleQueuedItems(interactables);
+        elementRemovalManager.cycleQueuedElements(2);
     }
 
     // =================================================
@@ -112,7 +111,7 @@ public abstract class Scene {
     }
 
     public void removeElement(Element element) {
-        this.removalQueueManager.queueRemoval(element);
+        this.elementRemovalManager.queueElement(element);
     }
 
     // =================================================
@@ -157,8 +156,8 @@ public abstract class Scene {
         return mouseHoveredManager;
     }
 
-    public RemovalQueueManager<Element> getRemovalQueueManager() {
-        return removalQueueManager;
+    public ElementRemovalManager<Element> getRemovalQueueManager() {
+        return elementRemovalManager;
     }
 
     public DebugManager getDebugManager() {

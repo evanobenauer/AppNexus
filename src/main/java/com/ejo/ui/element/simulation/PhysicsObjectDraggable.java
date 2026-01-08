@@ -17,7 +17,10 @@ public class PhysicsObjectDraggable extends PhysicsObject implements IInteractab
 
     @Override
     public void tick(Vector mousePos) {
-        if (dragging) setPos(mousePos);
+        if (dragging) {
+            setPos(mousePos);
+            setVelocity(Vector.NULL());
+        }
         super.tick(mousePos);
     }
 

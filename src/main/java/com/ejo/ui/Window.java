@@ -197,9 +197,6 @@ public class Window {
         //Draw all scene elements
         scene.draw();
 
-        //Update all element mouse positions
-        scene.updateMouseHovered(); //Maybe think about having this in the tick loop?
-
         //Draw all scene managers on top of the scene draw method
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
             scene.getSceneManagers().get(i).draw();
@@ -233,7 +230,8 @@ public class Window {
     public void runMainRenderLoop() {
         Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId); //Update if the window is open constantly in here
-            scene.updateAnimation(); //TODO: Move this to a separate thread??
+            scene.updateMouseHovered(); //Maybe think about having this in the tick loop?
+            scene.updateAnimation(); //Maybe Move this to a separate thread??
             draw();
             fpsLogger.updateTickRate();
             fpsLogger.tick();

@@ -26,8 +26,6 @@ public class PhysicsObject extends Element implements ITickable {
 
     private double deltaT;
 
-    private boolean enabled;
-
     public PhysicsObject(Scene scene, Vector pos, ConvexPolygon polygon) {
         super(scene, pos);
 
@@ -41,8 +39,6 @@ public class PhysicsObject extends Element implements ITickable {
         this.acceleration = Vector.NULL();
         this.netForce = Vector.NULL();
         this.deltaT = .1f;
-
-        this.enabled = true;
 
         this.polygon.setPos(pos); //Just in case it was not set
         updatePolygon();
@@ -61,7 +57,6 @@ public class PhysicsObject extends Element implements ITickable {
 
     @Override
     public void tick(Vector mousePos) {
-        if (!enabled) return;
         updateAccelerationFromForce();
         updateKinematics();
         this.netForce = Vector.NULL();
@@ -99,15 +94,6 @@ public class PhysicsObject extends Element implements ITickable {
 
     public void addTorque(double torque) {
         this.netTorque += torque;
-    }
-
-    public void disable() {
-        this.enabled = false;
-        this.mass = 0;
-        this.velocity = Vector.NULL();
-        this.acceleration = Vector.NULL();
-        this.omega = 0;
-        this.alpha = 0;
     }
 
     // =================================================
