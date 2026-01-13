@@ -3,7 +3,7 @@ package com.ejo.ui.element.widget;
 import com.ejo.ui.element.Text;
 import com.ejo.ui.element.shape.Rectangle;
 import com.ejo.ui.element.shape.RoundedRectangle;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
 import org.lwjgl.glfw.GLFW;

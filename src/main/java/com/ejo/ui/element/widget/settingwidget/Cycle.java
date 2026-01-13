@@ -2,7 +2,7 @@ package com.ejo.ui.element.widget.settingwidget;
 
 import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.element.shape.RoundedRectangle;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
 import com.ejo.util.misc.ColorUtil;

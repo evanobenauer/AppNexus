@@ -1,4 +1,4 @@
-package com.ejo.util.misc;
+package com.ejo.util.lists;
 
 public class ListUtil {
 

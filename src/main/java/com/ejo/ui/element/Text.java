@@ -1,18 +1,18 @@
 package com.ejo.ui.element;
 
 import com.ejo.ui.element.shape.Rectangle;
-import com.ejo.ui.manager.FontManager;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.render.FontRenderer;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 
 import java.awt.*;
 import java.util.HashMap;
 
-public class Text extends Element {
+public class Text extends DrawableElement {
 
-    private static final HashMap<Font, FontManager> FONT_MANAGER_CACHE = new HashMap<>();
+    private static final HashMap<Font, FontRenderer> FONT_RENDERER_CACHE = new HashMap<>();
 
-    private FontManager fontManager;
+    private FontRenderer fontRenderer;
 
     private String text;
     private Color color;
@@ -23,14 +23,14 @@ public class Text extends Element {
         this.text = text;
         this.color = color;
         this.type = type;
-        updateFontManager(font);
+        updateFontRenderer(font);
     }
 
     @Override
     public void draw(Vector mousePos) {
         switch (type) {
-            case STATIC -> fontManager.drawStaticString(getScene(),text,getPos(),color);
-            case DYNAMIC -> fontManager.drawDynamicString(getScene(),text,getPos(),color);
+            case STATIC -> fontRenderer.drawStaticString(getScene(),text,getPos(),color);
+            case DYNAMIC -> fontRenderer.drawDynamicString(getScene(),text,getPos(),color);
         }
     }
 
@@ -39,15 +39,15 @@ public class Text extends Element {
         return Rectangle.isInRectangleBoundingBox(getPos(),getSize(),mousePos);
     }
 
-    //If a manager has already been created for the specific font, check for that manager. If the manager exists,
-    // then use that manager. If the manager does not exist, create a new one
-    private void updateFontManager(Font font) {
-        if (FONT_MANAGER_CACHE.containsKey(font)) {
-            this.fontManager = FONT_MANAGER_CACHE.get(font);
+    //If a renderer has already been created for the specific font, check for that renderer. If the renderer exists,
+    // then use that renderer. If the renderer does not exist, create a new one
+    private void updateFontRenderer(Font font) {
+        if (FONT_RENDERER_CACHE.containsKey(font)) {
+            this.fontRenderer = FONT_RENDERER_CACHE.get(font);
         } else {
-            FontManager fontManager = new FontManager(font);
-            FONT_MANAGER_CACHE.put(font,fontManager);
-            this.fontManager = fontManager;
+            FontRenderer fontRenderer = new FontRenderer(font);
+            FONT_RENDERER_CACHE.put(font, fontRenderer);
+            this.fontRenderer = fontRenderer;
         }
     }
 
@@ -58,21 +58,21 @@ public class Text extends Element {
     // =================================================
 
     public void setFont(String fontName) {
-        Font currentFont = fontManager.getFont();
+        Font currentFont = fontRenderer.getFont();
         Font font = new Font(fontName,currentFont.getStyle(),currentFont.getSize());
-        if (!currentFont.equals(font)) updateFontManager(font);
+        if (!currentFont.equals(font)) updateFontRenderer(font);
     }
 
     public void setStyle(int style) {
-        Font currentFont = fontManager.getFont();
+        Font currentFont = fontRenderer.getFont();
         Font font = new Font(currentFont.getFontName(),style,currentFont.getSize());
-        if (!currentFont.equals(font)) updateFontManager(font);
+        if (!currentFont.equals(font)) updateFontRenderer(font);
     }
 
     public void setFontSize(int size) {
-        Font currentFont = fontManager.getFont();
+        Font currentFont = fontRenderer.getFont();
         Font font = new Font(currentFont.getFontName(),currentFont.getStyle(),size);
-        if (!currentFont.equals(font)) updateFontManager(font);
+        if (!currentFont.equals(font)) updateFontRenderer(font);
     }
 
     public void setText(String text) {
@@ -89,15 +89,15 @@ public class Text extends Element {
 
 
     public String getFont() {
-        return fontManager.getFont().getFontName();
+        return fontRenderer.getFont().getFontName();
     }
 
     public int getStyle() {
-        return fontManager.getFont().getStyle();
+        return fontRenderer.getFont().getStyle();
     }
 
     public int getFontSize() {
-        return fontManager.getFont().getSize();
+        return fontRenderer.getFont().getSize();
     }
 
     public String getText() {
@@ -113,7 +113,7 @@ public class Text extends Element {
     }
 
     public Vector getSize() {
-        return new Vector(fontManager.getWidth(getScene(),text),fontManager.getHeight(getScene()));
+        return new Vector(fontRenderer.getWidth(getScene(),text), fontRenderer.getHeight(getScene()));
     }
 
     public enum Type {

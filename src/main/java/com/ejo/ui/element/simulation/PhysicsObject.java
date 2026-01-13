@@ -1,12 +1,12 @@
 package com.ejo.ui.element.simulation;
 
-import com.ejo.ui.element.Element;
+import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.ITickable;
 import com.ejo.ui.element.shape.ConvexPolygon;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 
-public class PhysicsObject extends Element implements ITickable {
+public class PhysicsObject extends DrawableElement implements ITickable {
 
     private final ConvexPolygon polygon;
 

@@ -1,6 +1,6 @@
 package com.ejo.ui;
 
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.render.GLUtil;
 import com.ejo.util.misc.ImageUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ThreadUtil;
@@ -199,7 +199,7 @@ public class Window {
 
         //Draw all scene managers on top of the scene draw method
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
-            scene.getSceneManagers().get(i).draw();
+            scene.getSceneManagers().get(i).draw(getMousePos());
 
         //Finish Drawing here
         glfwSwapBuffers(windowId);
@@ -215,10 +215,11 @@ public class Window {
         updateWindowPosSize();
         updateMousePos();
         scene.tick();
+        scene.updateMouseHovered(); //Maybe think about having this in the render loop?
 
         //Tick all scene managers
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
-            scene.getSceneManagers().get(i).tick();
+            scene.getSceneManagers().get(i).tick(getMousePos());
     }
 
     // =================================================
@@ -230,7 +231,6 @@ public class Window {
     public void runMainRenderLoop() {
         Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId); //Update if the window is open constantly in here
-            scene.updateMouseHovered(); //Maybe think about having this in the tick loop?
             scene.updateAnimation(); //Maybe Move this to a separate thread??
             draw();
             fpsLogger.updateTickRate();

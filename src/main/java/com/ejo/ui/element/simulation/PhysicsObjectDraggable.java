@@ -2,7 +2,7 @@ package com.ejo.ui.element.simulation;
 
 import com.ejo.ui.element.base.IInteractable;
 import com.ejo.ui.element.shape.ConvexPolygon;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import org.lwjgl.glfw.GLFW;
 

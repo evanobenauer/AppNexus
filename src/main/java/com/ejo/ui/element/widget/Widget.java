@@ -1,17 +1,17 @@
 package com.ejo.ui.element.widget;
 
-import com.ejo.ui.element.Element;
+import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.IAnimatable;
 import com.ejo.ui.element.base.IInteractable;
 import com.ejo.ui.element.shape.ConvexPolygon;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
 import com.ejo.util.misc.ColorUtil;
 
 import java.awt.*;
 
-public abstract class Widget extends Element implements IInteractable, IAnimatable  {
+public abstract class Widget extends DrawableElement implements IInteractable, IAnimatable  {
 
     protected static final Color WIDGET_BACKGROUND_COLOR = new Color(50,50,50,175);
 

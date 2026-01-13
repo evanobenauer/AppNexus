@@ -1,4 +1,4 @@
-package com.ejo.ui;
+package com.ejo.ui.render;
 
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ImageUtil;

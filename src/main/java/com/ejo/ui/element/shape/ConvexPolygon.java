@@ -1,7 +1,7 @@
 package com.ejo.ui.element.shape;
 
-import com.ejo.ui.element.Element;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.element.DrawableElement;
+import com.ejo.ui.Scene;
 import com.ejo.util.action.OnChange;
 import com.ejo.util.math.Vector;
 import org.lwjgl.opengl.GL11;
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ConvexPolygon extends Element {
+public class ConvexPolygon extends DrawableElement {
 
     private final OnChange<Vector[]> onChange;
     protected Vector[] vertices;

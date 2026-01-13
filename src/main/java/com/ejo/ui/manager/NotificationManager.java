@@ -1,8 +1,8 @@
-package com.ejo.ui.manager.scenemanager;
+package com.ejo.ui.manager;
 
 import com.ejo.ui.element.shape.RoundedRectangle;
-import com.ejo.ui.scene.Scene;
-import com.ejo.ui.manager.FontManager;
+import com.ejo.ui.Scene;
+import com.ejo.ui.render.FontRenderer;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ColorUtil;
 
@@ -17,7 +17,7 @@ public class NotificationManager extends SceneManager {
 
     private int maximumNotifications;
 
-    private FontManager fontManager;
+    private FontRenderer fontRenderer;
 
     public NotificationManager(Scene scene, int notificationSize, int maximumNotifications) {
         super(scene);
@@ -26,7 +26,7 @@ public class NotificationManager extends SceneManager {
         this.notifications = new ArrayList<>();
         this.queuedNotificationsRemoval = new ArrayList<>();
 
-        this.fontManager = new FontManager("Arial", Font.PLAIN,notificationSize);
+        this.fontRenderer = new FontRenderer("Arial", Font.PLAIN,notificationSize);
     }
 
     // =================================================
@@ -35,21 +35,21 @@ public class NotificationManager extends SceneManager {
 
     // =================================================
 
-    public void draw() {
+    public void draw(Vector mousePos) {
         cycleQueuedItems();
 
         int y = 2;
-        int border = fontManager.getFont().getSize() / 5;
+        int border = fontRenderer.getFont().getSize() / 5;
         for (Notification notification : notifications) {
 
-            double width = fontManager.getWidth(scene,notification.text);
+            double width = fontRenderer.getWidth(scene,notification.text);
             Vector pos = new Vector(scene.getWindow().getSize().getX() / 2 - width / 2,y);
 
-            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontManager.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(notification.fade,0,175))).draw();
-            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontManager.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(notification.fade,0,175)),30,true,2).draw();
-            fontManager.drawStaticString(scene, notification.text, pos, notification.getFadeColor());
+            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(notification.fade,0,175))).draw();
+            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(notification.fade,0,175)),30,true,2).draw();
+            fontRenderer.drawStaticString(scene, notification.text, pos, notification.getFadeColor());
 
-            y += fontManager.getFont().getSize() + border * 2;
+            y += fontRenderer.getFont().getSize() + border * 2;
 
             notification.updateFadeOut();
             queueNotificationRemoval(notification);
@@ -91,7 +91,7 @@ public class NotificationManager extends SceneManager {
     }
 
     public void setFont(Font font) {
-        this.fontManager = new FontManager(font);
+        this.fontRenderer = new FontRenderer(font);
     }
 
     private static class Notification {

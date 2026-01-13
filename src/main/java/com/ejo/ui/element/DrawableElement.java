@@ -1,11 +1,13 @@
 package com.ejo.ui.element;
 
-import com.ejo.ui.scene.Scene;
-import com.ejo.ui.manager.MouseHoveredManager;
+import com.ejo.ui.Scene;
+import com.ejo.ui.element.base.IDrawable;
+import com.ejo.ui.element.base.IHoverable;
+import com.ejo.ui.handler.MouseHoveredHandler;
 import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 
-public abstract class Element {
+public abstract class DrawableElement implements IDrawable, IHoverable {
 
     private final Scene scene;
 
@@ -13,7 +15,7 @@ public abstract class Element {
 
     private boolean mouseHovered;
 
-    public Element(Scene scene, Vector pos) {
+    public DrawableElement(Scene scene, Vector pos) {
         this.scene = scene;
         this.pos = pos;
         this.mouseHovered = false;
@@ -27,10 +29,6 @@ public abstract class Element {
 
     public abstract void draw(Vector mousePos);
 
-    public final void draw() {
-        draw(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
-    }
-
     public abstract boolean getMouseHoveredCalculation(Vector mousePos);
 
     // =================================================
@@ -39,10 +37,16 @@ public abstract class Element {
 
     // =================================================
 
-    public void updateMouseHovered(MouseHoveredManager manager, Vector mousePos) {
+
+    public final void draw() {
+        draw(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
+    }
+
+    @Override
+    public void updateMouseHovered(MouseHoveredHandler handler, Vector mousePos) {
         if (getMouseHoveredCalculation(mousePos)) {
-            manager.queueElement(this);
-            this.mouseHovered = manager.isTop(this);
+            handler.queueElement(this);
+            this.mouseHovered = handler.isTop(this);
         } else {
             this.mouseHovered = false;
         }
@@ -59,6 +63,7 @@ public abstract class Element {
     }
 
 
+    @Override
     public boolean isMouseHovered() {
         return this.mouseHovered;
     }

@@ -1,7 +1,6 @@
-package com.ejo.ui.manager;
+package com.ejo.ui.render;
 
-import com.ejo.ui.GLUtil;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ImageUtil;
 
@@ -10,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-public class FontManager {
+public class FontRenderer {
 
     private final HashMap<String, ByteBuffer> staticStringCache;
     private final HashMap<Character, ByteBuffer> dynamicCharCache;
@@ -18,7 +17,7 @@ public class FontManager {
     private final Font font;
     private final FontMetrics fontMetrics;
 
-    public FontManager(Font font) {
+    public FontRenderer(Font font) {
         this.font = font;
         this.fontMetrics = generateFontMetrics();
 
@@ -26,7 +25,7 @@ public class FontManager {
         this.dynamicCharCache = new HashMap<>();
     }
 
-    public FontManager(String font, int style, int size) {
+    public FontRenderer(String font, int style, int size) {
         this(new Font(font,style,size));
     }
 

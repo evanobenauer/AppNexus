@@ -2,13 +2,13 @@ package com.ejo.ui.element;
 
 import com.ejo.ui.element.shape.Rectangle;
 import com.ejo.ui.element.shape.RoundedRectangle;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
 
 import java.awt.*;
 
-public class ProgressBar<T extends Number> extends Element {
+public class ProgressBar<T extends Number> extends DrawableElement {
 
     private String title;
     private Vector size;

@@ -1,6 +1,6 @@
 package com.ejo.ui.element.shape;
 
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Angle;
 import com.ejo.util.math.Vector;
 

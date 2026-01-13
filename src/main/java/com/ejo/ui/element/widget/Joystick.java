@@ -2,7 +2,7 @@ package com.ejo.ui.element.widget;
 
 import com.ejo.ui.element.base.ITickable;
 import com.ejo.ui.element.shape.Circle;
-import com.ejo.ui.scene.Scene;
+import com.ejo.ui.Scene;
 import com.ejo.util.math.Angle;
 import com.ejo.util.math.Vector;
 import org.lwjgl.glfw.GLFW;
