@@ -11,7 +11,7 @@ import com.ejo.util.math.Vector;
 // a separate class overlaying the scene
 public abstract class SceneManager implements IDrawable, ITickable, IInteractable, IAnimatable {
 
-    protected final Scene scene;
+    protected Scene scene;
 
     public SceneManager(Scene scene) {
         this.scene = scene;
@@ -26,7 +26,6 @@ public abstract class SceneManager implements IDrawable, ITickable, IInteractabl
     public void updateAnimation(float speed) {
     }
 
-
     public void onKeyPress(int key, int scancode, int action, int mods) {
     }
 
@@ -36,4 +35,10 @@ public abstract class SceneManager implements IDrawable, ITickable, IInteractabl
     public void onMouseScroll(double scroll, Vector mousePos) {
     }
 
+    //The reason this exists is in case you want to continue using the same manager, even after changing scenes.
+    // An example of why this is good, is the NotificationManager, which won't reset the overlay after a change
+    // A manager with a progress bar or any other item not needed to change will be useful too.
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
 }

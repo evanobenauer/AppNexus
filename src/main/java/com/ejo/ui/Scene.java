@@ -20,11 +20,11 @@ public abstract class Scene {
     //The scene is made up of multiple lists for each element base.
     // All lists are kept in sync through the addElement and removeElement methods.
     // All lists are QueueableArrayLists. So they have the ability to have easy and SAFE addition/removals
-    protected final QueueableArrayList<DrawableElement> drawableElements; //0
-    protected final QueueableArrayList<IHoverable> hoverables; //1
-    protected final QueueableArrayList<ITickable> tickables; //2
-    protected final QueueableArrayList<IInteractable> interactables; //3
-    protected final QueueableArrayList<IAnimatable> animatables; //4
+    protected final QueueableArrayList<DrawableElement> drawableElements;
+    protected final QueueableArrayList<IHoverable> hoverables;
+    protected final QueueableArrayList<ITickable> tickables;
+    protected final QueueableArrayList<IInteractable> interactables;
+    protected final QueueableArrayList<IAnimatable> animatables;
 
     private final MouseHoveredHandler mouseHoveredHandler;
 
@@ -61,24 +61,25 @@ public abstract class Scene {
         animatables.forIQueued((e) -> e.updateAnimation(e.getAnimationSpeed()));
     }
 
-    //Tick Thread
-    public void tick() {
-        tickables.forIQueued((e) -> e.tick(getWindow().getMousePos()));
-    }
-
-    //Tick Thread
+    //Draw Thread (I think because it's a registered callback)
     public void onKeyPress(int key, int scancode, int action, int mods) {
         interactables.forIQueued((e) -> e.onKeyPress(key, scancode, action, mods));
     }
 
-    //Tick Thread
+    //Draw Thread (I think because it's a registered callback)
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         interactables.forIQueued((e) -> e.onMouseClick(button, action, mods, mousePos));
     }
 
-    //Tick Thread
+    //Draw Thread (I think because it's a registered callback)
     public void onMouseScroll(double scroll, Vector mousePos) {
         interactables.forIQueued((e) -> e.onMouseScroll(scroll,mousePos));
+    }
+
+
+    //Tick Thread
+    public void tick() {
+        tickables.forIQueued((e) -> e.tick(getWindow().getMousePos()));
     }
 
     //Tick Thread
@@ -131,6 +132,10 @@ public abstract class Scene {
             if (element instanceof IInteractable e) interactables.remove(e);
             if (element instanceof IAnimatable e) animatables.remove(e);
         }
+    }
+
+    public void addSceneManagers(SceneManager... managers) {
+        sceneManagers.addAll(Arrays.asList(managers));
     }
 
     // =================================================

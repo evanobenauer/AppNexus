@@ -15,7 +15,7 @@ public class Joystick extends Widget implements ITickable {
 
     private boolean dragging;
 
-    private Circle stick;
+    private final Circle stick;
 
     private Angle angle;
     private double magnitude;

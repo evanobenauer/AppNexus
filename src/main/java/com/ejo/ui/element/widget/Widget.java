@@ -51,7 +51,7 @@ public abstract class Widget extends DrawableElement implements IInteractable, I
     // =================================================
 
     @Override
-    public void draw(Vector mousePos) {
+    public final void draw(Vector mousePos) {
         drawWidgetBase(mousePos);
         drawWidget(mousePos);
         if (drawHoverHighlight) drawHoverHighlight(mousePos);
@@ -79,7 +79,7 @@ public abstract class Widget extends DrawableElement implements IInteractable, I
     }
 
     @Override
-    public final float getAnimationSpeed() {
+    public float getAnimationSpeed() {
         return 10;
     }
 
