@@ -38,8 +38,9 @@ public class MouseHoveredHandler {
         return (!hoveredElements.isEmpty() && getTop() == element);
     }
 
+    //This returned a NoSuchElementException one time... Double check consistency
     public DrawableElement getTop() {
-        return hoveredElements.getLast(); //This returned a NoSuchElementException one time... Double check consistency
+        return hoveredElements.getLast();
     }
 
     public LinkedList<DrawableElement> getHoveredElements() {

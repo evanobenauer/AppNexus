@@ -2,69 +2,168 @@ package com.ejo.ui.manager;
 
 import com.ejo.ui.Scene;
 import com.ejo.ui.element.DrawableElement;
-import com.ejo.ui.element.Text;
 import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.element.widget.settingwidget.SettingWidget;
+import com.ejo.ui.render.FontRenderer;
 import com.ejo.util.math.Vector;
+import com.ejo.util.misc.AnimationUtil;
+import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.time.StopWatch;
 
 import java.awt.*;
+import java.util.*;
 
 //The purpose of this is to render all tooltips above the widgets. Only create a render if needed for the scene
 public class WidgetTooltipManager extends SceneManager {
 
-    private final float hoverDelayS;
+    private final HashSet<Tooltip> tooltips;
+    private final ArrayList<Tooltip> queuedTooltipsRemoval;
 
-    private final StopWatch tooltipHoverWatch;
+    private float hoverDelayS;
 
-    public WidgetTooltipManager(Scene scene, float hoverDelayS) {
+    private FontRenderer fontRenderer;
+
+    public WidgetTooltipManager(Scene scene, int tooltipSize, float hoverDelayS) {
         super(scene);
+        this.tooltips = new HashSet<>();
+        this.queuedTooltipsRemoval = new ArrayList<>();
+
         this.hoverDelayS = hoverDelayS;
-        this.tooltipHoverWatch = new StopWatch();
+        this.fontRenderer = new FontRenderer("Arial", Font.PLAIN, tooltipSize);
     }
+
+    // =================================================
+
+    // USABLE METHODS
+
+    // =================================================
 
     @Override
     public void draw(Vector mousePos) {
-        boolean hovered = false;
-        for (DrawableElement element : scene.getDrawableElements()) {
-            if (!(element instanceof SettingWidget<?> widget)) continue;
-            if (widget.isMouseHovered()) {
-                hovered = true;
-                break;
-            }
+        cycleQueuedItems();
+
+        addTooltips();
+
+        for (Tooltip tooltip : tooltips) {
+            tooltip.draw(scene, fontRenderer, mousePos);
+            queueTooltipRemoval(tooltip);
         }
+    }
+
+    @Override
+    public void updateAnimation(float speed) {
+        for (Tooltip tooltip : tooltips) {
+            tooltip.updateAnimation(speed * 20);
+        }
+    }
+
+    // =================================================
+
+    // INTERNAL METHODS
+
+    // =================================================
+
+    private void addTooltips() {
         for (DrawableElement element : scene.getDrawableElements()) {
             if (!(element instanceof SettingWidget<?> widget)) continue;
             if (widget.getDescription().isEmpty()) continue;
-            if (hovered) {
+
+            if (widget.isMouseHovered())
+                tooltips.add(new Tooltip(widget, hoverDelayS, new Color(0, 0, 0, 150)));
+        }
+    }
+
+    private void queueTooltipRemoval(Tooltip tooltip) {
+        if (tooltip.hoverFade <= 0) queuedTooltipsRemoval.add(tooltip);
+    }
+
+    private void cycleQueuedItems() {
+        queuedTooltipsRemoval.forEach(tooltips::remove);
+        queuedTooltipsRemoval.clear();
+    }
+
+    // =================================================
+
+    // GETTERS/SETTERS
+
+    // =================================================
+
+    public void setHoverDelay(float hoverDelayS) {
+        this.hoverDelayS = hoverDelayS;
+    }
+
+    public void setFont(Font font) {
+        this.fontRenderer = new FontRenderer(font);
+    }
+
+    private static class Tooltip {
+
+        final SettingWidget<?> widget;
+
+        final float hoverDelayS;
+
+        final Color color;
+
+
+        final StopWatch tooltipHoverWatch;
+
+        float hoverFade;
+
+        Tooltip(SettingWidget<?> widget, float hoverDelayS, Color color) {
+            this.widget = widget;
+            this.hoverDelayS = hoverDelayS;
+            this.color = color;
+
+            this.tooltipHoverWatch = new StopWatch();
+
+            this.hoverFade = 1f;
+        }
+
+        void draw(Scene scene, FontRenderer fontRenderer, Vector mousePos) {
+            int size = fontRenderer.getFont().getSize();
+            int border = size / 5;
+
+            String str = widget.getDescription();
+
+            Vector pos = mousePos.getAdded(border, -(size + border * 2) / 2);
+            int width = fontRenderer.getWidth(scene, str);
+            if (pos.getX() + width + border > widget.getScene().getWindow().getSize().getX())
+                pos.setX(widget.getScene().getWindow().getSize().getX() - width - border);
+
+            Color backgroundColor = ColorUtil.getWithAlpha(color, color.getAlpha() * (hoverFade / 255));
+            new RoundedRectangle(widget.getScene(), pos, new Vector(width + border * 2, fontRenderer.getHeight(null) + border * 2), backgroundColor).draw();
+
+            fontRenderer.drawStaticString(scene, str, pos.getAdded(border, border), ColorUtil.getWithAlpha(Color.WHITE, hoverFade));
+        }
+
+        void updateAnimation(float speed) {
+            if (isHoverDelayCleared()) {
+                hoverFade = AnimationUtil.getNextAnimationValue(true, hoverFade, 0, 255, speed * 2);
+            } else if (!widget.isMouseHovered()) {
+                hoverFade = AnimationUtil.getNextAnimationValue(false, hoverFade, 0, 255, speed);
+            }
+        }
+
+        boolean isHoverDelayCleared() {
+            if (widget.isMouseHovered()) {
                 tooltipHoverWatch.start();
             } else {
                 tooltipHoverWatch.stop();
             }
-
-            if (!widget.getDescription().isEmpty() && widget.isMouseHovered() && tooltipHoverWatch.hasTimePassedS(hoverDelayS))
-                this.drawTooltip(widget, scene.getMousePos(), widget.getDescription(), 50, Text.Type.STATIC);
+            return tooltipHoverWatch.hasTimePassedS(hoverDelayS);
         }
-    }
 
-    //TODO: Replace this eventually with a tooltip element object. This'll do for now
-    // This will prevent the tooltip from rendering underneath higher items.
-    @Deprecated
-    private void drawTooltip(SettingWidget<?> widget, Vector mousePos, String description, int size, Text.Type type) {
-        Vector pos = mousePos.getAdded(6, -size / 2);
 
-        int border = size / 5;
-        int textSize = size - border * 2;
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Tooltip tooltip)) return false;
+            return tooltip.widget.equals(widget) && tooltip.color.equals(color);
+        }
 
-        Text text = new Text(widget.getScene(), pos.getAdded(border + 2, border), description, new Font("Arial", Font.PLAIN, textSize), Color.WHITE, type);
-
-        int width = text.getSize().getXi();
-        if (pos.getX() + width + border > widget.getScene().getWindow().getSize().getX())
-            pos.setX(widget.getScene().getWindow().getSize().getX() - width - border);
-
-        new RoundedRectangle(widget.getScene(), pos, new Vector(width + border * 2, text.getSize().getYi() + border * 2), new Color(0, 0, 0, 150)).draw();
-
-        text.draw();
+        @Override
+        public int hashCode() {
+            return widget.hashCode() + color.hashCode();
+        }
     }
 
 }

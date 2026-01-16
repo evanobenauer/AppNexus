@@ -232,6 +232,8 @@ public class Window {
         Runnable renderItems = () -> {
             this.open = !glfwWindowShouldClose(windowId); //Update if the window is open constantly in here
             scene.updateAnimation(); //Maybe Move this to a separate thread??
+            for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
+                scene.getSceneManagers().get(i).updateAnimation(scene.getSceneManagers().get(i).getAnimationSpeed());
             draw();
             fpsLogger.updateTickRate();
             fpsLogger.tick();

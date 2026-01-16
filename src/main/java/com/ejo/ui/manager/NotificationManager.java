@@ -35,25 +35,24 @@ public class NotificationManager extends SceneManager {
 
     // =================================================
 
+    @Override
     public void draw(Vector mousePos) {
         cycleQueuedItems();
 
         int y = 2;
         int border = fontRenderer.getFont().getSize() / 5;
         for (Notification notification : notifications) {
-
-            double width = fontRenderer.getWidth(scene,notification.text);
-            Vector pos = new Vector(scene.getWindow().getSize().getX() / 2 - width / 2,y);
-
-            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(notification.fade,0,175))).draw();
-            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(notification.fade,0,175)),30,true,2).draw();
-            fontRenderer.drawStaticString(scene, notification.text, pos, notification.getFadeColor());
-
+            notification.draw(scene,fontRenderer,border,y);
             y += fontRenderer.getFont().getSize() + border * 2;
 
-            notification.updateFadeOut();
             queueNotificationRemoval(notification);
         }
+    }
+
+    @Override
+    public void updateAnimation(float speed) {
+        for (Notification notification : notifications)
+            notification.updateAnimation();
     }
 
     public void sendNotification(String text, Color color, float fadeSpeed) {
@@ -109,7 +108,16 @@ public class NotificationManager extends SceneManager {
             this.fade = 255f;
         }
 
-        void updateFadeOut() {
+        void draw(Scene scene, FontRenderer fontRenderer, float border, int y) {
+            double width = fontRenderer.getWidth(scene,text);
+            Vector pos = new Vector(scene.getWindow().getSize().getX() / 2 - width / 2,y);
+
+            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(fade,0,175))).draw();
+            new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(fade,0,175)),30,true,2).draw();
+            fontRenderer.drawStaticString(scene, text, pos, getFadeColor());
+        }
+
+        void updateAnimation() {
             this.fade = Math.clamp(fade - fadeSpeed, 0, 255);
         }
 
