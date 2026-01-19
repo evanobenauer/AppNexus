@@ -6,8 +6,8 @@
 
 App Nexus is an application library utilizing OpenGL through LWJGL. The application contains utility classes and user interface classes perfect for creating various applications ranging from simulations, videogames, editors, and other simple to complex applicaiton types.
 
-To add GlowUI as a dependency, you must add this chunk of code to your gradle java project:
-This includes GlowLib and LWJGL3
+To add AppNexus as a dependency and use its fetures, you must add this chunk of code to your gradle java project:
+This includes LWJGL3 dependency code
 
 ```groovy
 repositories {
@@ -19,8 +19,7 @@ project.ext.lwjglVersion = "3.3.1"
 project.ext.lwjglNatives = "natives-windows"
 
 dependencies {
-    implementation 'com.github.evanobenauer:GlowUI:1.0.0'
-    implementation 'com.github.evanobenauer:GlowLib:1.1.3'
+    implementation 'com.github.evanobenauer:AppNexus:1.0.0'
 
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
