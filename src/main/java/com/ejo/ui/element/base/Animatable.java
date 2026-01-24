@@ -1,6 +1,6 @@
 package com.ejo.ui.element.base;
 
-public interface IAnimatable {
+public interface Animatable {
 
     void updateAnimation(float speed);
 

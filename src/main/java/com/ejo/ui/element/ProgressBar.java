@@ -3,6 +3,7 @@ package com.ejo.ui.element;
 import com.ejo.ui.element.shape.Rectangle;
 import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.Scene;
+import com.ejo.ui.element.widget.settingwidget.SettingWidget;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
 
@@ -51,9 +52,7 @@ public class ProgressBar<T extends Number> extends DrawableElement {
         //Draw Title
         int percentage = (int)(barPercent * 100);
         String title = getTitle() + (!getTitle().isEmpty() ? ": " : "") + (showPercentage ? percentage + "%" : "");
-        Text text = new Text(getScene(),Vector.NULL(),title,new Font("Arial", Font.PLAIN,getSize().getYi() - border),Color.WHITE, Text.Type.STATIC);
-        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2,border / 2));
-        text.draw();
+        SettingWidget.drawWidgetTitle(getScene(),getPos(),getSize(),title,border,true,Color.WHITE);
     }
 
     @Override

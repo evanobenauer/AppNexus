@@ -1,6 +1,6 @@
 package com.ejo.ui.element.widget;
 
-import com.ejo.ui.element.base.ITickable;
+import com.ejo.ui.element.base.Tickable;
 import com.ejo.ui.element.shape.Circle;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Angle;
@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
-public class Joystick extends Widget implements ITickable {
+public class Joystick extends Widget implements Tickable {
 
     private Color color;
 

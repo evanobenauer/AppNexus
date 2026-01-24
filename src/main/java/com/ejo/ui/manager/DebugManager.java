@@ -7,6 +7,7 @@ import com.ejo.util.math.Vector;
 
 import java.awt.*;
 
+//This is MEANT to be overwritten, changed, and modified. All scenes can set their debug manager after creation
 public class DebugManager extends SceneManager {
 
     protected FontRenderer fontRenderer;
@@ -25,39 +26,39 @@ public class DebugManager extends SceneManager {
         //Draw FPS/TPS
         Vector pos = new Vector(2,2);
         boolean label = true;
-        fontRenderer.drawDynamicString(scene,(label ? "FPS: " : "") + scene.getWindow().getFPS() + (showAdvanced ? " (" + scene.getWindow().getMaxFPS() + (scene.getWindow().isVSync() ? "V" : "") + (scene.getWindow().getPerformanceMode().equals(Window.PerformanceMode.ECONOMIC) ? "E" : "") + ")" : ""),pos,Color.WHITE);
-        fontRenderer.drawDynamicString(scene,(label ? "TPS: " : "") + scene.getWindow().getTPS() + (showAdvanced ? " (" + scene.getWindow().getMaxTPS() + ")" : ""),pos.getAdded(new Vector(0, fontRenderer.getFont().getSize())),Color.WHITE);
+        fontRenderer.drawDynamicString((label ? "FPS: " : "") + scene.getWindow().getFPS() + (showAdvanced ? " (" + scene.getWindow().getMaxFPS() + (scene.getWindow().isVSync() ? "V" : "") + (scene.getWindow().getPerformanceMode().equals(Window.PerformanceMode.ECONOMIC) ? "E" : "") + ")" : ""),pos,Color.WHITE);
+        fontRenderer.drawDynamicString((label ? "TPS: " : "") + scene.getWindow().getTPS() + (showAdvanced ? " (" + scene.getWindow().getMaxTPS() + ")" : ""),pos.getAdded(new Vector(0, fontRenderer.getFont().getSize())),Color.WHITE);
         pos.add(new Vector(0,20));
 
         //Draw Scene Name
-        fontRenderer.drawStaticString(scene,"Scene: " + scene.getTitle(),pos,Color.WHITE);
+        fontRenderer.drawStaticString("Scene: " + scene.getTitle(),pos,Color.WHITE);
         pos.add(new Vector(0,10));
 
         //Draw Hovered Items
         String hov = "Hov: null";
-        if (!scene.getMouseHoveredHandler().getHoveredElements().isEmpty())
-            hov = "Hov: " + scene.getMouseHoveredHandler().getTop() + (showAdvanced ? " " + scene.getMouseHoveredHandler().getHoveredElements().reversed().toString() : "");
-        if (showAdvanced) fontRenderer.drawDynamicString(scene,hov,pos,Color.WHITE);
-        else fontRenderer.drawStaticString(scene,hov,pos,Color.WHITE);
+        if (!scene.getMouseHoveredHandler().getHoverables().isEmpty())
+            hov = "Hov: " + scene.getMouseHoveredHandler().getTop() + (showAdvanced ? " " + scene.getMouseHoveredHandler().getHoverables().reversed().toString() : "");
+        if (showAdvanced) fontRenderer.drawDynamicString(hov,pos,Color.WHITE);
+        else fontRenderer.drawStaticString(hov,pos,Color.WHITE);
         pos.add(new Vector(0,10));
 
         //Draw Mouse Pos
         int mouseXi = scene.getWindow().getMousePos().getXi();
         int mouseYi = scene.getWindow().getMousePos().getYi();
         String mousePosS = "MousePos: " + mouseXi + (showAdvanced ? "(" + Math.round(mouseXi * scene.getWindow().getUiScale()) + ")" : "") + ", " + mouseYi + (showAdvanced ? "(" + Math.round(mouseYi * scene.getWindow().getUiScale()) + ")" : "");
-        fontRenderer.drawDynamicString(scene,mousePosS,pos,Color.WHITE);
+        fontRenderer.drawDynamicString(mousePosS,pos,Color.WHITE);
         pos.add(new Vector(0,10));
 
         //Draw Window Size
         int sizeXi = scene.getWindow().getSize().getXi();
         int sizeYi = scene.getWindow().getSize().getYi();
         String windowSize = "Window Size: " + sizeXi + (showAdvanced ? "(" + Math.round(sizeXi * scene.getWindow().getUiScale()) + ")" : "") + ", " + sizeYi + (showAdvanced ? "(" + Math.round(sizeYi * scene.getWindow().getUiScale()) + ")" : "");
-        fontRenderer.drawStaticString(scene,windowSize,pos,Color.WHITE);
+        fontRenderer.drawStaticString(windowSize,pos,Color.WHITE);
         pos.add(new Vector(0,10));
 
         //Draw uiScale
         String uiScale = "UI Scale: " + (int)(scene.getWindow().getUiScale() * 100) + "%";
-        fontRenderer.drawStaticString(scene,uiScale,pos,Color.WHITE);
+        fontRenderer.drawStaticString(uiScale,pos,Color.WHITE);
         pos.add(new Vector(0,10));
     }
 

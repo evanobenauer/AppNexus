@@ -27,6 +27,7 @@ public class ImageUtil {
         //Red and Blue are inverted for some reason. So we swap them back. Idk why man...
         return invertRB(getBufferedImage(width,height,(g) -> {
             try {
+                //This isn't reading transparency for some reason. Use blackToTransparent to apply it
                 BufferedImage read = ImageIO.read(imageURL);
                 g.scale((double) width / read.getWidth(), (double) height / read.getHeight());
                 g.drawImage(read, 0, 0, null);
@@ -52,6 +53,19 @@ public class ImageUtil {
                 Color c = new Color(image.getRGB(x, y));
                 Color c2 = new Color(c.getBlue(),c.getGreen(),c.getRed(),c.getAlpha());
                 image.setRGB(x,y,c2.hashCode());
+            }
+        }
+        return image;
+    }
+
+    public static BufferedImage blackToTransparent(BufferedImage image) {
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                Color c = new Color(image.getRGB(x, y));
+                if (c.equals(Color.BLACK)) {
+                    Color c2 = new Color(0,0,0,0);
+                    image.setRGB(x,y,c2.hashCode());
+                }
             }
         }
         return image;

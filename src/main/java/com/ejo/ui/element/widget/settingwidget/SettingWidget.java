@@ -1,17 +1,19 @@
 package com.ejo.ui.element.widget.settingwidget;
 
 import com.ejo.ui.element.Text;
+import com.ejo.ui.element.base.Descriptable;
 import com.ejo.ui.element.shape.Rectangle;
 import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.element.widget.Widget;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
-import com.ejo.util.time.StopWatch;
 
 import java.awt.*;
 
-public abstract class SettingWidget<T> extends Widget {
+public abstract class SettingWidget<T> extends Widget implements Descriptable {
+
+    protected static final Color SETTING_WIDGET_BACKGROUND_COLOR = new Color(50,50,50,175);
 
     //This is where the setting is held. Whether it is a savable setting or a simple container
     private Container<T> container;
@@ -21,7 +23,7 @@ public abstract class SettingWidget<T> extends Widget {
     private String description;
 
     public SettingWidget(Scene scene, Vector pos, Vector size, Container<T> container, Runnable action, String title, String description) {
-        super(scene, pos, new RoundedRectangle(scene,pos,size,WIDGET_BACKGROUND_COLOR), action);
+        super(scene, pos, new RoundedRectangle(scene,pos,size, SETTING_WIDGET_BACKGROUND_COLOR), action);
         this.container = container;
 
         this.title = title;
@@ -43,15 +45,21 @@ public abstract class SettingWidget<T> extends Widget {
         drawWidgetTitle(title,border,centered,Color.WHITE);
     }
 
+    //This variation is for internal access for SettingWidgets only
     protected void drawWidgetTitle(String title, int border, boolean centered, Color color) {
-        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
-        int textSize = getSize().getYi() - border;
+        drawWidgetTitle(getScene(),getPos(),getSize(),title,border,centered,color);
+    }
 
-        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), color, Text.Type.STATIC);
+    //This is so it may be accessed outside the widget class for non-setting widgets such as the ProgressBar or Button
+    public static void drawWidgetTitle(Scene scene, Vector pos, Vector size, String title, int border, boolean centered, Color color) {
+        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
+        int textSize = size.getYi() - border;
+
+        Text text = new Text(scene, Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), color, Text.Type.STATIC);
         if (centered) {
-            text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2, getSize().getY() / 2 - textSize / 2));
+            text.setPos(pos.getAdded(size.getX() / 2 - text.getSize().getX() / 2, size.getY() / 2 - textSize / 2));
         } else {
-            text.setPos(getPos().getAdded(border + 2, getSize().getY() / 2 - textSize / 2)); //Left-oriented Position
+            text.setPos(pos.getAdded(border + 2, size.getY() / 2 - textSize / 2)); //Left-oriented Position
         }
         text.draw();
     }

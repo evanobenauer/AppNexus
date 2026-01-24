@@ -1,14 +1,14 @@
 package com.ejo.ui.element.simulation;
 
 import com.ejo.ui.element.DrawableElement;
-import com.ejo.ui.element.base.ITickable;
+import com.ejo.ui.element.base.Tickable;
 import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 
-public class PhysicsObject extends DrawableElement implements ITickable {
+public class PhysicsObject extends DrawableElement implements Tickable {
 
-    private final ConvexPolygon polygon;
+    private final DrawableElement element;
 
     private double mass;
     private double charge;
@@ -26,10 +26,10 @@ public class PhysicsObject extends DrawableElement implements ITickable {
 
     private double deltaT;
 
-    public PhysicsObject(Scene scene, Vector pos, ConvexPolygon polygon) {
+    public PhysicsObject(Scene scene, Vector pos, DrawableElement element) {
         super(scene, pos);
 
-        this.polygon = polygon;
+        this.element = element;
 
         this.mass = 1;
         this.charge = 0;
@@ -40,19 +40,19 @@ public class PhysicsObject extends DrawableElement implements ITickable {
         this.netForce = Vector.NULL();
         this.deltaT = .1f;
 
-        this.polygon.setPos(pos); //Just in case it was not set
-        updatePolygon();
+        this.element.setPos(pos); //Just in case it was not set
+        updateElement();
     }
 
     @Override
     public boolean getMouseHoveredCalculation(Vector mousePos) {
-        return polygon.getMouseHoveredCalculation(mousePos);
+        return element.getMouseHoveredCalculation(mousePos);
     }
 
     @Override
     public void draw(Vector mousePos) {
-        updatePolygon(); //The polygon is purely for visuals so it's best to update it in the draw method
-        polygon.draw(mousePos);
+        updateElement(); //The polygon is purely for visuals so it's best to update it in the draw method
+        element.draw(mousePos);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class PhysicsObject extends DrawableElement implements ITickable {
     }
 
     private void updateKinematics() {
-        velocity.add(acceleration.getMultiplied(deltaT));
-        getPos().add(velocity.getMultiplied(deltaT));
+        velocity = velocity.getAdded(acceleration.getMultiplied(deltaT));
+        setPos(getPos().getAdded(velocity.getMultiplied(deltaT)));
     }
 
     private void updateAccelerationFromForce() {
@@ -81,11 +81,12 @@ public class PhysicsObject extends DrawableElement implements ITickable {
     }
 
     private void updateAlphaFromTorque() {
-        this.alpha = netTorque / mass;
+        this.alpha = netTorque / getRotationalInertia();
     }
 
-    private void updatePolygon() {
-        this.polygon.setCenter(getPos());
+    private void updateElement() {
+        if (element instanceof ConvexPolygon p) p.setCenter(getPos());
+        else element.setPos(getPos());
     }
 
     public void addForce(Vector force) {
@@ -104,9 +105,11 @@ public class PhysicsObject extends DrawableElement implements ITickable {
     // =================================================
 
     @Override
-    public void setPos(Vector pos) {
+    public PhysicsObject setPos(Vector pos) {
         super.setPos(pos);
-        this.polygon.setCenter(pos);
+        if (element instanceof ConvexPolygon p) p.setCenter(getPos());
+        else element.setPos(getPos());
+        return this;
     }
 
     public PhysicsObject setMass(double mass) {
@@ -192,8 +195,13 @@ public class PhysicsObject extends DrawableElement implements ITickable {
     }
 
 
-    public ConvexPolygon getPolygon() {
-        return polygon;
+    public DrawableElement getElement() {
+        return element;
     }
 
+
+    @Override
+    public PhysicsObject clone() {
+        return new PhysicsObject(getScene(), getPos(), element.clone());
+    }
 }

@@ -88,6 +88,11 @@ public class Circle extends ConvexPolygon {
         return quality;
     }
 
+    @Override
+    public ConvexPolygon clone() {
+        return new Circle(getScene(),getPos(),getRadius(),getColor(),isOutlined(),getOutlineWidth(),range,quality);
+    }
+
     public enum Quality {
         POOR(10),
         LOW(16),

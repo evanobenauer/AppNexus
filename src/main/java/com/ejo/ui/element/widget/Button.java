@@ -4,6 +4,7 @@ import com.ejo.ui.element.Text;
 import com.ejo.ui.element.shape.Rectangle;
 import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.Scene;
+import com.ejo.ui.element.widget.settingwidget.SettingWidget;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
 import org.lwjgl.glfw.GLFW;
@@ -39,14 +40,9 @@ public class Button extends Widget {
         Color col = new Color(r,g,b,a);
         this.baseShape.setColor(col);
 
-        //Draw Title (Copied from SettingWidget. Update that, then copy it over)
-        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
+        //Draw Title
         int border = getSize().getYi() / 5;
-        int textSize = getSize().getYi() - border;
-
-        Text text = new Text(getScene(), Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), Color.WHITE, Text.Type.STATIC);
-        text.setPos(getPos().getAdded(getSize().getX() / 2 - text.getSize().getX() / 2, getSize().getY() / 2 - textSize / 2));
-        text.draw();
+        SettingWidget.drawWidgetTitle(getScene(),getPos(),getSize(),title,border,true,Color.WHITE);
     }
 
     @Override

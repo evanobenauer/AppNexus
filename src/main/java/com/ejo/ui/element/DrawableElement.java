@@ -1,35 +1,31 @@
 package com.ejo.ui.element;
 
 import com.ejo.ui.Scene;
-import com.ejo.ui.element.base.IDrawable;
-import com.ejo.ui.element.base.IHoverable;
-import com.ejo.ui.handler.MouseHoveredHandler;
+import com.ejo.ui.element.base.Hoverable;
+import com.ejo.ui.element.base.Drawable;
 import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 
-public abstract class DrawableElement implements IDrawable, IHoverable {
+public abstract class DrawableElement extends Hoverable implements Drawable {
 
     private final Scene scene;
 
     private Vector pos;
 
-    private boolean mouseHovered;
-
     public DrawableElement(Scene scene, Vector pos) {
+        super();
         this.scene = scene;
         this.pos = pos;
-        this.mouseHovered = false;
     }
 
     // =================================================
 
     // ABSTRACT METHODS
+    // These are here so I don't forget they exist lol
 
     // =================================================
 
     public abstract void draw(Vector mousePos);
-
-    public abstract boolean getMouseHoveredCalculation(Vector mousePos);
 
     // =================================================
 
@@ -42,30 +38,15 @@ public abstract class DrawableElement implements IDrawable, IHoverable {
         draw(scene == null ? Mouse.NULL_POS() : scene.getWindow().getMousePos());
     }
 
-    @Override
-    public void updateMouseHovered(MouseHoveredHandler handler, Vector mousePos) {
-        if (getMouseHoveredCalculation(mousePos)) {
-            handler.queueElement(this);
-            this.mouseHovered = handler.isTop(this);
-        } else {
-            this.mouseHovered = false;
-        }
-    }
-
     // =================================================
 
     // GETTERS/SETTERS
 
     // =================================================
 
-    public void setPos(Vector pos) {
+    public DrawableElement setPos(Vector pos) {
         this.pos = pos;
-    }
-
-
-    @Override
-    public boolean isMouseHovered() {
-        return this.mouseHovered;
+        return this;
     }
 
     public Vector getPos() {
@@ -81,4 +62,12 @@ public abstract class DrawableElement implements IDrawable, IHoverable {
         return "(" + getClass().getSimpleName() + ")";
     }
 
+    @Override
+    public DrawableElement clone() {
+        try {
+            return (DrawableElement) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
 }

@@ -2,7 +2,7 @@ package com.ejo.ui.element.base;
 
 import com.ejo.util.math.Vector;
 
-public interface IInteractable {
+public interface Interactable {
 
     void onKeyPress(int key, int scancode, int action, int mods);
 

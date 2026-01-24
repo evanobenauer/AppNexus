@@ -273,6 +273,10 @@ public class Vector {
         return "<" + getXf() + "|" + getYf() + "|" + getZf() + ">";
     }
 
+    public String toString2D() {
+        return "<" + getXf() + "|" + getYf() + ">";
+    }
+
     @Override
     public int hashCode() {
         return toString().hashCode();

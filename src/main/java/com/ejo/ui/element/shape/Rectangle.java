@@ -45,4 +45,8 @@ public class Rectangle extends ConvexPolygon {
         return insideX && insideY;
     }
 
+    @Override
+    public ConvexPolygon clone() {
+        return new Rectangle(getScene(),getPos(),getSize(),getColor(),isOutlined(),getOutlineWidth());
+    }
 }

@@ -29,8 +29,8 @@ public class Text extends DrawableElement {
     @Override
     public void draw(Vector mousePos) {
         switch (type) {
-            case STATIC -> fontRenderer.drawStaticString(getScene(),text,getPos(),color);
-            case DYNAMIC -> fontRenderer.drawDynamicString(getScene(),text,getPos(),color);
+            case STATIC -> fontRenderer.drawStaticString(text,getPos(),color);
+            case DYNAMIC -> fontRenderer.drawDynamicString(text,getPos(),color);
         }
     }
 
@@ -113,7 +113,7 @@ public class Text extends DrawableElement {
     }
 
     public Vector getSize() {
-        return new Vector(fontRenderer.getWidth(getScene(),text), fontRenderer.getHeight(getScene()));
+        return new Vector(fontRenderer.getWidth(text), fontRenderer.getHeight());
     }
 
     public enum Type {

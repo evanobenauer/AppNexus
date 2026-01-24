@@ -21,10 +21,10 @@ public abstract class Scene {
     // All lists are kept in sync through the addElement and removeElement methods.
     // All lists are QueueableArrayLists. So they have the ability to have easy and SAFE addition/removals
     protected final QueueableArrayList<DrawableElement> drawableElements;
-    protected final QueueableArrayList<IHoverable> hoverables;
-    protected final QueueableArrayList<ITickable> tickables;
-    protected final QueueableArrayList<IInteractable> interactables;
-    protected final QueueableArrayList<IAnimatable> animatables;
+    protected final QueueableArrayList<Hoverable> hoverables;
+    protected final QueueableArrayList<Tickable> tickables;
+    protected final QueueableArrayList<Interactable> interactables;
+    protected final QueueableArrayList<Animatable> animatables;
 
     private final MouseHoveredHandler mouseHoveredHandler;
 
@@ -100,9 +100,9 @@ public abstract class Scene {
         this.drawableElements.addAll(Arrays.asList(elements));
         for (DrawableElement element : elements) {
             this.hoverables.add(element);
-            if (element instanceof ITickable e) tickables.add(e);
-            if (element instanceof IInteractable e) interactables.add(e);
-            if (element instanceof IAnimatable e) animatables.add(e);
+            if (element instanceof Tickable e) tickables.add(e);
+            if (element instanceof Interactable e) interactables.add(e);
+            if (element instanceof Animatable e) animatables.add(e);
         }
     }
 
@@ -110,9 +110,9 @@ public abstract class Scene {
         if (queued) {
             this.drawableElements.queueAdd(element);
             this.hoverables.queueAdd(element);
-            if (element instanceof ITickable e) tickables.queueAdd(e);
-            if (element instanceof IInteractable e) interactables.queueAdd(e);
-            if (element instanceof IAnimatable e) animatables.queueAdd(e);
+            if (element instanceof Tickable e) tickables.queueAdd(e);
+            if (element instanceof Interactable e) interactables.queueAdd(e);
+            if (element instanceof Animatable e) animatables.queueAdd(e);
         } else {
             addElements(element);
         }
@@ -122,15 +122,15 @@ public abstract class Scene {
         if (queued) {
             this.drawableElements.queueRemove(element);
             this.hoverables.queueRemove(element);
-            if (element instanceof ITickable e) tickables.queueRemove(e);
-            if (element instanceof IInteractable e) interactables.queueRemove(e);
-            if (element instanceof IAnimatable e) animatables.queueRemove(e);
+            if (element instanceof Tickable e) tickables.queueRemove(e);
+            if (element instanceof Interactable e) interactables.queueRemove(e);
+            if (element instanceof Animatable e) animatables.queueRemove(e);
         } else {
             this.drawableElements.remove(element);
             this.hoverables.remove(element);
-            if (element instanceof ITickable e) tickables.remove(e);
-            if (element instanceof IInteractable e) interactables.remove(e);
-            if (element instanceof IAnimatable e) animatables.remove(e);
+            if (element instanceof Tickable e) tickables.remove(e);
+            if (element instanceof Interactable e) interactables.remove(e);
+            if (element instanceof Animatable e) animatables.remove(e);
         }
     }
 

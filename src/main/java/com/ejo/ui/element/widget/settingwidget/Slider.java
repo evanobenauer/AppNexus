@@ -10,6 +10,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
+//TODO: Good idea -> Make the slider, after you click, animate from its current position to your mouse
 public class Slider<T extends Number> extends SettingWidget<T> {
 
     private boolean sliding;

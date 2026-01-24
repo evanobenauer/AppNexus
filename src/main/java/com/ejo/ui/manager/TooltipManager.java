@@ -2,8 +2,8 @@ package com.ejo.ui.manager;
 
 import com.ejo.ui.Scene;
 import com.ejo.ui.element.DrawableElement;
+import com.ejo.ui.element.base.Descriptable;
 import com.ejo.ui.element.shape.RoundedRectangle;
-import com.ejo.ui.element.widget.settingwidget.SettingWidget;
 import com.ejo.ui.render.FontRenderer;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
@@ -14,7 +14,7 @@ import java.awt.*;
 import java.util.*;
 
 //The purpose of this is to render all tooltips above the widgets. Only create a render if needed for the scene
-public class WidgetTooltipManager extends SceneManager {
+public class TooltipManager extends SceneManager {
 
     private final HashSet<Tooltip> tooltips;
     private final ArrayList<Tooltip> queuedTooltipsRemoval;
@@ -23,7 +23,7 @@ public class WidgetTooltipManager extends SceneManager {
 
     private FontRenderer fontRenderer;
 
-    public WidgetTooltipManager(Scene scene, int tooltipSize, float hoverDelayS) {
+    public TooltipManager(Scene scene, int tooltipSize, float hoverDelayS) {
         super(scene);
         this.tooltips = new HashSet<>();
         this.queuedTooltipsRemoval = new ArrayList<>();
@@ -65,11 +65,11 @@ public class WidgetTooltipManager extends SceneManager {
 
     private void addTooltips() {
         for (DrawableElement element : scene.getDrawableElements()) {
-            if (!(element instanceof SettingWidget<?> widget)) continue;
-            if (widget.getDescription().isEmpty()) continue;
+            if (!(element instanceof Descriptable descriptable)) continue;
+            if (descriptable.getDescription().isEmpty()) continue;
 
-            if (widget.isMouseHovered())
-                tooltips.add(new Tooltip(widget, hoverDelayS, new Color(0, 0, 0, 150)));
+            if (element.isMouseHovered())
+                tooltips.add(new Tooltip(element, hoverDelayS, new Color(0, 0, 0, 150)));
         }
     }
 
@@ -98,7 +98,7 @@ public class WidgetTooltipManager extends SceneManager {
 
     private static class Tooltip {
 
-        final SettingWidget<?> widget;
+        final DrawableElement widget;
 
         final float hoverDelayS;
 
@@ -109,7 +109,7 @@ public class WidgetTooltipManager extends SceneManager {
 
         float hoverFade;
 
-        Tooltip(SettingWidget<?> widget, float hoverDelayS, Color color) {
+        Tooltip(DrawableElement widget, float hoverDelayS, Color color) {
             this.widget = widget;
             this.hoverDelayS = hoverDelayS;
             this.color = color;
@@ -120,20 +120,21 @@ public class WidgetTooltipManager extends SceneManager {
         }
 
         void draw(Scene scene, FontRenderer fontRenderer, Vector mousePos) {
+            if (!(widget instanceof Descriptable descriptable)) return;
             int size = fontRenderer.getFont().getSize();
             int border = size / 5;
 
-            String str = widget.getDescription();
+            String str = descriptable.getDescription();
 
             Vector pos = mousePos.getAdded(border, -(size + border * 2) / 2);
-            int width = fontRenderer.getWidth(scene, str);
+            int width = fontRenderer.getWidth(str);
             if (pos.getX() + width + border > widget.getScene().getWindow().getSize().getX())
                 pos.setX(widget.getScene().getWindow().getSize().getX() - width - border);
 
             Color backgroundColor = ColorUtil.getWithAlpha(color, color.getAlpha() * (hoverFade / 255));
-            new RoundedRectangle(widget.getScene(), pos, new Vector(width + border * 2, fontRenderer.getHeight(null) + border * 2), backgroundColor).draw();
+            new RoundedRectangle(widget.getScene(), pos, new Vector(width + border * 2, fontRenderer.getHeight() + border * 2), backgroundColor).draw();
 
-            fontRenderer.drawStaticString(scene, str, pos.getAdded(border, border), ColorUtil.getWithAlpha(Color.WHITE, hoverFade));
+            fontRenderer.drawStaticString(str, pos.getAdded(border, border), ColorUtil.getWithAlpha(Color.WHITE, hoverFade));
         }
 
         void updateAnimation(float speed) {

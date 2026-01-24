@@ -1,8 +1,9 @@
 package com.ejo.ui.element.widget;
 
 import com.ejo.ui.element.DrawableElement;
-import com.ejo.ui.element.base.IAnimatable;
-import com.ejo.ui.element.base.IInteractable;
+import com.ejo.ui.element.base.Animatable;
+import com.ejo.ui.element.base.Descriptable;
+import com.ejo.ui.element.base.Interactable;
 import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
@@ -11,8 +12,9 @@ import com.ejo.util.misc.ColorUtil;
 
 import java.awt.*;
 
-public abstract class Widget extends DrawableElement implements IInteractable, IAnimatable  {
+public abstract class Widget extends DrawableElement implements Interactable, Animatable {
 
+    @Deprecated
     protected static final Color WIDGET_BACKGROUND_COLOR = new Color(50,50,50,175);
 
     protected final ConvexPolygon baseShape;
@@ -99,9 +101,10 @@ public abstract class Widget extends DrawableElement implements IInteractable, I
     }
 
     @Override
-    public void setPos(Vector pos) {
+    public Widget setPos(Vector pos) {
         super.setPos(pos);
         this.baseShape.setPos(pos);
+        return this;
     }
 
     public Runnable getAction() {

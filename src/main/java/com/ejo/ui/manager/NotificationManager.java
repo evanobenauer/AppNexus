@@ -109,12 +109,12 @@ public class NotificationManager extends SceneManager {
         }
 
         void draw(Scene scene, FontRenderer fontRenderer, float border, int y) {
-            double width = fontRenderer.getWidth(scene,text);
+            double width = fontRenderer.getWidth(text);
             Vector pos = new Vector(scene.getWindow().getSize().getX() / 2 - width / 2,y);
 
             new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(0, 0, 0,(int)Math.clamp(fade,0,175))).draw();
             new RoundedRectangle(scene, pos.getSubtracted(border,border), new Vector(width + border * 2, fontRenderer.getFont().getSize() + border * 2), new Color(150, 150, 150, (int)Math.clamp(fade,0,175)),30,true,2).draw();
-            fontRenderer.drawStaticString(scene, text, pos, getFadeColor());
+            fontRenderer.drawStaticString(text, pos, getFadeColor());
         }
 
         void updateAnimation() {

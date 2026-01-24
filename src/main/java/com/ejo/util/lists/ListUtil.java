@@ -20,4 +20,25 @@ public class ListUtil {
         return length;
     }
 
+    public static <T> void forEach(T[] list, Action<T> action) {
+        for (T t : list) action.run(t);
+    }
+
+    public static <T> void forI(T[] list, Action<T> action) {
+        for (int i = 0; i < list.length; i++) {
+            action.run(list[i]);
+        }
+    }
+
+    public static <T> void forIReversed(T[] list, Action<T> action) {
+        for (int i = list.length - 1; i >= 0; i--) {
+            action.run(list[i]);
+        }
+    }
+
+    @FunctionalInterface
+    public interface Action<T> {
+        void run(T t);
+    }
+
 }

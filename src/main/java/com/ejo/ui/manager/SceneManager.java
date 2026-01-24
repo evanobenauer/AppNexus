@@ -1,15 +1,15 @@
 package com.ejo.ui.manager;
 
 import com.ejo.ui.Scene;
-import com.ejo.ui.element.base.IAnimatable;
-import com.ejo.ui.element.base.IDrawable;
-import com.ejo.ui.element.base.IInteractable;
-import com.ejo.ui.element.base.ITickable;
+import com.ejo.ui.element.base.Animatable;
+import com.ejo.ui.element.base.Drawable;
+import com.ejo.ui.element.base.Interactable;
+import com.ejo.ui.element.base.Tickable;
 import com.ejo.util.math.Vector;
 
 //The scene manager acts as a layer on top of the scene to "manage" certain aspects that should be split into
 // a separate class overlaying the scene
-public abstract class SceneManager implements IDrawable, ITickable, IInteractable, IAnimatable {
+public abstract class SceneManager implements Drawable, Tickable, Interactable, Animatable {
 
     protected Scene scene;
 

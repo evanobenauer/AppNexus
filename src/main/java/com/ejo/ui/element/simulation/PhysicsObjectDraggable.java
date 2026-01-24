@@ -1,17 +1,18 @@
 package com.ejo.ui.element.simulation;
 
-import com.ejo.ui.element.base.IInteractable;
+import com.ejo.ui.element.DrawableElement;
+import com.ejo.ui.element.base.Interactable;
 import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import org.lwjgl.glfw.GLFW;
 
-public class PhysicsObjectDraggable extends PhysicsObject implements IInteractable {
+public class PhysicsObjectDraggable extends PhysicsObject implements Interactable {
 
     private boolean dragging;
 
-    public PhysicsObjectDraggable(Scene scene, Vector pos, ConvexPolygon polygon) {
-        super(scene, pos, polygon);
+    public PhysicsObjectDraggable(Scene scene, Vector pos, DrawableElement element) {
+        super(scene, pos, element);
         this.dragging = false;
     }
 

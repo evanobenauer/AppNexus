@@ -1,6 +1,5 @@
 package com.ejo.ui.render;
 
-import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ImageUtil;
 
@@ -31,25 +30,25 @@ public class FontRenderer {
 
     //Use this if the string is not going to be changing its text value often.
     // This method will cache the full texture file and will save on memory and processing power
-    public void drawStaticString(Scene scene, String text, Vector pos, Color color) {
+    public void drawStaticString(String text, Vector pos, Color color) {
         if (text.isEmpty()) return;
-        drawCachedText(scene,text,pos,color,staticStringCache);
+        drawCachedText(text,pos,color,staticStringCache);
     }
 
     //Use this if the string is going to be changing often. It caches all characters in their own texture file
     // It will draw each character individually, which takes more memory, but will not have to regenerate the image
     // every time it changes which can be super costly
-    public void drawDynamicString(Scene scene, String text, Vector pos, Color color) {
+    public void drawDynamicString(String text, Vector pos, Color color) {
         if (text.isEmpty()) return;
         pos = pos.clone(); //The position is cloned to avoid modifying the original position vector
         for (char c : text.toCharArray()) {
-            drawCachedText(scene,c,pos,color,dynamicCharCache);
+            drawCachedText(c,pos,color,dynamicCharCache);
             //Increment to the next position for the next character
             pos.add(new Vector(fontMetrics.stringWidth(String.valueOf(c)), 0));
         }
     }
 
-    private <T> void drawCachedText(Scene scene, T text, Vector pos, Color color, HashMap<T, ByteBuffer> cache) {
+    private <T> void drawCachedText(T text, Vector pos, Color color, HashMap<T, ByteBuffer> cache) {
         if (color.getAlpha() <= 0) return;
         ByteBuffer cachedImage;
         if (cache.containsKey(text)) {
@@ -103,11 +102,11 @@ public class FontRenderer {
         return fontMetrics;
     }
 
-    public int getWidth(Scene scene, String text) {
+    public int getWidth(String text) {
         return fontMetrics.stringWidth(text);
     }
 
-    public int getHeight(Scene scene) {
+    public int getHeight() {
         return fontMetrics.getFont().getSize();
     }
 }

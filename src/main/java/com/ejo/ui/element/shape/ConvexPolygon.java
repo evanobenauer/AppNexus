@@ -35,7 +35,8 @@ public class ConvexPolygon extends DrawableElement {
 
     @Override
     public void draw(Vector mousePos) {
-        onChange.run(vertices, this::updateVertices);
+        onChange.run(vertices, this::updateVertices); //This does not work as intended. It constantly updates. make it only update when changed
+
         GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GL11.glLineWidth(outlineWidth);
@@ -45,7 +46,6 @@ public class ConvexPolygon extends DrawableElement {
         GL11.glColor4f(1f, 1f, 1f, 1f);
     }
 
-    //TODO: UpdateVertices is a little costly in child classes. Maybe only call when needed??
     protected void updateVertices() {}
 
     @Override

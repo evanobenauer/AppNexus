@@ -76,4 +76,9 @@ public class RegularPolygon extends ConvexPolygon {
     public Angle getRotation() {
         return rotation;
     }
+
+    @Override
+    public ConvexPolygon clone() {
+        return new RegularPolygon(getScene(),getPos(),getColor(),isOutlined(),getOutlineWidth(),radius,vertexCount,rotation);
+    }
 }

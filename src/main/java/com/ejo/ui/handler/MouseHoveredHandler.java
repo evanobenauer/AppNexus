@@ -1,6 +1,6 @@
 package com.ejo.ui.handler;
 
-import com.ejo.ui.element.DrawableElement;
+import com.ejo.ui.element.base.Hoverable;
 
 import java.util.LinkedList;
 
@@ -9,41 +9,41 @@ import java.util.LinkedList;
 // in a stack to prevent overlap
 public class MouseHoveredHandler {
 
-    private LinkedList<DrawableElement> hoveredElements;
-    private final LinkedList<DrawableElement> queuedHoveredElements;
+    private LinkedList<Hoverable> hoverables;
+    private final LinkedList<Hoverable> queuedHoverables;
 
     public MouseHoveredHandler() {
-        this.hoveredElements = new LinkedList<>();
-        this.queuedHoveredElements = new LinkedList<>();
+        this.hoverables = new LinkedList<>();
+        this.queuedHoverables = new LinkedList<>();
     }
 
     public void cycleQueuedElements() {
-        hoveredElements = ((LinkedList<DrawableElement>) queuedHoveredElements.clone());
-        queuedHoveredElements.clear();
+        hoverables = ((LinkedList<Hoverable>) queuedHoverables.clone());
+        queuedHoverables.clear();
     }
 
-    public void queueElement(DrawableElement element) {
-        queuedHoveredElements.add(element);
+    public void queueHoverable(Hoverable hoverable) {
+        queuedHoverables.add(hoverable);
     }
 
     //Checks if the hovered element is in the list at all.
     // This method can be used to bypass the "isFirst"
     // Think about potentially switching to a LinkedHashSet which is better for contains. May be unnecessary.
-    public boolean isHovered(DrawableElement element) {
-        return hoveredElements.contains(element);
+    public boolean isHovered(Hoverable hoverable) {
+        return hoverables.contains(hoverable);
     }
 
     //Checks if the hovered element is first in the list and should be interactable
-    public boolean isTop(DrawableElement element) {
-        return (!hoveredElements.isEmpty() && getTop() == element);
+    public boolean isTop(Hoverable hoverable) {
+        return (!hoverables.isEmpty() && getTop() == hoverable);
     }
 
     //This returned a NoSuchElementException one time... Double check consistency
-    public DrawableElement getTop() {
-        return hoveredElements.getLast();
+    public Hoverable getTop() {
+        return hoverables.getLast();
     }
 
-    public LinkedList<DrawableElement> getHoveredElements() {
-        return hoveredElements;
+    public LinkedList<Hoverable> getHoverables() {
+        return hoverables;
     }
 }
