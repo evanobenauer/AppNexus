@@ -1,6 +1,5 @@
-package com.ejo.ui.element.simulation;
+package com.ejo.ui.element;
 
-import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.Tickable;
 import com.ejo.ui.element.shape.ConvexPolygon;
 import com.ejo.ui.Scene;
