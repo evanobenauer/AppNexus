@@ -49,7 +49,7 @@ public class Line extends DrawableElement {
             }
             case DOTTED -> {
                 GL11.glEnable(GL11.GL_LINE_STIPPLE);
-                GL11.glLineStipple(3,(short)0xAAAA);
+                GL11.glLineStipple(1,(short)0xAAAA);
             }
             case DASHED -> {
                 GL11.glEnable(GL11.GL_LINE_STIPPLE);
