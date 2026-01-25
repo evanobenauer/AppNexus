@@ -19,7 +19,7 @@ The application contains utility classes and user interface classes perfect for 
 
 
 
-
+# Implementation
 To add AppNexus as a dependency and use its fetures, you must add this chunk of code to your gradle java project:
 *This includes LWJGL3 dependency code*
 
