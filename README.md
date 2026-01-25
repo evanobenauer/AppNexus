@@ -4,10 +4,24 @@
 
 ![Screenshot](img/LOGO.png)
 
-App Nexus is an application library utilizing OpenGL through LWJGL. The application contains utility classes and user interface classes perfect for creating various applications ranging from simulations, videogames, editors, and other simple to complex applicaiton types.
+App Nexus is an application library developed in Java utilizing OpenGL through LWJGL. 
+
+The application contains utility classes and user interface classes perfect for creating various applications ranging from simulations, videogames, editors, and other simple to complex applicaiton types.
+
+# Window
+# Scene
+# Elements
+# Widgets
+# Managers
+
+# Utilities
+...Theres a lot that goes under here... Thats gonna be a challenge
+
+
+
 
 To add AppNexus as a dependency and use its fetures, you must add this chunk of code to your gradle java project:
-This includes LWJGL3 dependency code
+*This includes LWJGL3 dependency code*
 
 ```groovy
 repositories {
