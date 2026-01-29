@@ -17,8 +17,28 @@ public class ColorUtil {
         return new Color(r, g, b);
     }
 
+    public static Color getBlueRedScaledColor(double scale) {
+        int r = (int) Math.clamp(scale * 255,0,255);
+        int g = 0;
+        int b = (int) Math.clamp((1 - scale) * 255,0,255);
+
+        return new Color(r, g, b);
+    }
+
+    public static Color getWhiteRedScaledColor(double scale) {
+        int r = 255;
+        int g = (int) Math.clamp((1 - scale) * 255,0,255);
+        int b = (int) Math.clamp((1 - scale) * 255,0,255);
+
+        return new Color(r, g, b);
+    }
+
     public static Color getWithAlpha(Color color, float alpha) {
         return new Color(color.getRed() / 255f,color.getGreen() / 255f,color.getBlue() / 255f,alpha / 255f);
+    }
+
+    private Color getClampedColor(float r, float g, float b, float a) {
+        return new Color(Math.clamp(r / 255f ,0,1f),Math.clamp(g / 255f,0,1f),Math.clamp(b / 255f,0,1f),Math.clamp(a / 255f,0,1f));
     }
 
     public static Color getRainbowColor(float rainbowSpeed, long offset, float strength, float saturation, float brightness) {

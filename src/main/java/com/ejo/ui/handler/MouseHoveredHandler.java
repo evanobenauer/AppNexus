@@ -3,6 +3,7 @@ package com.ejo.ui.handler;
 import com.ejo.ui.element.base.Hoverable;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 //This class is a hub for all hovered items. The class will check and
 // update if an item is hovered based on if it is the first one hovered
@@ -40,7 +41,11 @@ public class MouseHoveredHandler {
 
     //This returned a NoSuchElementException one time... Double check consistency
     public Hoverable getTop() {
-        return hoverables.getLast();
+        try {
+            return hoverables.getLast();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     public LinkedList<Hoverable> getHoverables() {
