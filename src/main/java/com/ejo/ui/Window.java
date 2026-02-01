@@ -76,6 +76,10 @@ public class Window {
         this.tpsLogger = new TickRateLogger(.25f,20);
     }
 
+    public Window(String title, Vector size) {
+        this(title,size,null);
+    }
+
     // =================================================
 
     // INITIALIZE FUNCTIONS
@@ -118,7 +122,7 @@ public class Window {
         setVSync(vSync);
 
         //Initialize the window & attach it to the scene
-        this.scene.initWindow(this);
+        if (this.scene != null) this.scene.initWindow(this);
 
         //If all is successfully set, open the window.
         this.open = true;
