@@ -3,6 +3,7 @@ package com.ejo.ui.manager;
 import com.ejo.ui.Scene;
 import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.Descriptable;
+import com.ejo.ui.element.base.Hoverable;
 import com.ejo.ui.element.shape.RoundedRectangle;
 import com.ejo.ui.render.FontRenderer;
 import com.ejo.util.math.Vector;
@@ -64,13 +65,11 @@ public class TooltipManager extends SceneManager {
     // =================================================
 
     private void addTooltips() {
-        for (DrawableElement element : scene.getDrawableElements()) {
-            if (!(element instanceof Descriptable descriptable)) continue;
-            if (descriptable.getDescription().isEmpty()) continue;
-
-            if (element.isMouseHovered())
-                tooltips.add(new Tooltip(element, hoverDelayS, new Color(0, 0, 0, 150)));
-        }
+        Hoverable hoverable = scene.getMouseHoveredHandler().getTop();
+        if (!(hoverable instanceof DrawableElement element)) return;
+        if (!(element instanceof Descriptable descriptable)) return;
+        if (descriptable.getDescription().isEmpty()) return;
+        tooltips.add(new Tooltip(element, hoverDelayS, new Color(0, 0, 0, 150)));
     }
 
     private void queueTooltipRemoval(Tooltip tooltip) {

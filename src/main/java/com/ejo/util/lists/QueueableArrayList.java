@@ -19,8 +19,8 @@ public class QueueableArrayList<E> extends ArrayList<E> {
         cycleQueuedElements();
     }
 
-    public void forIQueued(Action<E> runnable) {
-        for (int i = 0; i < size(); i++) runnable.run(get(i));
+    public void forIQueued(ActionI<E> runnable) {
+        for (int i = 0; i < size(); i++) runnable.run(get(i),i);
         cycleQueuedElements();
     }
 
@@ -85,5 +85,10 @@ public class QueueableArrayList<E> extends ArrayList<E> {
     @FunctionalInterface
     public interface Action<E> {
         void run(E e);
+    }
+
+    @FunctionalInterface
+    public interface ActionI<E> {
+        void run(E e, int i);
     }
 }

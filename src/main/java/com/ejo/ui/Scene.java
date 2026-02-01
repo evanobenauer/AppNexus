@@ -53,33 +53,33 @@ public abstract class Scene {
 
     //Draw Thread
     public void draw() {
-        drawableElements.forIQueued((e) -> e.draw(getWindow().getMousePos()));
+        drawableElements.forIQueued((e,i) -> e.draw(getWindow().getMousePos()));
     }
 
     //Draw Thread
     public void updateAnimation() {
-        animatables.forIQueued((e) -> e.updateAnimation(e.getAnimationSpeed()));
+        animatables.forIQueued((e,i) -> e.updateAnimation(e.getAnimationSpeed()));
     }
 
     //Draw Thread (I think because it's a registered callback)
     public void onKeyPress(int key, int scancode, int action, int mods) {
-        interactables.forIQueued((e) -> e.onKeyPress(key, scancode, action, mods));
+        interactables.forIQueued((e,i) -> e.onKeyPress(key, scancode, action, mods));
     }
 
     //Draw Thread (I think because it's a registered callback)
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
-        interactables.forIQueued((e) -> e.onMouseClick(button, action, mods, mousePos));
+        interactables.forIQueued((e,i) -> e.onMouseClick(button, action, mods, mousePos));
     }
 
     //Draw Thread (I think because it's a registered callback)
     public void onMouseScroll(double scroll, Vector mousePos) {
-        interactables.forIQueued((e) -> e.onMouseScroll(scroll,mousePos));
+        interactables.forIQueued((e,i) -> e.onMouseScroll(scroll,mousePos));
     }
 
 
     //Tick Thread
     public void tick() {
-        tickables.forIQueued((e) -> e.tick(getWindow().getMousePos()));
+        tickables.forIQueued((e,i) -> e.tick(getWindow().getMousePos()));
     }
 
     //Tick Thread
