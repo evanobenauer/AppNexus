@@ -30,32 +30,9 @@ public class DateTime {
         this(year, month, day, 0, 0, 0);
     }
 
-    public DateTime(long id) {
-        this(Integer.parseInt((String.valueOf(id)).substring(0, 4)),
-                Integer.parseInt((String.valueOf(id)).substring(4, 6)),
-                Integer.parseInt((String.valueOf(id)).substring(6, 8)),
-                Integer.parseInt((String.valueOf(id)).substring(8, 10)),
-                Integer.parseInt((String.valueOf(id)).substring(10, 12)),
-                Integer.parseInt((String.valueOf(id)).substring(12, 14))
-        );
-    }
-
-    public DateTime(String formattedDateTime) {
-        this(Integer.parseInt(formattedDateTime.split(" ")[0].split("-")[0]),
-                Integer.parseInt(formattedDateTime.split(" ")[0].split("-")[1]),
-                Integer.parseInt(formattedDateTime.split(" ")[0].split("-")[2]),
-                Integer.parseInt(formattedDateTime.split(" ")[1].split(":")[0]),
-                Integer.parseInt(formattedDateTime.split(" ")[1].split(":")[1]),
-                Integer.parseInt(formattedDateTime.split(" ")[1].split(":")[2]));
-    }
 
     public DateTime getAdded(int seconds) {
         return new DateTime(getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond() + seconds);
-    }
-
-    public boolean isWeekend() {
-        int dayOfWeek = getCalendar().get(Calendar.DAY_OF_WEEK);
-        return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
     }
 
     public long getDateTimeID() {
@@ -65,6 +42,17 @@ public class DateTime {
             return -1L;
         }
     }
+
+    public boolean isWeekend() {
+        int dayOfWeek = getCalendar().get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+    }
+
+    // =================================================
+
+    // NUMERICAL GETTERS
+
+    // =================================================
 
     public int getYear() {
         return Integer.parseInt(getYearString());
@@ -90,6 +78,11 @@ public class DateTime {
         return Integer.parseInt(getSecondString());
     }
 
+    // =================================================
+
+    // STRING GETTERS
+
+    // =================================================
 
     public String getYearString() {
         String timeString = getCalendar().getTime().toString();
@@ -98,19 +91,21 @@ public class DateTime {
 
     public String getMonthString() {
         String month = getCalendar().getTime().toString().substring(4, 19).substring(0, 3);
+        //This is a switch statement for a reason, because the java calendar bugs and ends up
+        // disagreeing on the numerical month sometimes from the string? weird right!
         return switch (month) {
-            case ("Jan") -> "01";
-            case ("Feb") -> "02";
-            case ("Mar") -> "03";
-            case ("Apr") -> "04";
-            case ("May") -> "05";
-            case ("Jun") -> "06";
-            case ("Jul") -> "07";
-            case ("Aug") -> "08";
-            case ("Sep") -> "09";
-            case ("Oct") -> "10";
-            case ("Nov") -> "11";
-            case ("Dec") -> "12";
+            case "Jan" -> "01";
+            case "Feb" -> "02";
+            case "Mar" -> "03";
+            case "Apr" -> "04";
+            case "May" -> "05";
+            case "Jun" -> "06";
+            case "Jul" -> "07";
+            case "Aug" -> "08";
+            case "Sep" -> "09";
+            case "Oct" -> "10";
+            case "Nov" -> "11";
+            case "Dec" -> "12";
             default -> null;
         };
     }
@@ -136,6 +131,11 @@ public class DateTime {
         return calendar;
     }
 
+    // =================================================
+
+    // OBJECT METHODS
+
+    // =================================================
 
     @Override
     public String toString() {
@@ -153,6 +153,37 @@ public class DateTime {
                 && dateTime.getSecondString().equals(getSecondString());
     }
 
+    // =================================================
 
+    // STATIC METHODS
+
+    // =================================================
+
+    //DateTimeIDs should be used when ordering dates
+    //They are presented as this: YYYYMMDDHHMMSS
+    // Example: 20011127052500 (November 27, 2001 @ 5:25am)
+    public static DateTime getById(long id) {
+        String idString = String.valueOf(id);
+        int year = Integer.parseInt(idString.substring(0, 4));
+        int month = Integer.parseInt(idString.substring(4, 6));
+        int day = Integer.parseInt(idString.substring(6, 8));
+        int hour = Integer.parseInt(idString.substring(8, 10));
+        int min = Integer.parseInt(idString.substring(10, 12));
+        int sec = Integer.parseInt(idString.substring(12, 14));
+        return new DateTime(year, month, day, hour, min, sec);
+    }
+
+    //The calendar returns this formatted string for a date
+    // This function will convert that formatted string into a DateTime
+    public static DateTime getByFormattedString(String formattedDateTime) {
+        String[] split = formattedDateTime.split(" ");
+        int year = Integer.parseInt(split[0].split("-")[0]);
+        int month = Integer.parseInt(split[0].split("-")[1]);
+        int day = Integer.parseInt(split[0].split("-")[2]);
+        int hour = Integer.parseInt(split[1].split(":")[0]);
+        int min = Integer.parseInt(split[1].split(":")[1]);
+        int sec = Integer.parseInt(split[1].split(":")[2]);
+        return new DateTime(year, month, day, hour, min, sec);
+    }
 
 }
