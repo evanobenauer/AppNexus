@@ -8,6 +8,10 @@ public class OnChange<T> {
         this.prevValue = null;
     }
 
+    public OnChange(T defaultValue) {
+        this.prevValue = defaultValue;
+    }
+
     public void run(T value, Runnable action) {
         boolean toNull = value == null && prevValue != null;
         boolean fromNull = value != null && prevValue == null;

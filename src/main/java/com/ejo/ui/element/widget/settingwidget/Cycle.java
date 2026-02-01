@@ -123,7 +123,7 @@ public class Cycle<T> extends SettingWidget<T> {
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) return;
         //You can use this to replace left/right-clicking in favor of sided clicking
-        boolean isMouseOnRight = getScene().getMousePos().getX() > getSize().getX() / 2 + getPos().getX();
+        boolean isMouseOnRight = mousePos.getX() > getSize().getX() / 2 + getPos().getX();
 
         if (isMouseOnRight) {
             switch (action) {
