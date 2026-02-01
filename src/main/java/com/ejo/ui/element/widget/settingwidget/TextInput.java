@@ -146,8 +146,9 @@ public class TextInput extends SettingWidget<String> {
         return true;
     }
 
-    public void setCharLimit(int charLimit) {
+    public TextInput setCharLimit(int charLimit) {
         this.charLimit = charLimit;
+        return this;
     }
 
     public void setMode(Mode mode) {
