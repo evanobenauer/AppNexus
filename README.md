@@ -9,6 +9,9 @@ App Nexus is an application library developed in Java utilizing OpenGL through L
 The application contains utility classes and user interface classes perfect for creating various applications ranging from simulations, videogames, editors, and other simple to complex applicaiton types.
 
 # Window
+
+NOTE: ALL DOCUMENTATION IS IN PROGRESS. *I plan to make it very detailed*
+
 # Scene
 # Elements
 # Widgets
