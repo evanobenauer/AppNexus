@@ -42,10 +42,6 @@ public class GLUtil {
         GL11.glPixelZoom((float) val, (float)-val);
     }
 
-    public static void color(double red, double green, double blue, double alpha) {
-        GL11.glColor4d(red/255f,green/255f,blue/255f,alpha/255f);
-    }
-
     public static void applyTextureColorTint(Color color) {
         GL11.glPixelTransferf(GL11.GL_RED_SCALE, color.getRed() / 255f);
         GL11.glPixelTransferf(GL11.GL_GREEN_SCALE, color.getGreen() / 255f);
@@ -58,6 +54,14 @@ public class GLUtil {
         GL11.glPixelTransferf(GL11.GL_GREEN_SCALE, 1f);
         GL11.glPixelTransferf(GL11.GL_BLUE_SCALE, 1f);
         GL11.glPixelTransferf(GL11.GL_ALPHA_SCALE, 1f);
+    }
+
+    public static void color(double red, double green, double blue, double alpha) {
+        GL11.glColor4d(red/255f,green/255f,blue/255f,alpha/255f);
+    }
+
+    public static void color(Color color) {
+        GL11.glColor4d(color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f,color.getAlpha()/255f);
     }
 
 

@@ -9,13 +9,15 @@ import java.util.ArrayList;
 
 //Yes, I understand a circle is NOT a polygon. But for all purposes, it is a polygon according to this program.
 // It is just made up of many vertices so it is a "Circle"...
+// I have this not extending RegularPolygon for a reason... I don't remember why... But there is a reason
 public class Circle extends ConvexPolygon {
 
     private static final Angle FULL = new Angle(Math.TAU);
 
     private double radius;
-    private Angle range;
     private Quality quality;
+
+    private Angle range;
 
     public Circle(Scene scene, Vector pos, double radius, Color color, boolean outlined, float outlineWidth, Angle range, Quality quality) {
         super(scene, pos, color, outlined, outlineWidth);

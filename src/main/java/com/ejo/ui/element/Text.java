@@ -116,6 +116,10 @@ public class Text extends DrawableElement {
         return new Vector(fontRenderer.getWidth(text), fontRenderer.getHeight());
     }
 
+    public FontRenderer getFontRenderer() {
+        return fontRenderer;
+    }
+
     public enum Type {
         STATIC,
         DYNAMIC
