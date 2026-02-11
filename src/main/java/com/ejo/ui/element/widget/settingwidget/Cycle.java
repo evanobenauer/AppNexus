@@ -163,7 +163,9 @@ public class Cycle<T> extends SettingWidget<T> {
         int wrapAroundIndex = forward ? cycles.size() : - 1;
         int endIndex = forward ? 0 : cycles.size() - 1;
 
-        int arrayNumber = cycles.indexOf(getContainer().get()) + increment;
+        int currentIndex = cycles.indexOf(getContainer().get());
+        int arrayNumber = currentIndex + increment;
+        if (currentIndex == -1) arrayNumber = 0;
         getContainer().set(cycles.get(arrayNumber == wrapAroundIndex ? endIndex : arrayNumber));
         getAction().run();
     }
