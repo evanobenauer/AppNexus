@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class FileCSVMap extends FileCSV<HashMap<String,String[]>> {
+public class FileCSVMap<K, V> extends FileCSV<HashMap<K,V[]>,HashMap<String,String[]>> {
 
     public FileCSVMap(String folderPath, String fileName) {
         super(folderPath, fileName);
@@ -15,9 +15,8 @@ public class FileCSVMap extends FileCSV<HashMap<String,String[]>> {
         super(fileName);
     }
 
-    //@Override
-    public <K, V> boolean save(HashMap<K, V[]> hashMap) {
-    //public boolean save(HashMap<Object, Object[]> hashMap) {
+    @Override
+    public boolean save(HashMap<K, V[]> hashMap) {
         FileUtil.createFolderPath(folderPath); //Creates the folder path if it does not exist
         String outputFile = FileUtil.getFilePath(folderPath,fileName);
         try {

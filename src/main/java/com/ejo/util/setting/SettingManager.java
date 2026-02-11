@@ -9,12 +9,12 @@ import java.util.HashMap;
 
 public class SettingManager {
 
-    public static final SettingManager DEFAULT_MANAGER = new SettingManager(new FileCSVMap("settings", "setting"));
+    public static final SettingManager DEFAULT_MANAGER = new SettingManager(new FileCSVMap<>("settings", "setting"));
 
     private final HashMap<String, Setting<?>> settingList = new HashMap<>();
-    private final FileCSVMap csvFile;
+    private final FileCSVMap<String,String> csvFile;
 
-    public SettingManager(FileCSVMap csvFile) {
+    public SettingManager(FileCSVMap<String,String> csvFile) {
         this.csvFile = csvFile;
     }
 
@@ -72,7 +72,7 @@ public class SettingManager {
         return true;
     }
 
-    public FileCSVMap getCSVFile() {
+    public FileCSVMap<String,String> getCSVFile() {
         return csvFile;
     }
 

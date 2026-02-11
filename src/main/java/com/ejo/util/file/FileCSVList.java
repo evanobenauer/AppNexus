@@ -3,7 +3,7 @@ package com.ejo.util.file;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FileCSVList extends FileCSV<ArrayList<String[]>> {
+public class FileCSVList<T> extends FileCSV<ArrayList<T[]>,ArrayList<String[]>> {
 
     public FileCSVList(String folderPath, String fileName) {
         super(folderPath, fileName);
@@ -13,9 +13,8 @@ public class FileCSVList extends FileCSV<ArrayList<String[]>> {
         super(fileName);
     }
 
-    //@Override
-    public <T> boolean save(ArrayList<T[]> list) {
-    //public boolean save(ArrayList<Object[]> list) {
+    @Override
+    public boolean save(ArrayList<T[]> list) {
         FileUtil.createFolderPath(folderPath); //Creates the folder path if it does not exist
         String outputFile = FileUtil.getFilePath(folderPath,fileName);
         try {
@@ -36,6 +35,7 @@ public class FileCSVList extends FileCSV<ArrayList<String[]>> {
             return false;
         }
     }
+
 
     @Override
     public ArrayList<String[]> load() {
