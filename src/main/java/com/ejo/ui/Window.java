@@ -1,5 +1,6 @@
 package com.ejo.ui;
 
+import com.ejo.ui.handler.SceneTransitionHandler;
 import com.ejo.ui.render.GLUtil;
 import com.ejo.util.misc.ImageUtil;
 import com.ejo.util.math.Vector;
@@ -53,6 +54,9 @@ public class Window {
     private PerformanceMode performanceMode;
 
 
+    private final SceneTransitionHandler sceneTransitionHandler;
+
+
     public Window(String title, Vector size, Scene startingScene) {
         this.title = title;
         this.size = size;
@@ -74,6 +78,8 @@ public class Window {
 
         this.fpsLogger = new TickRateLogger(.25f, 20);
         this.tpsLogger = new TickRateLogger(.25f,20);
+
+        this.sceneTransitionHandler = new SceneTransitionHandler(this,20);
     }
 
     public Window(String title, Vector size) {
@@ -205,6 +211,10 @@ public class Window {
         for (int i = scene.getSceneManagers().size() - 1; i >= 0 ; i--)
             scene.getSceneManagers().get(i).draw(getMousePos());
 
+        //Update Scene Transition
+        sceneTransitionHandler.updateSceneTransition();
+        sceneTransitionHandler.drawFade(scene);
+
         //Finish Drawing here
         glfwSwapBuffers(windowId);
 
@@ -324,6 +334,11 @@ public class Window {
     public Window setScene(Scene scene) {
         this.scene = scene;
         this.scene.initWindow(this);
+        return this;
+    }
+
+    public Window setSceneTransitioned(Scene scene) {
+        this.sceneTransitionHandler.setScene(scene);
         return this;
     }
 
