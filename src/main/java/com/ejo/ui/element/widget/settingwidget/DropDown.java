@@ -47,7 +47,10 @@ public class DropDown<T> extends SettingWidget<T>{
         this.selectionBoxes = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
             int finalI = i;
-            selectionBoxes.add(new SelectionBoxWidget(scene, Vector.NULL(), new RoundedRectangle(scene, Vector.NULL(), getSize().getSubtracted(3, 3), new Color(0,0,0,0)), () -> getContainer().set(this.items.get(finalI))));
+            selectionBoxes.add(new SelectionBoxWidget(scene, Vector.NULL(), new RoundedRectangle(scene, Vector.NULL(), getSize().getSubtracted(3, 3), new Color(0,0,0,0)), () -> {
+                getContainer().set(this.items.get(finalI));
+                getAction().run();
+            }));
         }
 
         //Open variables
@@ -248,7 +251,6 @@ public class DropDown<T> extends SettingWidget<T>{
         public void onMouseClick(int button, int action, int mods, Vector mousePos) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS)
                 if (isMouseHovered()) {
-                    DropDown.this.getAction().run();
                     getAction().run();
                     this.hoverHighlightFade = 175f;
                 }
