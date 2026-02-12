@@ -1,6 +1,6 @@
 package com.ejo.ui.element;
 
-import com.ejo.ui.element.shape.Rectangle;
+import com.ejo.ui.element.polygon.Rectangle;
 import com.ejo.ui.render.FontRenderer;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;

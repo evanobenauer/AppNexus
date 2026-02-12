@@ -4,7 +4,7 @@ import com.ejo.ui.Scene;
 import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.Descriptable;
 import com.ejo.ui.element.base.Hoverable;
-import com.ejo.ui.element.shape.RoundedRectangle;
+import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.render.FontRenderer;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;

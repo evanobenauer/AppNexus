@@ -1,7 +1,7 @@
 package com.ejo.ui.element.widget;
 
 import com.ejo.ui.element.base.Tickable;
-import com.ejo.ui.element.shape.Circle;
+import com.ejo.ui.element.polygon.Circle;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Angle;
 import com.ejo.util.math.Vector;
@@ -39,6 +39,7 @@ public class Joystick extends Widget implements Tickable {
             else
                 pos = mousePos.getSubtracted(getPos()).getUnitVector().getMultiplied(getRadius()).getAdded(getPos());
             stick.setPos(pos);
+            getAction().run();
         } else {
             stick.setPos(getPos());
         }

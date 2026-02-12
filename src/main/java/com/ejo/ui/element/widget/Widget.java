@@ -2,9 +2,8 @@ package com.ejo.ui.element.widget;
 
 import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.Animatable;
-import com.ejo.ui.element.base.Descriptable;
 import com.ejo.ui.element.base.Interactable;
-import com.ejo.ui.element.shape.ConvexPolygon;
+import com.ejo.ui.element.polygon.ConvexPolygon;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;

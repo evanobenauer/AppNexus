@@ -1,7 +1,7 @@
 package com.ejo.ui.element;
 
 import com.ejo.ui.element.base.Tickable;
-import com.ejo.ui.element.shape.ConvexPolygon;
+import com.ejo.ui.element.polygon.ConvexPolygon;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 

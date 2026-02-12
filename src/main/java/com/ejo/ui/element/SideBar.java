@@ -1,24 +1,20 @@
-package com.ejo.ui.element.widget;
+package com.ejo.ui.element;
 
 import com.ejo.ui.Scene;
-import com.ejo.ui.element.DrawableElement;
 import com.ejo.ui.element.base.Animatable;
 import com.ejo.ui.element.base.Hoverable;
 import com.ejo.ui.element.base.Interactable;
 import com.ejo.ui.element.base.Tickable;
-import com.ejo.ui.element.shape.Rectangle;
+import com.ejo.ui.element.polygon.Rectangle;
 import com.ejo.ui.element.widget.Button;
-import com.ejo.ui.element.widget.settingwidget.SettingWidget;
 import com.ejo.ui.handler.MouseHoveredHandler;
 import com.ejo.ui.render.FontRenderer;
 import com.ejo.ui.render.GLUtil;
 import com.ejo.util.lists.QueueableArrayList;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
-import com.ejo.util.time.StopWatch;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 //The sidebar kind of acts like mini scene. It has its own sub-element lists just like a scene
@@ -32,7 +28,7 @@ public class SideBar extends DrawableElement implements Tickable, Interactable, 
 
     private final MouseHoveredHandler mouseHoveredHandler;
 
-    private final Button openButton;
+    private final com.ejo.ui.element.widget.Button openButton;
     private final FontRenderer titleRenderer;
 
     private Type type;
@@ -59,7 +55,7 @@ public class SideBar extends DrawableElement implements Tickable, Interactable, 
 
         this.mouseHoveredHandler = new MouseHoveredHandler();
 
-        this.openButton = new Button(scene, Vector.NULL(), Vector.NULL(), getColor(), () -> setOpen(!isOpen()));
+        this.openButton = new com.ejo.ui.element.widget.Button(scene, Vector.NULL(), Vector.NULL(), getColor(), () -> setOpen(!isOpen()));
         this.titleRenderer = new FontRenderer(new Font("Arial",Font.PLAIN,20));
 
         this.open = false;

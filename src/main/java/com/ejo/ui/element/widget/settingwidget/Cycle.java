@@ -1,8 +1,9 @@
 package com.ejo.ui.element.widget.settingwidget;
 
-import com.ejo.ui.element.shape.ConvexPolygon;
-import com.ejo.ui.element.shape.RoundedRectangle;
+import com.ejo.ui.element.polygon.ConvexPolygon;
+import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.Scene;
+import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
 import com.ejo.util.misc.ColorUtil;
@@ -25,6 +26,8 @@ public class Cycle<T> extends SettingWidget<T> {
     private float fadeL;
     private float fadeR;
 
+    private Vector localMousePos;
+
     //This constructor is different from other settings widgets. The title and description come before the container as to not disrupt the cycles variable
     @SafeVarargs
     public Cycle(Scene scene, Vector pos, Vector size, Color color, String title, String description, Container<T> container, T... cycles) {
@@ -37,6 +40,8 @@ public class Cycle<T> extends SettingWidget<T> {
 
         this.fadeR = 0;
         this.fadeL = 0;
+
+        this.localMousePos = Mouse.NULL_POS();
     }
 
     @SafeVarargs
@@ -46,11 +51,12 @@ public class Cycle<T> extends SettingWidget<T> {
 
     @Override
     protected void drawWidget(Vector mousePos) {
+        this.localMousePos = mousePos; //Update the mousePos so it can be used in the getAnimation method
         int border = getSize().getYi() / 5;
 
         //Draw Left & Right Buttons
         //-----------------------------
-        int arrowSize = getSize().getYi() - border * 3;
+        float arrowSize = getSize().getYi() - border * 3;
         RoundedRectangle lRect = new RoundedRectangle(getScene(),getPos().getAdded(border,border),new Vector(getSize().getYi() - border * 2,getSize().getYi() - border * 2),ColorUtil.getWithAlpha(color,fadeL));
         lRect.draw();
         drawLArrow(lRect.getPos().getAdded(lRect.getSize().getMultiplied(.5).getAdded(-arrowSize/2 - 2,-arrowSize/2)),arrowSize,ColorUtil.getWithAlpha(Color.WHITE,fadeL));
@@ -70,7 +76,7 @@ public class Cycle<T> extends SettingWidget<T> {
         super.updateAnimation(speed);
 
         //--------------------------------------------------------
-        boolean isMouseOnRight = getScene().getMousePos().getX() > getSize().getX() / 2 + getPos().getX();
+        boolean isMouseOnRight = localMousePos.getX() > getSize().getX() / 2 + getPos().getX();
         int maxHover = 25;
         if (pressingR) {
             fadeR = AnimationUtil.getNextAnimationValue(pressingR, fadeR, 0, 255, speed * 3);
@@ -170,8 +176,8 @@ public class Cycle<T> extends SettingWidget<T> {
         getAction().run();
     }
 
-    private void drawLArrow(Vector pos, int size, Color color) {
-        int depth = size / 2;
+    private void drawLArrow(Vector pos, float size, Color color) {
+        float depth = size / 2;
         ConvexPolygon top = new ConvexPolygon(getScene(),pos,color,
                 new Vector(size,0),
                 new Vector(size - depth,size / 2),
@@ -186,8 +192,8 @@ public class Cycle<T> extends SettingWidget<T> {
         bottom.draw();
     }
 
-    private void drawRArrow(Vector pos, int size, Color color) {
-        int depth = size / 2;
+    private void drawRArrow(Vector pos, float size, Color color) {
+        float depth = size / 2;
         ConvexPolygon top = new ConvexPolygon(getScene(),pos,color,
                 new Vector(0,0),
                 new Vector(size - depth,0),

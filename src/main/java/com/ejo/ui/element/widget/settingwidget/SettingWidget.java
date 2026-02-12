@@ -2,14 +2,16 @@ package com.ejo.ui.element.widget.settingwidget;
 
 import com.ejo.ui.element.Text;
 import com.ejo.ui.element.base.Descriptable;
-import com.ejo.ui.element.shape.Rectangle;
-import com.ejo.ui.element.shape.RoundedRectangle;
+import com.ejo.ui.element.polygon.Rectangle;
+import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.element.widget.Widget;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
 
 import java.awt.*;
+
+import static java.awt.SystemColor.text;
 
 public abstract class SettingWidget<T> extends Widget implements Descriptable {
 
@@ -56,11 +58,10 @@ public abstract class SettingWidget<T> extends Widget implements Descriptable {
         int textSize = size.getYi() - border;
 
         Text text = new Text(scene, Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), color, Text.Type.STATIC);
-        if (centered) {
+        if (centered)
             text.setPos(pos.getAdded(size.getX() / 2 - text.getSize().getX() / 2, size.getY() / 2 - textSize / 2));
-        } else {
+        else
             text.setPos(pos.getAdded(border + 2, size.getY() / 2 - textSize / 2)); //Left-oriented Position
-        }
         text.draw();
     }
 

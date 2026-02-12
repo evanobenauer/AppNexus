@@ -1,4 +1,4 @@
-package com.ejo.ui.element.shape;
+package com.ejo.ui.element.polygon;
 
 import com.ejo.ui.Scene;
 import com.ejo.util.math.Angle;

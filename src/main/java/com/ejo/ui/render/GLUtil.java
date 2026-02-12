@@ -1,5 +1,6 @@
 package com.ejo.ui.render;
 
+import com.ejo.util.math.Angle;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.ImageUtil;
 import org.lwjgl.opengl.GL11;
@@ -10,8 +11,20 @@ import java.nio.ByteBuffer;
 
 public class GLUtil {
 
+    public static void color(double red, double green, double blue, double alpha) {
+        GL11.glColor4d(red/255f,green/255f,blue/255f,alpha/255f);
+    }
+
+    public static void color(Color color) {
+        GL11.glColor4d(color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f,color.getAlpha()/255f);
+    }
+
     public static void translate(Vector vec) {
         GL11.glTranslated(vec.getX(),vec.getY(),vec.getZ());
+    }
+
+    public static void rotate(Angle angle, Vector vec) {
+        GL11.glRotated(angle.getDegrees(),vec.getX(),vec.getY(),vec.getZ());
     }
 
     public static void scale(Vector vec) {
@@ -22,16 +35,24 @@ public class GLUtil {
         GL11.glScaled(val,val,val);
     }
 
-    public static void scaleAboutPointStart(Vector point, Vector scale) {
-        GLUtil.translate(new Vector(point.getX(),point.getY()));
-        GLUtil.scale(new Vector(scale.getX(),scale.getY(),1));
-        GLUtil.translate(new Vector(point.getX(),point.getY()).getMultiplied(-1));
+    public static void rotateAboutPoint(Vector point, Angle angle, Runnable drawCode) {
+        GLUtil.translate(point);
+        GLUtil.rotate(angle,Vector.K());
+
+        drawCode.run();
+
+        GLUtil.rotate(angle.getMultiplied(-1),Vector.K());
+        GLUtil.translate(point.getMultiplied(-1));
     }
 
-    public static void scaleAboutPointEnd(Vector point, Vector scale) {
-        GLUtil.translate(new Vector(point.getX(),point.getY()));
+    public static void scaleAboutPoint(Vector point, Vector scale, Runnable drawCode) {
+        translate(point);
+        GLUtil.scale(new Vector(scale.getX(),scale.getY(),1));
+
+        drawCode.run();
+
         GLUtil.scale(new Vector(1/scale.getX(),1/scale.getY(),1));
-        GLUtil.translate(point.getSubtracted(0,0,point.getZ()).getMultiplied(-1));
+        GLUtil.translate(point.getMultiplied(-1));
     }
 
     public static void textureScale(Vector vec) {
@@ -56,13 +77,7 @@ public class GLUtil {
         GL11.glPixelTransferf(GL11.GL_ALPHA_SCALE, 1f);
     }
 
-    public static void color(double red, double green, double blue, double alpha) {
-        GL11.glColor4d(red/255f,green/255f,blue/255f,alpha/255f);
-    }
 
-    public static void color(Color color) {
-        GL11.glColor4d(color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f,color.getAlpha()/255f);
-    }
 
 
     //TODO: Place these into a DrawUtil file when you eventually create it

@@ -1,6 +1,6 @@
 package com.ejo.ui.element.widget.settingwidget;
 
-import com.ejo.ui.element.shape.RoundedRectangle;
+import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.Scene;
 import com.ejo.util.math.MathUtil;
 import com.ejo.util.math.Vector;
