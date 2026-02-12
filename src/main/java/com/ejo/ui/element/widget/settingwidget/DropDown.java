@@ -249,6 +249,7 @@ public class DropDown<T> extends SettingWidget<T>{
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS)
                 if (isMouseHovered()) {
                     DropDown.this.getAction().run();
+                    getAction().run();
                     this.hoverHighlightFade = 175f;
                 }
         }
