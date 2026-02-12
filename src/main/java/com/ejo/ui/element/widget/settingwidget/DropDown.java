@@ -230,7 +230,7 @@ public class DropDown<T> extends SettingWidget<T>{
 
 
 
-    private static class SelectionBoxWidget extends Widget {
+    private class SelectionBoxWidget extends Widget {
 
         public SelectionBoxWidget(Scene scene, Vector pos, ConvexPolygon baseShape, Runnable action) {
             super(scene, pos, baseShape, action);
@@ -248,7 +248,7 @@ public class DropDown<T> extends SettingWidget<T>{
         public void onMouseClick(int button, int action, int mods, Vector mousePos) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS)
                 if (isMouseHovered()) {
-                    getAction().run();
+                    DropDown.this.getAction().run();
                     this.hoverHighlightFade = 175f;
                 }
         }
