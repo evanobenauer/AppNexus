@@ -165,6 +165,19 @@ public class DropDown<T> extends SettingWidget<T>{
 
     // ===============================
 
+    public void update(T... items) {
+        this.items.clear();
+        this.items.addAll(Arrays.asList(items));
+        this.selectionBoxes.clear();
+        for (int i = 0; i < items.length; i++) {
+            int finalI = i;
+            selectionBoxes.add(new SelectionBoxWidget(getScene(), Vector.NULL(), new RoundedRectangle(getScene(), Vector.NULL(), getSize().getSubtracted(3, 3), new Color(0,0,0,0)), () -> {
+                getContainer().set(this.items.get(finalI));
+                getAction().run();
+            }));
+        }
+    }
+
     protected void updateDrawSelectionBox(int i, Vector pos, Vector mousePos) {
         SelectionBoxWidget selectionBox = selectionBoxes.get(i);
 
