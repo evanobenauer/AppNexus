@@ -1,6 +1,5 @@
 package com.ejo.ui.handler;
 
-
 import com.ejo.ui.Scene;
 import com.ejo.ui.Window;
 import com.ejo.ui.element.polygon.Rectangle;
@@ -19,6 +18,9 @@ public class SceneTransitionHandler {
 
     private Scene queuedScene;
 
+    //Init
+    private float initFade;
+
     public SceneTransitionHandler(Window window, float fadeSpeed) {
         this.window = window;
         this.fadeSpeed = fadeSpeed;
@@ -26,11 +28,24 @@ public class SceneTransitionHandler {
         this.fade = 0;
 
         this.queuedScene = null;
+
+        this.initFade = 255;
     }
 
     public void drawFade(Scene scene) {
         Rectangle fade = new Rectangle(scene, Vector.NULL(),window.getSize(), ColorUtil.getWithAlpha(Color.BLACK,this.fade));
         fade.draw();
+        drawInitFade(scene);
+    }
+
+    private void drawInitFade(Scene scene) {
+        if (initFade > 0) {
+            System.out.println("he");
+            initFade -= fadeSpeed;
+            initFade = Math.clamp(initFade, 0, 255);
+            Rectangle fade = new Rectangle(scene, Vector.NULL(), window.getSize(), ColorUtil.getWithAlpha(Color.BLACK, this.initFade));
+            fade.draw();
+        }
     }
 
     public void updateSceneTransition() {
