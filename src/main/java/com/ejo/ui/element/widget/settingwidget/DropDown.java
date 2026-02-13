@@ -8,6 +8,7 @@ import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.element.widget.Widget;
 import com.ejo.ui.handler.MouseHoveredHandler;
 import com.ejo.ui.render.GLUtil;
+import com.ejo.util.input.Mouse;
 import com.ejo.util.math.Angle;
 import com.ejo.util.math.Vector;
 import com.ejo.util.misc.AnimationUtil;
@@ -130,7 +131,7 @@ public class DropDown<T> extends SettingWidget<T>{
             if (isMouseHovered() && isHeaderHovered(mousePos)) open = !open;
         }
         for (SelectionBoxWidget widget : selectionBoxes)
-            if (isMouseHovered()) widget.onMouseClick(button, action, mods, mousePos);
+            widget.onMouseClick(button, action, mods, mousePos);
     }
 
     @Override
@@ -182,7 +183,7 @@ public class DropDown<T> extends SettingWidget<T>{
         SelectionBoxWidget selectionBox = selectionBoxes.get(i);
 
         //Update Selection Box
-        selectionBox.updateMouseHovered(selectionMouseHoveredHandler,mousePos);
+        selectionBox.updateMouseHovered(selectionMouseHoveredHandler,isMouseHovered() ? mousePos : Mouse.NULL_POS());
         selectionBox.updateAnimation(10);
 
         //Draw Selection Box
