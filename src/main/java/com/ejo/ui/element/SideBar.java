@@ -113,9 +113,13 @@ public class SideBar extends DrawableElement implements Tickable, Interactable, 
     }
 
     @Override
-    public void tick(Vector mousePos) {
+    public void updateMouseHovered(MouseHoveredHandler handler, Vector mousePos) {
+        super.updateMouseHovered(handler,mousePos);
         this.openButton.updateMouseHovered(getScene().getMouseHoveredHandler(), mousePos);
+    }
 
+    @Override
+    public void tick(Vector mousePos) {
         //Update mouse hovered elements
         hoverables.forIQueued((e, i) -> e.updateMouseHovered(mouseHoveredHandler, getTranslatedMousePos(mousePos)));
         mouseHoveredHandler.cycleQueuedElements();
