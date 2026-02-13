@@ -40,7 +40,6 @@ public class SceneTransitionHandler {
 
     private void drawInitFade(Scene scene) {
         if (initFade > 0) {
-            System.out.println("he");
             initFade -= fadeSpeed;
             initFade = Math.clamp(initFade, 0, 255);
             Rectangle fade = new Rectangle(scene, Vector.NULL(), window.getSize(), ColorUtil.getWithAlpha(Color.BLACK, this.initFade));

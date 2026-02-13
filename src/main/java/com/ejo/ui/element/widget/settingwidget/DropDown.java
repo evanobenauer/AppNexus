@@ -127,10 +127,10 @@ public class DropDown<T> extends SettingWidget<T>{
     @Override
     public void onMouseClick(int button, int action, int mods, Vector mousePos) {
         if (action == GLFW.GLFW_RELEASE && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            if (isHeaderHovered(mousePos)) open = !open;
+            if (isMouseHovered() && isHeaderHovered(mousePos)) open = !open;
         }
         for (SelectionBoxWidget widget : selectionBoxes)
-            widget.onMouseClick(button, action, mods, mousePos);
+            if (isMouseHovered()) widget.onMouseClick(button, action, mods, mousePos);
     }
 
     @Override
