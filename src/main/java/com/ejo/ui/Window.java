@@ -337,9 +337,8 @@ public class Window {
         return this;
     }
 
-    public Window setSceneTransitioned(Scene scene) {
+    public void setSceneTransitioned(Scene scene) {
         this.sceneTransitionHandler.setScene(scene);
-        return this;
     }
 
     public Window setTitle(String title) {
@@ -381,12 +380,14 @@ public class Window {
         return this;
     }
 
-    public void setDebugMode(DebugMode mode) {
+    public Window setDebugMode(DebugMode mode) {
         this.debugMode = mode;
+        return this;
     }
 
-    public void setPerformanceMode(PerformanceMode mode) {
+    public Window setPerformanceMode(PerformanceMode mode) {
         this.performanceMode = mode;
+        return this;
     }
 
     // =================================================

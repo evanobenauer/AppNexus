@@ -15,7 +15,6 @@ import com.ejo.util.misc.AnimationUtil;
 import com.ejo.util.misc.ColorUtil;
 import com.ejo.util.setting.Container;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,18 +40,13 @@ public class DropDown<T> extends SettingWidget<T>{
         super(scene, pos, size, container, () -> {}, title, description);
         this.color = color;
 
-        this.items = new ArrayList<>(Arrays.asList(items));
-
-        //Add selection boxes to list
-        this.selectionMouseHoveredHandler = new MouseHoveredHandler();
+        this.items = new ArrayList<>();
         this.selectionBoxes = new ArrayList<>();
-        for (int i = 0; i < items.length; i++) {
-            int finalI = i;
-            selectionBoxes.add(new SelectionBoxWidget(scene, Vector.NULL(), new RoundedRectangle(scene, Vector.NULL(), getSize().getSubtracted(3, 3), new Color(0,0,0,0)), () -> {
-                getContainer().set(this.items.get(finalI));
-                getAction().run();
-            }));
-        }
+
+        this.selectionMouseHoveredHandler = new MouseHoveredHandler();
+
+        //Add selection boxes to the list
+        updateDropDownItems(items);
 
         //Open variables
         this.open = false;
@@ -82,22 +76,16 @@ public class DropDown<T> extends SettingWidget<T>{
         //Draw Items
         int itemY = getHeadSize().getYi();
         for (int i = 0; i < items.size(); i++) {
-            T item = items.get(i);
-            int textSize = getHeadSize().getYi() - border;
             Vector pos = getPos().getAdded(2,itemY * openPercent);
 
-            //Draw Text
-            Text text = new Text(getScene(), pos.getAdded(border + 2, getHeadSize().getY() / 2 - textSize / 2), item.toString(), new Font("Arial", Font.PLAIN, textSize), Color.WHITE, Text.Type.STATIC);
-            text.draw();
-
-            //Draw Highlight
-            updateDrawSelectionBox(i,pos,mousePos);
+            //Draw Selection Box
+            drawSelectionBox(i,pos,mousePos);
 
             //Increment next Y position
             itemY += getHeadSize().getYi();
         }
 
-        //Update Local MouseHoveredHandler
+        //Update Local MouseHoveredHandler for SelectionBoxes
         if (this.baseShape.getMouseHoveredCalculation(mousePos))
             selectionMouseHoveredHandler.queueHoverable(this.baseShape);
         selectionMouseHoveredHandler.cycleQueuedElements();
@@ -159,27 +147,26 @@ public class DropDown<T> extends SettingWidget<T>{
         return Rectangle.isInRectangleBoundingBox(getPos(),getHeadSize(),mousePos);
     }
 
-
     // ===============================
 
     // UPDATE/DRAW METHODS
 
     // ===============================
 
-    public void update(T... items) {
+    public void updateDropDownItems(T... items) {
         this.items.clear();
         this.items.addAll(Arrays.asList(items));
         this.selectionBoxes.clear();
         for (int i = 0; i < items.length; i++) {
             int finalI = i;
-            selectionBoxes.add(new SelectionBoxWidget(getScene(), Vector.NULL(), new RoundedRectangle(getScene(), Vector.NULL(), getSize().getSubtracted(3, 3), new Color(0,0,0,0)), () -> {
+            selectionBoxes.add(new SelectionBoxWidget(getScene(), Vector.NULL(), finalI,() -> {
                 getContainer().set(this.items.get(finalI));
                 getAction().run();
             }));
         }
     }
 
-    protected void updateDrawSelectionBox(int i, Vector pos, Vector mousePos) {
+    protected void drawSelectionBox(int i, Vector pos, Vector mousePos) {
         SelectionBoxWidget selectionBox = selectionBoxes.get(i);
 
         //Update Selection Box
@@ -192,7 +179,6 @@ public class DropDown<T> extends SettingWidget<T>{
         selectionBox.draw();
     }
 
-    //TODO: Rotate this up/down for the dropdown
     private void drawRArrow(Vector pos, float size, Color color) {
         float depth = size / 2;
         ConvexPolygon top = new ConvexPolygon(getScene(),pos,color,
@@ -246,36 +232,62 @@ public class DropDown<T> extends SettingWidget<T>{
 
     private class SelectionBoxWidget extends Widget {
 
-        public SelectionBoxWidget(Scene scene, Vector pos, ConvexPolygon baseShape, Runnable action) {
-            super(scene, pos, baseShape, action);
+        private final int index;
+        private float textSelectionFade;
+
+        public SelectionBoxWidget(Scene scene, Vector pos, int index, Runnable action) {
+            super(scene, pos, new RoundedRectangle(scene, Vector.NULL(), getSize().getSubtracted(3, 3),new Color(0,0,0,0)), action);
+            this.index = index;
+            this.textSelectionFade = 128;
         }
 
         @Override
         protected void drawWidget(Vector mousePos) {
-        }
+            T item = items.get(index);
 
-        @Override
-        public void onKeyPress(int key, int scancode, int action, int mods) {
-        }
+            //Define text variables
+            int border = getHeadSize().getYi() / 5;
+            int textSize = getHeadSize().getYi() - border;
 
-        @Override
-        public void onMouseClick(int button, int action, int mods, Vector mousePos) {
-            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS)
-                if (isMouseHovered()) {
-                    getAction().run();
-                    this.hoverHighlightFade = 175f;
-                }
-        }
+            //Text Color
+            boolean isSelected = item.equals(getContainer().get());
+            float speed = 10;
+            if (isSelected && textSelectionFade < 255) textSelectionFade += speed;
+            if (!isSelected && textSelectionFade > 128) textSelectionFade -= speed;
+            textSelectionFade = Math.clamp(textSelectionFade,0,255);
+            Color col = new Color(textSelectionFade/255f,textSelectionFade/255f,textSelectionFade/255f);
 
-        @Override
-        public void onMouseScroll(double scroll, Vector mousePos) {
+            //Draw Text
+            Text text = new Text(getScene(), getPos().getAdded(border + 2, getHeadSize().getY() / 2 - textSize / 2), item.toString(), new Font("Arial", Font.PLAIN, textSize), col, Text.Type.STATIC);
+            text.draw();
         }
 
         @Override
         public void updateAnimation(float speed) {
-            if (this.hoverHighlightFade > 21) hoverHighlightFade -= speed;
+            if (this.hoverHighlightFade > 21) hoverHighlightFade -= speed; //Update click spark fade
             this.hoverHighlightFade = AnimationUtil.getNextAnimationValue(isMouseHovered(), hoverHighlightFade, 0, 20, speed);
         }
+
+        @Override
+        public void onMouseClick(int button, int action, int mods, Vector mousePos) {
+            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
+                if (isMouseHovered()) {
+                    SelectionBoxWidget.this.getAction().run();
+                    this.hoverHighlightFade = 175f; //Draw Click Spark
+                }
+            }
+        }
+
+        @Override
+        public void onKeyPress(int key, int scancode, int action, int mods) {
+            //NA
+        }
+
+        @Override
+        public void onMouseScroll(double scroll, Vector mousePos) {
+            //NA
+        }
+
 
         public RoundedRectangle getRect() {
             return (RoundedRectangle) this.baseShape;
