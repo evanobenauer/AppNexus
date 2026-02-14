@@ -95,6 +95,7 @@ public class TooltipManager extends SceneManager {
         this.fontRenderer = new FontRenderer(font);
     }
 
+
     private static class Tooltip {
 
         final DrawableElement widget;

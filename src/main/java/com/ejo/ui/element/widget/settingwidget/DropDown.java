@@ -104,7 +104,7 @@ public class DropDown<T> extends SettingWidget<T>{
 
         //Draw Selected As Title
         String title = getTitle() + (!getTitle().isEmpty() ? ": " : "") + getContainer().get();
-        SettingWidget.drawWidgetTitle(getScene(),getPos(),getHeadSize(),title,border,false,Color.WHITE);
+        SettingWidget.drawWidgetTitle(getScene(),getPos(),getHeadSize().getSubtracted(arrowSize + border,0),title,border,false,Color.WHITE);
     }
 
     @Override
@@ -258,8 +258,7 @@ public class DropDown<T> extends SettingWidget<T>{
             Color col = new Color(textSelectionFade/255f,textSelectionFade/255f,textSelectionFade/255f);
 
             //Draw Text
-            Text text = new Text(getScene(), getPos().getAdded(border + 2, getHeadSize().getY() / 2 - textSize / 2), item.toString(), new Font("Arial", Font.PLAIN, textSize), col, Text.Type.STATIC);
-            text.draw();
+            SettingWidget.drawWidgetTitle(getScene(),getPos(),getHeadSize().getSubtracted(border * 2,0),item.toString(),border,false,col);
         }
 
         @Override

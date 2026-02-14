@@ -9,7 +9,8 @@ import com.ejo.util.misc.ColorUtil;
 import java.awt.*;
 import java.util.ArrayList;
 
-//Think about moving all notifications to the bottom right of the screen, have them stack up from the bottom
+//TODO: I think this class is cleanly written, but the notifications are so ugly
+// Think about moving all notifications to the bottom right of the screen, have them stack up from the bottom
 public class NotificationManager extends SceneManager {
 
     private final ArrayList<Notification> notifications;

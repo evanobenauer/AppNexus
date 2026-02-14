@@ -70,7 +70,7 @@ public class StopWatch {
     }
 
     public double getStopTimeS() {
-        return MathUtil.roundDouble(((float) getCurrentTimeMS()) / 1000,2);
+        return MathUtil.roundDouble(((float) stopTime) / 1000,2);
     }
 
 }

@@ -6,6 +6,7 @@ import com.ejo.ui.element.polygon.Rectangle;
 import com.ejo.ui.element.polygon.RoundedRectangle;
 import com.ejo.ui.element.widget.Widget;
 import com.ejo.ui.Scene;
+import com.ejo.ui.render.GLUtil;
 import com.ejo.util.math.Vector;
 import com.ejo.util.setting.Container;
 
@@ -54,15 +55,25 @@ public abstract class SettingWidget<T> extends Widget implements Descriptable {
 
     //This is so it may be accessed outside the widget class for non-setting widgets such as the ProgressBar or Button
     public static void drawWidgetTitle(Scene scene, Vector pos, Vector size, String title, int border, boolean centered, Color color) {
-        //TODO: Deal with Horizontal titles being too large. Have an auto downscaling for the textSize
         int textSize = size.getYi() - border;
 
         Text text = new Text(scene, Vector.NULL(), title, new Font("Arial", Font.PLAIN, textSize), color, Text.Type.STATIC);
-        if (centered)
+
+        if (centered) {
+            //TODO: Add centered text scaling
             text.setPos(pos.getAdded(size.getX() / 2 - text.getSize().getX() / 2, size.getY() / 2 - textSize / 2));
-        else
+        } else {
+            double scale = 1;
+            double textWidth = text.getSize().getX();
+            double widgetWidth = size.getX() - border * 2;
+            if (textWidth > widgetWidth) scale = widgetWidth / textWidth;
+            Vector scaleV = new Vector(scale,1);
+            GLUtil.textureScale(new Vector(scaleV.getX(),scaleV.getY(),1));
             text.setPos(pos.getAdded(border + 2, size.getY() / 2 - textSize / 2)); //Left-oriented Position
+        }
+
         text.draw();
+        GLUtil.textureScale(new Vector(1,1));
     }
 
     // =================================================

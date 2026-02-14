@@ -95,9 +95,12 @@ public class TextInput extends SettingWidget<String> {
             }
 
             default -> {
-                if (GLFW.glfwGetKeyName(key, -1) == null || GLFW.glfwGetKeyName(key, -1).equals("null")) break;
-                if (isValidPress(key))
-                    buttonText += GLFW.glfwGetKeyName(key, -1);
+                String keyName = GLFW.glfwGetKeyName(key, -1);
+                if (keyName == null || keyName.equals("null")) break;
+                if (isValidPress(key)) {
+                    //if (Key.isShifting()) keyName = keyName.toUpperCase();
+                    buttonText += keyName;
+                }
             }
         }
         if (buttonText.length() > charLimit) return;
