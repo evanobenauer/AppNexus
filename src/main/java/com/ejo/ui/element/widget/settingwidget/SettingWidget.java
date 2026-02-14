@@ -67,9 +67,9 @@ public abstract class SettingWidget<T> extends Widget implements Descriptable {
             double textWidth = text.getSize().getX();
             double widgetWidth = size.getX() - border * 2;
             if (textWidth > widgetWidth) scale = widgetWidth / textWidth;
-            Vector scaleV = new Vector(scale,1);
-            GLUtil.textureScale(new Vector(scaleV.getX(),scaleV.getY(),1));
-            text.setPos(pos.getAdded(border + 2, size.getY() / 2 - textSize / 2)); //Left-oriented Position
+            Vector scaleVector = new Vector(scale,scale);
+            GLUtil.textureScale(new Vector(scaleVector.getX(),scaleVector.getY(),1));
+            text.setPos(pos.getAdded(border + 2, (size.getY() / 2 - (textSize * scale) / 2))); //Left-oriented Position
         }
 
         text.draw();
