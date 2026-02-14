@@ -75,6 +75,11 @@ public class Text extends DrawableElement {
         if (!currentFont.equals(font)) updateFontRenderer(font);
     }
 
+    public void setFontRenderer(FontRenderer renderer) {
+        Font currentFont = fontRenderer.getFont();
+        if (!currentFont.equals(renderer.getFont())) updateFontRenderer(renderer.getFont());
+    }
+
     public void setText(String text) {
         this.text = text;
     }

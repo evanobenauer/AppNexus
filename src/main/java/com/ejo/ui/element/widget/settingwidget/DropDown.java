@@ -247,7 +247,6 @@ public class DropDown<T> extends SettingWidget<T>{
 
             //Define text variables
             int border = getHeadSize().getYi() / 5;
-            int textSize = getHeadSize().getYi() - border;
 
             //Text Color
             boolean isSelected = item.equals(getContainer().get());
@@ -258,7 +257,7 @@ public class DropDown<T> extends SettingWidget<T>{
             Color col = new Color(textSelectionFade/255f,textSelectionFade/255f,textSelectionFade/255f);
 
             //Draw Text
-            SettingWidget.drawWidgetTitle(getScene(),getPos(),getHeadSize().getSubtracted(border * 2,0),item.toString(),border,false,col);
+            SettingWidget.drawWidgetTitle(getScene(),getPos(),getHeadSize().getSubtracted(border + 2,0),item.toString(),border,false,col);
         }
 
         @Override
