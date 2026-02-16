@@ -153,6 +153,11 @@ public class DateTime {
                 && dateTime.getSecondString().equals(getSecondString());
     }
 
+    @Override
+    protected DateTime clone() {
+        return new DateTime(getYear(),getMonth(),getDay(),getHour(),getMinute(),getSecond());
+    }
+
     // =================================================
 
     // STATIC METHODS
