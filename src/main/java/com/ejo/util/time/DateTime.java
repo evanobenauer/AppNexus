@@ -154,7 +154,7 @@ public class DateTime {
     }
 
     @Override
-    protected DateTime clone() {
+    public DateTime clone() {
         return new DateTime(getYear(),getMonth(),getDay(),getHour(),getMinute(),getSecond());
     }
 
