@@ -6,6 +6,7 @@ import com.ejo.util.time.DateTime;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SettingManager {
 
@@ -34,7 +35,7 @@ public class SettingManager {
 
     @SuppressWarnings(value = "all")
     public boolean loadAll() {
-        HashMap<String, String[]> loadedData = csvFile.load();
+        Map<String, String[]> loadedData = csvFile.load();
 
         for (String key : loadedData.keySet()) {
             try {

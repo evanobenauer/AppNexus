@@ -4,8 +4,9 @@ package com.ejo.util.file;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
-public class FileCSVMap<K, V> extends FileCSV<HashMap<K,V[]>,HashMap<String,String[]>> {
+public class FileCSVMap<K, V> extends FileCSV<Map<K,V[]>,Map<String,String[]>> {
 
     public FileCSVMap(String folderPath, String fileName) {
         super(folderPath, fileName);
@@ -16,7 +17,7 @@ public class FileCSVMap<K, V> extends FileCSV<HashMap<K,V[]>,HashMap<String,Stri
     }
 
     @Override
-    public boolean save(HashMap<K, V[]> hashMap) {
+    public boolean save(Map<K, V[]> hashMap) {
         FileUtil.createFolderPath(folderPath); //Creates the folder path if it does not exist
         String outputFile = FileUtil.getFilePath(folderPath,fileName);
         try {
@@ -38,9 +39,9 @@ public class FileCSVMap<K, V> extends FileCSV<HashMap<K,V[]>,HashMap<String,Stri
     }
 
     @Override
-    public HashMap<String, String[]> load() {
+    public Map<String, String[]> load() {
         File file = new File(FileUtil.getFilePath(folderPath,fileName));
-        HashMap<String, String[]> rawDataHashMap = new HashMap<>();
+        Map<String, String[]> rawDataHashMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
